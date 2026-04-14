@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide Bid Manager — Travailler sur un CDC de 300 pages avec l'IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,700;1,300&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f1ea;
+    --accent: #c8410a;
+    --accent-light: #f0c4b0;
+    --muted: #8a8070;
+    --border: #d8d0c4;
+    --highlight: #fff8e7;
+    --code-bg: #1a1916;
+    --code-text: #e8dfc8;
+    --step-1: #c8410a;
+    --step-2: #1a6b4a;
+    --step-3: #1e4a8a;
+    --step-4: #7a3a8a;
+    --step-5: #8a6010;
+    --step-6: #3a6a2a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* COVER */
+  .cover {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-left {
+    background: var(--ink);
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .cover-left::after {
+    content: '';
+    position: absolute;
+    top: 0; right: -1px;
+    width: 60px; height: 100%;
+    background: var(--ink);
+    clip-path: polygon(0 0, 100% 15%, 100% 85%, 0 100%);
+  }
+
+  .cover-right {
+    background: var(--paper);
+    padding: 80px 60px 80px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+
+  .cover-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .cover-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(42px, 5vw, 68px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--paper);
+    margin-bottom: 24px;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: var(--accent-light);
+  }
+
+  .cover-subtitle {
+    font-size: 15px;
+    color: #8a8070;
+    line-height: 1.6;
+    max-width: 340px;
+  }
+
+  .cover-right-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--ink);
+    transition: color 0.2s;
+  }
+
+  .toc-item:hover { color: var(--accent); }
+
+  .toc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    min-width: 24px;
+  }
+
+  .toc-text { font-size: 14px; font-weight: 500; }
+
+  .cover-footer {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: #4a4540;
+    text-transform: uppercase;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* SECTION HEADER */
+  .section-break {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 60px 0 50px;
+    margin: 80px 0 0;
+    position: relative;
+  }
+
+  .section-break .container {
+    display: flex;
+    align-items: flex-end;
+    gap: 30px;
+  }
+
+  .section-num {
+    font-family: 'Fraunces', serif;
+    font-size: 100px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+
+  .section-head {
+    padding-bottom: 8px;
+  }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    color: #8a8070;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 60px 0;
+  }
+
+  .content p {
+    margin-bottom: 20px;
+    font-size: 15.5px;
+    max-width: 700px;
+  }
+
+  .content h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 40px 0 16px;
+    color: var(--ink);
+  }
+
+  .content h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 32px 0 12px;
+  }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--highlight);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    margin: 32px 0;
+    max-width: 700px;
+  }
+
+  .callout-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .callout p { margin: 0; font-size: 15px; }
+
+  .callout-warning {
+    background: #fff0ee;
+    border-left-color: #c8200a;
+  }
+
+  .callout-warning .callout-label { color: #c8200a; }
+
+  .callout-ok {
+    background: #eef5f0;
+    border-left-color: #1a6b4a;
+  }
+
+  .callout-ok .callout-label { color: #1a6b4a; }
+
+  /* PROMPT BOX */
+  .prompt-box {
+    background: var(--code-bg);
+    border-radius: 2px;
+    margin: 24px 0;
+    max-width: 720px;
+    overflow: hidden;
+  }
+
+  .prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid #2a2926;
+  }
+
+  .prompt-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .prompt-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #5a5550;
+  }
+
+  .prompt-body {
+    padding: 20px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--code-text);
+    white-space: pre-wrap;
+  }
+
+  .prompt-body .ph {
+    color: #c8a060;
+    font-style: italic;
+  }
+
+  /* TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+
+  .data-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+
+  .data-table .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-oblig { background: #fee; color: #c8200a; }
+  .tag-souhaitable { background: #fff8e7; color: #8a6010; }
+  .tag-info { background: #eef5f0; color: #1a6b4a; }
+  .tag-risk { background: #f5eeff; color: #7a3a8a; }
+
+  /* WORKFLOW */
+  .workflow {
+    margin: 40px 0;
+    max-width: 720px;
+  }
+
+  .workflow-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 24px;
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  .workflow-step:not(:last-child) .step-line {
+    position: absolute;
+    left: 23px;
+    top: 48px;
+    bottom: -8px;
+    width: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .step-num {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-body {
+    padding: 12px 0 40px;
+  }
+
+  .step-body h4 {
+    margin: 0 0 8px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .step-body p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+    max-width: 100%;
+  }
+
+  /* RISK TABLE */
+  .risk-row td:first-child {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* MATRIX EXAMPLE */
+  .matrix-table th { background: var(--ink); color: var(--paper); }
+  .matrix-table td { font-size: 13px; }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    margin: 16px 0;
+    max-width: 680px;
+  }
+
+  .checklist li {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14.5px;
+    align-items: flex-start;
+  }
+
+  .checklist li::before {
+    content: '□';
+    font-size: 16px;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* COLUMNS */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 24px 0;
+    max-width: 720px;
+  }
+
+  .col-card {
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .col-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .col-card ul {
+    list-style: none;
+    font-size: 14px;
+  }
+
+  .col-card ul li {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .col-card ul li:last-child { border-bottom: none; }
+
+  /* FINAL */
+  .final-section {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 80px 0;
+    margin-top: 80px;
+  }
+
+  .final-section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 32px;
+    color: var(--accent-light);
+  }
+
+  .final-section p {
+    font-size: 15.5px;
+    color: #c8c0b0;
+    max-width: 680px;
+    margin-bottom: 20px;
+    line-height: 1.75;
+  }
+
+  .final-principles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  .principle {
+    border-top: 2px solid var(--accent);
+    padding-top: 20px;
+  }
+
+  .principle-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .principle-text {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--paper);
+    margin-bottom: 10px;
+  }
+
+  .principle p {
+    font-size: 13px !important;
+    color: #6a6050 !important;
+    margin: 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    .cover { grid-template-columns: 1fr; }
+    .cover-left::after { display: none; }
+    .cover-right { padding: 40px; }
+    .final-principles { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .section-break .container { flex-direction: column; gap: 0; }
+    .section-num { font-size: 60px; }
+  }
+
+  @media print {
+    .cover { min-height: auto; page-break-after: always; }
+    .section-break { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-left">
+    <div>
+      <div class="cover-label">Guide opérationnel — Bid Management</div>
+      <h1 class="cover-title">Travailler sur un CDC<br>de <em>300 pages</em><br>avec l'IA</h1>
+      <p class="cover-subtitle">Protocole complet pour bid managers : de la qualification du document à la matrice de conformité, sans perte d'information critique.</p>
+    </div>
+    <div class="cover-footer">Version 1.1 &nbsp;·&nbsp; Appels d'offres à enjeu</div>
+  </div>
+  <div class="cover-right">
+    <div class="cover-right-title">Sommaire</div>
+    <nav>
+      <a href="#s0" class="toc-item"><span class="toc-num">00</span><span class="toc-text">Principes fondamentaux</span></a>
+      <a href="#s1" class="toc-item"><span class="toc-num">01</span><span class="toc-text">Qualification du document</span></a>
+      <a href="#s-diag" class="toc-item"><span class="toc-num" style="color:#1e4a8a;">02</span><span class="toc-text">Diagnostic — faut-il chunker ?</span></a>
+      <a href="#s2" class="toc-item"><span class="toc-num">03</span><span class="toc-text">Découpage en chunks</span></a>
+      <a href="#s3" class="toc-item"><span class="toc-num">04</span><span class="toc-text">Extraction du plan</span></a>
+      <a href="#s4" class="toc-item"><span class="toc-num">05</span><span class="toc-text">Double résumé par chunk</span></a>
+      <a href="#s5" class="toc-item"><span class="toc-num">06</span><span class="toc-text">Matrice de conformité</span></a>
+      <a href="#s6" class="toc-item"><span class="toc-num">07</span><span class="toc-text">Détection des contradictions</span></a>
+      <a href="#s7" class="toc-item"><span class="toc-num">08</span><span class="toc-text">Harmonisation et livraison</span></a>
+      <a href="#s8" class="toc-item"><span class="toc-num">09</span><span class="toc-text">Tous les prompts</span></a>
+      <a href="#s9" class="toc-item"><span class="toc-num">10</span><span class="toc-text">Checklist finale</span></a>
+    </nav>
+  </div>
+</div>
+
+<!-- SECTION 0 : PRINCIPES -->
+<div id="s0" class="section-break">
+  <div class="container">
+    <div class="section-num">00</div>
+    <div class="section-head">
+      <div class="section-tag">Cadre mental</div>
+      <h2 class="section-title">Pourquoi 300 pages posent<br>un problème architectural</h2>
+      <div class="section-subtitle">Ce que l'IA peut et ne peut pas faire — mécanismes causaux</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>Un LLM ne "lit" pas un document. Il le tokenise et l'ingère dans sa fenêtre de contexte au moment de l'inférence. Ce qui dépasse la fenêtre est tronqué. Ce qui est loin du point d'attention est statistiquement dilué. Ce n'est pas un bug : c'est l'architecture.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Mécanisme critique</div>
+      <p>La troncature est <strong>silencieuse</strong>. L'IA ne signale pas ce qu'elle a ignoré. Elle répond avec ce qu'elle a ingéré, et le résultat est plausible même si une clause critique page 187 a disparu.</p>
+    </div>
+
+    <h3>Les trois modes d'échec à connaître</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Mode d'échec</th>
+          <th>Mécanisme</th>
+          <th>Conséquence bid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Troncature silencieuse</strong></td>
+          <td>Document > fenêtre de contexte effective</td>
+          <td>Exigences manquantes dans la synthèse</td>
+        </tr>
+        <tr>
+          <td><strong>Lost in the middle</strong></td>
+          <td>Self-attention privilégie début et fin du contexte</td>
+          <td>Le cœur fonctionnel (milieu du doc) est sous-traité</td>
+        </tr>
+        <tr>
+          <td><strong>Dilution conversationnelle</strong></td>
+          <td>L'historique de conversation consomme des tokens</td>
+          <td>Dégradation des interactions au fil des échanges</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Le cadre mental correct</h3>
+
+    <p>Un CDC de 300 pages n'est pas un document à <em>lire</em> avec l'IA. C'est un territoire à <strong>cartographier</strong>, puis à <strong>exploiter par zones</strong>. Le bid manager reste le pilote. L'IA est un accélérateur d'extraction, pas un lecteur de substitution.</p>
+
+    <div class="two-col">
+      <div class="col-card">
+        <div class="col-card-label" style="color: #c8200a;">Ce que l'IA NE fait PAS</div>
+        <ul>
+          <li>Détecter les contradictions inter-sections</li>
+          <li>Signaler ce qu'elle a ignoré</li>
+          <li>Identifier les exigences implicites seule</li>
+          <li>Garantir la couverture exhaustive</li>
+          <li>Lire un PDF scannérisé correctement</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <div class="col-card-label" style="color: #1a6b4a;">Ce que l'IA FAIT bien</div>
+        <ul>
+          <li>Extraire des structures sur chunk ciblé</li>
+          <li>Résumer avec contraintes explicites</li>
+          <li>Formuler des exigences tabulaires</li>
+          <li>Détecter ambiguïtés dans un périmètre borné</li>
+          <li>Harmoniser des transitions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Règle d'or</div>
+      <p>La qualité de l'output est une fonction directe de la qualité du contexte fourni. Ne jamais utiliser l'IA en mode découverte sur un document critique. L'utiliser en mode validation, dans un cadre défini par l'expert humain.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 1 -->
+<div id="s1" class="section-break">
+  <div class="container">
+    <div class="section-num">01</div>
+    <div class="section-head">
+      <div class="section-tag">Étape humaine obligatoire</div>
+      <h2 class="section-title">Qualification du document</h2>
+      <div class="section-subtitle">30 minutes. Ne pas sauter. Sans ça, tout le reste est fragile.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>Avant tout contact avec l'IA, trois vérifications humaines non négociables.</p>
+
+    <h4>Vérification 1 — Lisibilité machine (OCR)</h4>
+    <p>Sélectionne du texte à la main dans <strong>cinq endroits distincts du document</strong>, dont le milieu. Si tu ne peux pas sélectionner le texte, le PDF est scannérisé ou protégé.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Risque systémique</div>
+      <p>Un PDF scannérisé produit une sortie plausible mais partiellement hallucinée. L'IA ne lève aucune erreur. Elle comble les trous. C'est le mode d'échec le plus dangereux parce qu'il est invisible.</p>
+    </div>
+
+    <p><strong>Si le PDF est scannérisé :</strong> passe-le dans Adobe Acrobat (Outils > Reconnaissance de texte) ou ouvre-le dans Word (Fichier > Ouvrir). Vérifie ensuite que le texte reconnu est fidèle sur au moins trois pages de section dense.</p>
+
+    <h4>Vérification 2 — Structure exploitable</h4>
+    <p>Ouvre le panneau Signets (ou Plan) du PDF. Si les titres de sections y apparaissent comme éléments cliquables, le document est structuré. Sinon, le plan devra être extrait par prompt et vérifié manuellement.</p>
+
+    <h4>Vérification 3 — Cartographie thématique humaine</h4>
+    <p>Parcours la table des matières et identifie les cinq ou six grandes zones. C'est une lecture humaine, partielle mais irremplaçable. Elle conditionne le découpage qui suit.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Bloc thématique typique</th><th>Contenu habituel</th><th>Niveau de risque bid</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Contexte et enjeux</strong></td><td>Présentation du commanditaire, historique, objectifs</td><td><span class="tag tag-info">Informatif</span></td></tr>
+        <tr><td><strong>Exigences fonctionnelles</strong></td><td>Besoins métier, cas d'usage, workflows</td><td><span class="tag tag-oblig">Critique</span></td></tr>
+        <tr><td><strong>Exigences techniques</strong></td><td>Architecture, performance, sécurité, intégrations</td><td><span class="tag tag-oblig">Critique</span></td></tr>
+        <tr><td><strong>Conditions contractuelles</strong></td><td>SLA, pénalités, RGPD, propriété intellectuelle</td><td><span class="tag tag-oblig">Critique</span></td></tr>
+        <tr><td><strong>Critères d'évaluation</strong></td><td>Pondérations, grilles de notation</td><td><span class="tag tag-risk">Stratégique</span></td></tr>
+        <tr><td><strong>Planning et jalons</strong></td><td>Livrables attendus, dates, phases</td><td><span class="tag tag-souhaitable">Important</span></td></tr>
+        <tr><td><strong>Annexes normatives</strong></td><td>Standards, référentiels, glossaires</td><td><span class="tag tag-info">Référence</span></td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- SECTION DIAG -->
+<div id="s-diag" class="section-break" style="background: #0f1e3a;">
+  <div class="container">
+    <div class="section-num" style="color:#4a7acc; opacity:0.5;">02</div>
+    <div class="section-head">
+      <div class="section-tag" style="color:#a0c0f0;">Protocole de diagnostic — avant toute décision</div>
+      <h2 class="section-title">Faut-il chunker ?<br>Le test de fiabilité contextuelle</h2>
+      <div class="section-subtitle">Ce protocole répond à la question avant que tu commences. 25 minutes. Trois phases. Un verdict.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>La décision de chunker ne se prend pas sur le volume seul. Elle se prend sur la <strong>fiabilité réelle du modèle choisi sur ce document précis</strong>. Un document de 400 pages peut passer sans chunking sur GPT-5.4 via API. Un document de 80 pages mal structuré peut nécessiter un chunking strict sur Copilot M365. Ce protocole te donne la réponse en 25 minutes.</p>
+
+    <div class="callout" style="background:#eef3ff; border-left-color:#1e4a8a;">
+      <div class="callout-label" style="color:#1e4a8a;">Principe du diagnostic</div>
+      <p>On ne teste pas si le document est "trop grand". On teste si <strong>ce modèle, sur ce document, dans ces conditions</strong>, produit des réponses fiables. Ce n'est pas la même question.</p>
+    </div>
+
+    <h4>Prérequis — 10 minutes de lecture humaine préalable</h4>
+    <p>Avant de lancer le protocole, identifie manuellement dans le document :</p>
+    <ul style="list-style:none; margin: 12px 0 20px; padding:0;">
+      <li style="padding:6px 0; border-bottom:1px solid var(--border); font-size:14.5px;">→ <strong>Trois informations précises et vérifiables</strong> : un chiffre contractuel, une date de jalonnement, un nom de référentiel technique. Une à 10% du document, une à 50%, une à 90%.</li>
+      <li style="padding:6px 0; border-bottom:1px solid var(--border); font-size:14.5px;">→ <strong>Une notion présente dans au moins deux sections éloignées</strong>, formulée différemment (ex : un niveau de SLA mentionné en section 3 et en section 11 avec des valeurs légèrement distinctes).</li>
+      <li style="padding:6px 0; font-size:14.5px;">→ <strong>La table des matières originale</strong>, conservée à côté pour comparaison immédiate.</li>
+    </ul>
+
+    <p>Ces trois éléments sont les ancres de vérification. Sans eux, le protocole ne peut pas produire de verdict fiable.</p>
+
+    <h3>Phase 1 — Test de couverture brute <span style="font-family:'DM Mono',monospace; font-size:13px; font-weight:400; color:var(--muted);">(5 min)</span></h3>
+    <p>On injecte le document entier et on demande au modèle de produire quelque chose de vérifiable : le plan complet avec numéros de page. C'est le test le plus rapide à interpréter.</p>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">P-DIAG-01 · Couverture brute</span>
+        <span class="prompt-type">Document entier injecté</span>
+      </div>
+      <div class="prompt-body">Voici un document complet. Extrais le plan détaillé :
+pour chaque section et sous-section, indique le titre exact
+et le numéro de page de début.
+Ne résume pas. Ne commente pas. Plan uniquement.</div>
+    </div>
+
+    <h4>Vérification</h4>
+    <p>Compare les 5 premières sections, les 5 du milieu, et les 5 dernières contre la table des matières originale du PDF.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Résultat observé</th><th>Verdict</th><th>Suite</th></tr></thead>
+      <tbody>
+        <tr><td>Plan complet, numéros de page exacts ou proches</td><td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">OK</span></td><td>Passer en Phase 2</td></tr>
+        <tr><td>Sections manquantes, sections du milieu absentes</td><td><span class="tag tag-oblig">Troncature</span></td><td><strong>Chunking obligatoire — arrêt du diagnostic</strong></td></tr>
+        <tr><td>Numéros de page systématiquement faux ou incohérents</td><td><span class="tag tag-risk">OCR/Troncature</span></td><td><strong>Vérifier OCR puis chunking obligatoire</strong></td></tr>
+        <tr><td>Sections inventées absentes du document source</td><td><span class="tag tag-oblig">Hallucination</span></td><td><strong>Chunking obligatoire — risque hallucinatoire élevé</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Phase 2 — Test de rappel positionnel <span style="font-family:'DM Mono',monospace; font-size:13px; font-weight:400; color:var(--muted);">(10 min)</span></h3>
+    <p>C'est le test du <em>lost in the middle</em>. On plante trois ancres vérifiables à des positions connues : début, milieu exact, fin. C'est ici que la plupart des modèles révèlent leurs limites réelles sur les longs documents.</p>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">P-DIAG-02 · Rappel positionnel</span>
+        <span class="prompt-type">3 ancres à 10% / 50% / 90% du document</span>
+      </div>
+      <div class="prompt-body">Dans ce document, réponds à ces trois questions précises.
+Pour chaque réponse, cite la section source et le numéro de page.
+
+Question A : <span class="ph">[information que tu sais être à ~10% du document]</span>
+Question B : <span class="ph">[information que tu sais être à ~50% du document]</span>
+Question C : <span class="ph">[information que tu sais être à ~90% du document]</span>
+
+Réponds uniquement si tu trouves l'information dans le document.
+Si tu ne la trouves pas, dis-le explicitement. N'invente pas.</div>
+    </div>
+
+    <h4>Vérification</h4>
+    <p>Contrôle l'exactitude des trois réponses et la fidélité des références de page.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Résultat observé</th><th>Verdict</th><th>Suite</th></tr></thead>
+      <tbody>
+        <tr><td>A, B et C correctes avec bonnes références</td><td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">OK</span></td><td>Passer en Phase 3</td></tr>
+        <tr><td>A et C correctes, B fausse ou absente</td><td><span class="tag tag-oblig">Lost in the middle</span></td><td><strong>Chunking obligatoire</strong></td></tr>
+        <tr><td>Deux réponses fausses ou plus</td><td><span class="tag tag-oblig">Fiabilité insuffisante</span></td><td><strong>Chunking obligatoire</strong></td></tr>
+        <tr><td>Une réponse inventée avec fausse référence</td><td><span class="tag tag-oblig">Hallucination confirmée</span></td><td><strong>Chunking obligatoire + vigilance maximale</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Sur documents > 500 pages</div>
+      <p>Utilise cinq ancres au lieu de trois : 10%, 25%, 50%, 75%, 90%. Un document de 1000 pages peut passer le test à trois ancres et échouer à cinq. Sur un AO à enjeu, la couverture à cinq points est non négociable.</p>
+    </div>
+
+    <h3>Phase 3 — Test de cohérence inter-sections <span style="font-family:'DM Mono',monospace; font-size:13px; font-weight:400; color:var(--muted);">(10 min)</span></h3>
+    <p>Ce test n'est utile que si les deux premiers sont passés. Il vérifie si le modèle détecte les tensions entre sections éloignées, c'est-à-dire s'il peut être utilisé sans chunking pour la passe de détection des contradictions.</p>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">P-DIAG-03 · Cohérence inter-sections</span>
+        <span class="prompt-type">Sur la notion que tu as repérée dans deux sections</span>
+      </div>
+      <div class="prompt-body">Dans ce document, la notion de <span class="ph">[terme ou exigence repérée manuellement]</span>
+apparaît dans plusieurs sections.
+
+Identifie toutes les occurrences de cette notion dans le document.
+Pour chaque occurrence : section, numéro de page, formulation exacte.
+Indique si les formulations sont cohérentes entre elles ou si elles divergent.
+Si elles divergent, cite les deux passages sans les interpréter.</div>
+    </div>
+
+    <h4>Vérification</h4>
+    <table class="data-table">
+      <thead><tr><th>Résultat observé</th><th>Verdict</th><th>Suite</th></tr></thead>
+      <tbody>
+        <tr><td>Toutes les occurrences trouvées, divergence correctement signalée</td><td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">Fiable</span></td><td>Chunking optionnel — double passe recommandée</td></tr>
+        <tr><td>Occurrences manquantes ou divergence non détectée</td><td><span class="tag tag-souhaitable">Partiel</span></td><td>Chunking recommandé pour les sections critiques</td></tr>
+        <tr><td>Occurrence inventée avec fausse localisation</td><td><span class="tag tag-oblig">Hallucination</span></td><td><strong>Chunking obligatoire</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Tableau de décision final</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Phase 1</th>
+          <th>Phase 2</th>
+          <th>Phase 3</th>
+          <th>Décision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag" style="background:#fee;color:#c8200a;">Échec</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td><strong>Chunking obligatoire</strong></td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">OK</span></td>
+          <td><span class="tag" style="background:#fee;color:#c8200a;">Échec milieu</span></td>
+          <td>—</td>
+          <td><strong>Chunking obligatoire</strong></td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">OK</span></td>
+          <td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">OK</span></td>
+          <td><span class="tag tag-souhaitable">Partiel</span></td>
+          <td>Chunking sur sections critiques uniquement</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">OK</span></td>
+          <td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">OK</span></td>
+          <td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">OK</span></td>
+          <td>Chunking optionnel — double passe recommandée</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-ok">
+      <div class="callout-label">Ce que ce protocole garantit — et ce qu'il ne garantit pas</div>
+      <p>La réussite des trois phases prouve que le modèle est fiable sur les points testés, pas sur l'ensemble du document. Plus le document est dense et critique, plus tu dois multiplier les ancres en Phase 2. Le protocole est un seuil minimal de confiance, pas une certification d'exhaustivité.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 2 (renumbered 03) -->
+<div id="s2" class="section-break">
+  <div class="container">
+    <div class="section-num">03</div>
+    <div class="section-head">
+      <div class="section-tag">Préparation des fichiers</div>
+      <h2 class="section-title">Découpage en chunks</h2>
+      <div class="section-subtitle">L'unité de travail n'est pas la section du document. C'est un volume cognitif stable.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>Le découpage en chunks est la décision architecturale la plus importante du workflow. Elle détermine la fiabilité de tout ce qui suit.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Erreur fréquente</div>
+      <p>"Une section du document = un chunk IA." Cette règle ne tient pas. Une section peut faire 2 pages ou 60 pages. La maille doit être définie par volume, pas par numérotation.</p>
+    </div>
+
+    <h4>Règle opérationnelle</h4>
+    <p><strong>15 à 25 pages maximum par chunk</strong>, découpés par cohérence thématique. Si une section dépasse 25 pages, la subdiviser même si le document ne le fait pas. Si plusieurs sections courtes partagent le même registre (ex : trois sous-sections techniques de 4 pages chacune), les regrouper en un seul chunk.</p>
+
+    <h4>Outils de découpage</h4>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Outil</th><th>Usage</th><th>Condition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Adobe Acrobat</td><td>Organiser les pages > Extraire</td><td>Licence Acrobat Pro</td></tr>
+        <tr><td>Word (Ouvrir PDF)</td><td>Copier-coller par section dans un nouveau doc</td><td>Toujours disponible</td></tr>
+        <tr><td>Script Python (PyMuPDF)</td><td>Découpage automatisé sur plusieurs CDC</td><td>Usage récurrent</td></tr>
+        <tr><td>iLovePDF / Smallpdf</td><td>Découpage en ligne sans installation</td><td>Données non sensibles uniquement</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Nommage des chunks</h4>
+    <p>Convention recommandée : <code style="font-family:'DM Mono',monospace; background:var(--code-bg); color:var(--code-text); padding:2px 8px; font-size:12px;">CDC_[projet]_chunk[N]_[thème].pdf</code></p>
+    <p>Exemple : <code style="font-family:'DM Mono',monospace; background:var(--code-bg); color:var(--code-text); padding:2px 8px; font-size:12px;">CDC_ProjetAlpha_chunk3_exigences-techniques.pdf</code></p>
+    <p>Cette traçabilité devient indispensable lors de la consolidation et lors des litiges d'interprétation en phase de soutenance.</p>
+
+  </div>
+</div>
+
+<!-- SECTION 3 -->
+<div id="s3" class="section-break">
+  <div class="container">
+    <div class="section-num">03</div>
+    <div class="section-head">
+      <div class="section-tag">Premier contact avec l'IA</div>
+      <h2 class="section-title">Extraction du plan</h2>
+      <div class="section-subtitle">L'ossature de toute la suite. Une erreur ici se propage sur l'ensemble du workflow.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>Pour chaque chunk, extraire le plan avant de résumer. Le plan devient l'ossature du document Word "note de synthèse", qui est la mémoire longue du travail.</p>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">Prompt — Extraction de plan</span>
+        <span class="prompt-type">Copilot M365 / Claude / ChatGPT</span>
+      </div>
+      <div class="prompt-body">Extrait le plan détaillé de ce document.
+Pour chaque section et sous-section, indique :
+- son titre exact tel qu'il apparaît dans le document
+- son niveau hiérarchique (1, 1.1, 1.1.1, etc.)
+- le numéro de page de début approximatif
+
+Ne produis que la structure. N'inclus aucun résumé de contenu.</div>
+    </div>
+
+    <h4>Vérification obligatoire</h4>
+    <p>Compare le plan extrait avec la table des matières originale du PDF. Toute divergence signale soit une erreur d'extraction, soit une section sans titre propre. Corrige manuellement avant de continuer. <strong>Ne construis jamais ta note de synthèse sur un plan erroné.</strong></p>
+
+    <h4>Construction du squelette Word</h4>
+    <p>Crée un nouveau document Word avec exactement le même plan (styles Titre 1, Titre 2, Titre 3). Sans contenu sous les titres. Ce document est la <strong>mémoire longue du travail</strong> : tout ce que l'IA produit s'y accumule, section par section. Le chat, lui, n'est qu'un moteur.</p>
+
+    <div class="callout callout-ok">
+      <div class="callout-label">Principe architectural</div>
+      <p>Le PDF est la source. La note Word structurée est la mémoire. Le chat est le moteur. Ces trois rôles ne sont jamais interchangeables.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 4 -->
+<div id="s4" class="section-break">
+  <div class="container">
+    <div class="section-num">04</div>
+    <div class="section-head">
+      <div class="section-tag">Extraction du contenu</div>
+      <h2 class="section-title">Double résumé par chunk</h2>
+      <div class="section-subtitle">Deux passes obligatoires. Deux livrables distincts. Deux usages différents.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>Pour chaque chunk, deux passes successives. Jamais une seule. La première produit un livrable documentaire. La seconde produit un livrable décisionnel.</p>
+
+    <h3>Passe 1 — Résumé fidèle</h3>
+    <p>Objectif : restitution strictement factuelle, sans interprétation, sans ajout. Ce résumé ira dans la note de synthèse sous le titre correspondant. Il constitue la base légale et documentaire.</p>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">Prompt — Résumé fidèle</span>
+        <span class="prompt-type">Passe 1 / Note de synthèse</span>
+      </div>
+      <div class="prompt-body">En te basant uniquement sur ce document :
+
+Résume la section <span class="ph">[titre exact de la section]</span> en 8 à 12 lignes maximum.
+
+Contraintes strictes :
+- conserve les éléments factuels, chiffres, contraintes explicites et exigences formulées
+- n'interprète pas, ne propose pas de solution
+- n'utilise que le vocabulaire du document source
+- si une exigence est ambiguë dans le texte, reproduis-la telle quelle sans la clarifier</div>
+    </div>
+
+    <h3>Passe 2 — Analyse critique</h3>
+    <p>Objectif : identification des zones de risque pour la réponse à appel d'offres. Ce résultat ira dans la note analytique, distincte de la note de synthèse. C'est le document du comité de qualification bid, pas du client.</p>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">Prompt — Analyse critique</span>
+        <span class="prompt-type">Passe 2 / Note analytique</span>
+      </div>
+      <div class="prompt-body">Sur la base de ce même document, identifie :
+
+1. Les exigences implicites : ce qui est attendu sans être formulé explicitement
+2. Les ambiguïtés contractuelles ou techniques : formulations floues, termes non définis, renvois circulaires
+3. Les contradictions internes à cette section : exigences incompatibles, niveaux de contrainte contradictoires
+4. Les points de vigilance pour une réponse à appel d'offres : clauses pénalisantes, engagements difficiles à tenir, risques d'interprétation défavorable
+
+Format : liste structurée par catégorie.
+Ne reformule pas le contenu déjà résumé. Ne produis que l'analyse.</div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Deux documents, deux usages</div>
+      <p><strong>Note fidèle :</strong> ce que dit le CDC. Usage : soutenance, conformité, référence. <br><strong>Note analytique :</strong> ce que le CDC implique. Usage : réunion de qualification, stratégie de réponse, management des risques.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 5 -->
+<div id="s5" class="section-break">
+  <div class="container">
+    <div class="section-num">05</div>
+    <div class="section-head">
+      <div class="section-tag">Livrable central</div>
+      <h2 class="section-title">Matrice de conformité</h2>
+      <div class="section-subtitle">Ce n'est pas une option avancée. C'est l'outil de pilotage du bid.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>La note de synthèse est une étape intermédiaire. La matrice de conformité est le livrable central. Elle permet de vérifier la couverture, d'affecter les lots à l'équipe, de préparer le document de conformité finale et d'identifier les zones d'engagement à risque.</p>
+
+    <h4>Prompt d'extraction des exigences</h4>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">Prompt — Extraction pour matrice</span>
+        <span class="prompt-type">Sur chaque résumé fidèle de section</span>
+      </div>
+      <div class="prompt-body">À partir de ce résumé de section, extrais toutes les exigences sous forme tabulaire.
+
+Pour chaque exigence :
+- ID : EX-[numéro séquentiel]
+- Libellé : formulation exacte ou synthétique fidèle
+- Type : Fonctionnel / Technique / Contractuel / Réglementaire / Planning
+- Niveau d'obligation : Obligatoire / Souhaitable / Informatif
+- Section source : référence exacte dans le CDC
+
+Ne déduis pas d'exigences. Ne reformule pas en ajoutant du sens.
+Si le niveau d'obligation n'est pas explicite dans le texte, indique "Non précisé".</div>
+    </div>
+
+    <h4>Structure de la matrice Excel (colonnes)</h4>
+
+    <table class="data-table matrix-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Libellé</th>
+          <th>Type</th>
+          <th>Obligation</th>
+          <th>Section source</th>
+          <th>Réponse prévue</th>
+          <th>Responsable</th>
+          <th>Statut</th>
+          <th>Commentaire</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>EX-001</td>
+          <td>Disponibilité système 99,5% en heures ouvrées</td>
+          <td><span class="tag tag-oblig">Technique</span></td>
+          <td><span class="tag tag-oblig">Obligatoire</span></td>
+          <td>§3.2.1</td>
+          <td>Architecture HA active/passive</td>
+          <td>Arch. technique</td>
+          <td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">Couvert</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>EX-014</td>
+          <td>Interopérabilité avec SI RH existant</td>
+          <td><span class="tag tag-oblig">Fonctionnel</span></td>
+          <td><span class="tag tag-oblig">Obligatoire</span></td>
+          <td>§4.1</td>
+          <td>À préciser</td>
+          <td>Chef de projet</td>
+          <td><span class="tag tag-risk">À développer</span></td>
+          <td>SI RH non précisé dans le CDC</td>
+        </tr>
+        <tr>
+          <td>EX-027</td>
+          <td>Certification ISO 27001 de l'hébergeur</td>
+          <td><span class="tag tag-oblig">Réglementaire</span></td>
+          <td><span class="tag tag-souhaitable">Souhaitable</span></td>
+          <td>§5.3</td>
+          <td>OVH SecNumCloud</td>
+          <td>Directeur technique</td>
+          <td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">Couvert</span></td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Statuts possibles</h4>
+    <div class="two-col">
+      <div>
+        <table class="data-table">
+          <thead><tr><th>Statut</th><th>Signification</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-ok" style="background:#eef5f0;color:#1a6b4a;">Couvert</span></td><td>Réponse conforme disponible</td></tr>
+            <tr><td><span class="tag tag-souhaitable">À développer</span></td><td>Solution à construire ou à préciser</td></tr>
+            <tr><td><span class="tag tag-risk">Risque</span></td><td>Engagement difficile ou ambigu</td></tr>
+            <tr><td><span class="tag tag-oblig">Non couvert</span></td><td>Pas de solution disponible — décision stratégique requise</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 6 -->
+<div id="s6" class="section-break">
+  <div class="container">
+    <div class="section-num">06</div>
+    <div class="section-head">
+      <div class="section-tag">Passe transversale — tâche humaine assistée</div>
+      <h2 class="section-title">Détection des contradictions<br>inter-sections</h2>
+      <div class="section-subtitle">L'angle mort que personne ne traite. Le plus coûteux à ignorer.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>Quand tu travailles chunk par chunk, chaque résumé est produit en isolation. Une exigence formulée différemment en section 3 et en section 11 peut passer inaperçue. Une réponse à appel d'offres qui s'engage sur des niveaux de service contradictoires est un risque contractuel majeur.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Limite architecturale</div>
+      <p>L'IA ne détecte pas les contradictions entre chunks qu'elle n'a pas vus simultanément. Cette passe n'est pas automatisable. Elle est humaine, assistée par un prompt sur la note de synthèse complète.</p>
+    </div>
+
+    <h4>Moment d'exécution</h4>
+    <p>Après que tous les résumés fidèles sont consolidés dans la note de synthèse. Sur ce document complet, une seule passe dédiée.</p>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">Prompt — Détection de contradictions</span>
+        <span class="prompt-type">Sur la note de synthèse complète — Passe critique</span>
+      </div>
+      <div class="prompt-body">Sur la base de cette note de synthèse, identifie les cas où une même exigence, contrainte ou notion est formulée dans plusieurs sections avec :
+- des formulations différentes
+- des niveaux de contrainte différents (ex : "obligatoire" vs "souhaitable")
+- des valeurs numériques ou seuils différents
+- des périmètres d'application contradictoires
+
+Pour chaque cas identifié :
+- cite les deux passages concernés avec leur référence de section
+- ne les interprète pas
+- ne propose pas de résolution
+- indique simplement : "Tension potentielle entre [section A] et [section B]"
+
+Si aucune tension n'est détectée, indique-le explicitement.</div>
+    </div>
+
+    <p>Le résultat de cette passe alimente la note analytique et devient un input direct pour la réunion de qualification d'offre. C'est l'expertise métier du bid manager qui arbitre, pas l'IA.</p>
+
+  </div>
+</div>
+
+<!-- SECTION 7 -->
+<div id="s7" class="section-break">
+  <div class="container">
+    <div class="section-num">07</div>
+    <div class="section-head">
+      <div class="section-tag">Finalisation</div>
+      <h2 class="section-title">Harmonisation et livrables</h2>
+      <div class="section-subtitle">La phase la plus hallucinogène du workflow. À encadrer strictement.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>L'harmonisation est présentée comme une étape de polish. C'est en réalité le moment où les hallucinations de synthèse apparaissent le plus. Quand on demande "supprime les redondances", le modèle peut effacer des exigences formulées différemment dans deux sections, c'est-à-dire précisément les tensions qu'on vient de détecter.</p>
+
+    <h4>Prompt d'harmonisation (version sécurisée)</h4>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">Prompt — Harmonisation sécurisée</span>
+        <span class="prompt-type">Sur la note de synthèse Word uniquement</span>
+      </div>
+      <div class="prompt-body">Harmonise uniquement les formulations de transition entre sections.
+
+Contraintes absolues :
+- ne supprime aucun contenu factuel
+- ne fusionne pas d'informations provenant de sections différentes
+- ne modifie pas les chiffres, seuils ou niveaux de contrainte
+- n'introduis aucune relation logique non explicitement présente dans le texte
+- le niveau de détail peut rester hétérogène si les sections sources l'étaient
+
+Revue humaine obligatoire après cette opération.</div>
+    </div>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Règle non négociable</div>
+      <p>Ne jamais demander "supprime les redondances" sur un document contractuel. Une exigence formulée deux fois différemment n'est pas une redondance : c'est peut-être une tension à arbitrer.</p>
+    </div>
+
+    <h3>Les livrables finaux du bid manager</h3>
+
+    <div class="workflow">
+      <div class="workflow-step">
+        <div class="step-line"></div>
+        <div class="step-num" style="background:var(--step-1);">1</div>
+        <div class="step-body">
+          <h4>Note de synthèse fidèle (Word)</h4>
+          <p>Restitution factuelle structurée selon le plan du CDC. Usage : soutenance, conformité, référence documentaire.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-line"></div>
+        <div class="step-num" style="background:var(--step-2);">2</div>
+        <div class="step-body">
+          <h4>Note analytique (Word)</h4>
+          <p>Exigences implicites, ambiguïtés, contradictions, risques contractuels. Usage : comité de qualification bid, stratégie de réponse.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-line"></div>
+        <div class="step-num" style="background:var(--step-3);">3</div>
+        <div class="step-body">
+          <h4>Matrice de conformité (Excel)</h4>
+          <p>Toutes les exigences × statut × responsable × réponse prévue. Usage : pilotage du bid, affectation équipe, document de conformité finale.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-line"></div>
+        <div class="step-num" style="background:var(--step-4);">4</div>
+        <div class="step-body">
+          <h4>Synthèse exécutive (1 page)</h4>
+          <p>Enjeux principaux, risques majeurs, recommandation go/no-go. Usage : COMEX, direction commerciale.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="step-num" style="background:var(--step-5);">5</div>
+        <div class="step-body">
+          <h4>Plan de réponse (Word/PowerPoint)</h4>
+          <p>Lots, responsables, planning de production, points de contrôle. Usage : brief équipe, kick-off bid.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 8 : TOUS LES PROMPTS -->
+<div id="s8" class="section-break">
+  <div class="container">
+    <div class="section-num">08</div>
+    <div class="section-head">
+      <div class="section-tag">Référence complète</div>
+      <h2 class="section-title">Bibliothèque de prompts</h2>
+      <div class="section-subtitle">Tous les prompts du workflow, prêts à l'emploi, classés par étape.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <h4>P-DIAG-01 · Couverture brute</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-DIAG-01</span><span class="prompt-type">Diagnostic Phase 1 — Document entier</span></div>
+      <div class="prompt-body">Voici un document complet. Extrais le plan détaillé :
+pour chaque section et sous-section, indique le titre exact
+et le numéro de page de début.
+Ne résume pas. Ne commente pas. Plan uniquement.</div>
+    </div>
+
+    <h4>P-DIAG-02 · Rappel positionnel</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-DIAG-02</span><span class="prompt-type">Diagnostic Phase 2 — 3 ancres positionnelles</span></div>
+      <div class="prompt-body">Dans ce document, réponds à ces trois questions précises.
+Pour chaque réponse, cite la section source et le numéro de page.
+
+Question A : <span class="ph">[information à ~10% du document]</span>
+Question B : <span class="ph">[information à ~50% du document]</span>
+Question C : <span class="ph">[information à ~90% du document]</span>
+
+Réponds uniquement si tu trouves l'information dans le document.
+Si tu ne la trouves pas, dis-le explicitement. N'invente pas.</div>
+    </div>
+
+    <h4>P-DIAG-03 · Cohérence inter-sections</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-DIAG-03</span><span class="prompt-type">Diagnostic Phase 3 — Tension inter-sections</span></div>
+      <div class="prompt-body">Dans ce document, la notion de <span class="ph">[terme ou exigence repérée manuellement]</span>
+apparaît dans plusieurs sections.
+
+Identifie toutes les occurrences de cette notion.
+Pour chaque occurrence : section, numéro de page, formulation exacte.
+Indique si les formulations sont cohérentes ou si elles divergent.
+Si elles divergent, cite les deux passages sans les interpréter.</div>
+    </div>
+
+    <h4>P-01 · Extraction de plan</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-01</span><span class="prompt-type">Étape 3 — Une fois par chunk</span></div>
+      <div class="prompt-body">Extrait le plan détaillé de ce document.
+Pour chaque section et sous-section :
+- titre exact tel qu'il apparaît dans le document
+- niveau hiérarchique (1, 1.1, 1.1.1…)
+- numéro de page de début approximatif
+Ne produis que la structure. Aucun résumé de contenu.</div>
+    </div>
+
+    <h4>P-02 · Résumé fidèle</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-02</span><span class="prompt-type">Étape 4 — Passe 1 — Note de synthèse</span></div>
+      <div class="prompt-body">En te basant uniquement sur ce document :
+
+Résume la section <span class="ph">[titre exact]</span> en 8 à 12 lignes maximum.
+
+Contraintes :
+- conserve les éléments factuels, chiffres, contraintes explicites et exigences
+- n'interprète pas, ne propose pas de solution
+- n'utilise que le vocabulaire du document source
+- reproduis les ambiguïtés telles quelles, sans les clarifier</div>
+    </div>
+
+    <h4>P-03 · Analyse critique</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-03</span><span class="prompt-type">Étape 4 — Passe 2 — Note analytique</span></div>
+      <div class="prompt-body">Sur la base de ce document, identifie :
+
+1. Exigences implicites : attendus non formulés explicitement
+2. Ambiguïtés : formulations floues, termes non définis, renvois circulaires
+3. Contradictions internes : exigences incompatibles, seuils contradictoires
+4. Points de vigilance bid : clauses pénalisantes, engagements difficiles, risques d'interprétation défavorable
+
+Format : liste structurée par catégorie.
+Ne reformule pas le résumé. Ne produis que l'analyse.</div>
+    </div>
+
+    <h4>P-04 · Extraction pour matrice</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-04</span><span class="prompt-type">Étape 5 — Matrice de conformité</span></div>
+      <div class="prompt-body">Extrais toutes les exigences de ce résumé sous forme tabulaire.
+
+Pour chaque exigence :
+- ID : EX-[numéro]
+- Libellé : formulation exacte ou synthétique fidèle
+- Type : Fonctionnel / Technique / Contractuel / Réglementaire / Planning
+- Obligation : Obligatoire / Souhaitable / Informatif / Non précisé
+- Section source : référence dans le CDC
+
+Ne déduis pas d'exigences. Ne reformule pas en ajoutant du sens.</div>
+    </div>
+
+    <h4>P-05 · Détection de contradictions inter-sections</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-05</span><span class="prompt-type">Étape 6 — Sur note de synthèse complète</span></div>
+      <div class="prompt-body">Identifie les cas où une même exigence ou notion est formulée dans plusieurs sections avec :
+- des formulations différentes
+- des niveaux de contrainte différents
+- des valeurs numériques ou seuils différents
+- des périmètres d'application contradictoires
+
+Pour chaque cas :
+- cite les deux passages avec leur référence de section
+- n'interprète pas, ne propose pas de résolution
+- formule : "Tension potentielle entre [section A] et [section B]"
+
+Si aucune tension détectée : l'indiquer explicitement.</div>
+    </div>
+
+    <h4>P-06 · Harmonisation sécurisée</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-06</span><span class="prompt-type">Étape 7 — Sur note de synthèse Word</span></div>
+      <div class="prompt-body">Harmonise uniquement les formulations de transition entre sections.
+
+Contraintes absolues :
+- ne supprime aucun contenu factuel
+- ne fusionne pas d'informations de sections différentes
+- ne modifie pas les chiffres, seuils ou niveaux de contrainte
+- n'introduis aucune relation logique absente du texte
+- le niveau de détail peut rester hétérogène</div>
+    </div>
+
+    <h4>P-07 · Synthèse exécutive</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-07</span><span class="prompt-type">Étape 7 — Sur note analytique + matrice</span></div>
+      <div class="prompt-body">À partir de cette note analytique et de cette matrice de conformité, produis une synthèse exécutive d'une page pour un comité de direction.
+
+Structure attendue :
+1. Enjeux principaux de l'appel d'offres (3 lignes)
+2. Points de force de notre positionnement (3 à 5 points)
+3. Risques majeurs et zones d'incertitude (3 à 5 points)
+4. Recommandation go / no-go avec justification
+
+Ton : factuel, direct, sans formules creuses.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 9 : CHECKLIST -->
+<div id="s9" class="section-break">
+  <div class="container">
+    <div class="section-num">09</div>
+    <div class="section-head">
+      <div class="section-tag">Contrôle qualité</div>
+      <h2 class="section-title">Checklist avant livraison</h2>
+      <div class="section-subtitle">À valider par le bid manager avant toute réunion de qualification ou de soutenance.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <h4>Protocole de diagnostic (si effectué)</h4>
+    <ul class="checklist">
+      <li>Trois ancres positionnelles identifiées manuellement (10% / 50% / 90%)</li>
+      <li>Phase 1 passée : plan extrait conforme à la table des matières</li>
+      <li>Phase 2 passée : rappel correct sur les trois ancres</li>
+      <li>Phase 3 passée ou chunking décidé en conséquence</li>
+      <li>Décision de chunking documentée (obligatoire / recommandé / optionnel)</li>
+    </ul>
+
+    <h4>Qualification du document source</h4>
+    <ul class="checklist">
+      <li>Le PDF est lisible machine (test de sélection de texte vérifié)</li>
+      <li>L'OCR a été vérifié sur au moins 3 pages de contenu dense</li>
+      <li>La table des matières originale a été conservée pour référence</li>
+      <li>Le découpage en chunks a été validé (15-25 pages, cohérence thématique)</li>
+    </ul>
+
+    <h4>Extraction et résumés</h4>
+    <ul class="checklist">
+      <li>Le plan extrait par l'IA a été comparé à la table des matières originale</li>
+      <li>Toutes les sections ont été traitées (aucun chunk omis)</li>
+      <li>Le résumé fidèle et l'analyse critique ont été produits pour chaque chunk</li>
+      <li>Aucun résumé ne contient d'interprétations ou de solutions non présentes dans le CDC</li>
+    </ul>
+
+    <h4>Matrice de conformité</h4>
+    <ul class="checklist">
+      <li>Toutes les exigences obligatoires ont un statut renseigné</li>
+      <li>Les exigences à statut "Risque" ou "Non couvert" ont un responsable désigné</li>
+      <li>Les sections contractuelles (SLA, pénalités, PI) ont été traitées séparément</li>
+      <li>La matrice a été relue par au moins un expert métier, pas seulement par l'IA</li>
+    </ul>
+
+    <h4>Consolidation transversale</h4>
+    <ul class="checklist">
+      <li>La passe de détection des contradictions inter-sections a été effectuée</li>
+      <li>Les tensions identifiées ont été arbitrées ou escaladées</li>
+      <li>L'harmonisation a été effectuée avec le prompt sécurisé (P-06)</li>
+      <li>Une revue humaine a suivi l'harmonisation automatique</li>
+    </ul>
+
+    <h4>Livrables</h4>
+    <ul class="checklist">
+      <li>Note de synthèse fidèle : structure calquée sur le CDC, contenu factuel uniquement</li>
+      <li>Note analytique : risques, ambiguïtés, contradictions documentés</li>
+      <li>Matrice de conformité : toutes colonnes renseignées pour les EX obligatoires</li>
+      <li>Synthèse exécutive : une page, go/no-go argumenté</li>
+      <li>Plan de réponse : lots, responsables, planning validés en équipe</li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="final-section">
+  <div class="container">
+    <h2>Ce qui ne change pas,<br>quelle que soit l'IA utilisée</h2>
+    <p>L'IA ne détecte pas les contradictions entre chunks qu'elle n'a pas vus simultanément. Elle ne signale pas ce qu'elle a ignoré. Elle ne connaît pas l'historique des appels d'offres similaires. Elle ne mesure pas le risque commercial d'un engagement contractuel.</p>
+    <p>La consolidation des tensions inter-sections, l'arbitrage des ambiguïtés et la décision go/no-go sont toujours des tâches humaines. C'est précisément là que l'expertise du bid manager est irremplaçable, et c'est là qu'il doit concentrer son attention, libérée par les heures gagnées sur l'extraction.</p>
+
+    <div class="final-principles">
+      <div class="principle">
+        <div class="principle-num">Principe 01</div>
+        <div class="principle-text">La qualité de l'output dépend de la qualité du contexte fourni</div>
+        <p>Ne jamais utiliser l'IA en mode découverte. Toujours en mode validation, dans un cadre défini par l'expert.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-num">Principe 02</div>
+        <div class="principle-text">La mémoire longue vit dans Word, pas dans le chat</div>
+        <p>Le chat est un moteur. Le document structuré est la mémoire. Ces rôles ne sont jamais interchangeables.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-num">Principe 03</div>
+        <div class="principle-text">La synthèse n'est pas le livrable final</div>
+        <p>La matrice de conformité est l'outil de pilotage. La synthèse n'est qu'une étape vers elle.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
