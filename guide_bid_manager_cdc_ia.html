@@ -561,23 +561,120 @@
       <h1 class="cover-title">Travailler sur un CDC<br>de <em>300 pages</em><br>avec l'IA</h1>
       <p class="cover-subtitle">Protocole complet pour bid managers : de la qualification du document à la matrice de conformité, sans perte d'information critique.</p>
     </div>
-    <div class="cover-footer">Version 1.1 &nbsp;·&nbsp; Appels d'offres à enjeu</div>
+    <div class="cover-footer">Version 1.3 &nbsp;·&nbsp; Appels d'offres à enjeu</div>
   </div>
   <div class="cover-right">
     <div class="cover-right-title">Sommaire</div>
     <nav>
+      <a href="#s-entry" class="toc-item"><span class="toc-num" style="color:#1a6b4a;">↳</span><span class="toc-text">Conditions d'entrée — à qui s'adresse ce guide</span></a>
       <a href="#s0" class="toc-item"><span class="toc-num">00</span><span class="toc-text">Principes fondamentaux</span></a>
       <a href="#s1" class="toc-item"><span class="toc-num">01</span><span class="toc-text">Qualification du document</span></a>
       <a href="#s-diag" class="toc-item"><span class="toc-num" style="color:#1e4a8a;">02</span><span class="toc-text">Diagnostic — faut-il chunker ?</span></a>
       <a href="#s2" class="toc-item"><span class="toc-num">03</span><span class="toc-text">Découpage en chunks</span></a>
       <a href="#s3" class="toc-item"><span class="toc-num">04</span><span class="toc-text">Extraction du plan</span></a>
-      <a href="#s4" class="toc-item"><span class="toc-num">05</span><span class="toc-text">Double résumé par chunk</span></a>
+      <a href="#s4" class="toc-item"><span class="toc-num">05</span><span class="toc-text">Triple résumé par chunk</span></a>
       <a href="#s5" class="toc-item"><span class="toc-num">06</span><span class="toc-text">Matrice de conformité</span></a>
       <a href="#s6" class="toc-item"><span class="toc-num">07</span><span class="toc-text">Détection des contradictions</span></a>
       <a href="#s7" class="toc-item"><span class="toc-num">08</span><span class="toc-text">Harmonisation et livraison</span></a>
       <a href="#s8" class="toc-item"><span class="toc-num">09</span><span class="toc-text">Tous les prompts</span></a>
       <a href="#s9" class="toc-item"><span class="toc-num">10</span><span class="toc-text">Checklist finale</span></a>
+      <a href="#s-fail" class="toc-item"><span class="toc-num" style="color:#c8200a;">11</span><span class="toc-text">Cas d'échec et seuils d'arrêt</span></a>
     </nav>
+  </div>
+</div>
+
+<!-- SECTION ENTRY : CONDITIONS D'ENTRÉE -->
+<div id="s-entry" class="section-break" style="background: #1a2e1a;">
+  <div class="container">
+    <div class="section-num" style="color:#3a8a3a; opacity:0.4;">↳</div>
+    <div class="section-head">
+      <div class="section-tag" style="color:#90c890;">Avant de commencer</div>
+      <h2 class="section-title">Conditions d'entrée</h2>
+      <div class="section-subtitle">À qui s'adresse ce guide — ce qu'on peut alléger selon le contexte</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>Ce guide est un protocole complet pour AO à enjeu. Il n'est pas conçu pour être appliqué mécaniquement dans tous les contextes. Avant de commencer, deux questions à se poser : ce protocole est-il calibré pour cet AO, et quel niveau de maturité IA est requis pour l'utiliser ?</p>
+
+    <h3>Niveau d'enjeu : quel protocole appliquer ?</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Contexte</th>
+          <th>Ce qu'on peut alléger</th>
+          <th>Ce qui reste obligatoire</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>AO à enjeu critique</strong><br><span style="font-size:12px;color:var(--muted)">Contrat stratégique, fort enjeu contractuel, équipe dédiée</span></td>
+          <td>Rien</td>
+          <td>Protocole complet</td>
+        </tr>
+        <tr>
+          <td><strong>AO standard</strong><br><span style="font-size:12px;color:var(--muted)">Enjeu modéré, délai raisonnable, domaine maîtrisé</span></td>
+          <td>Diagnostic simplifié (Phase 1 uniquement), Passe 3 causale optionnelle</td>
+          <td>Qualification OCR, chunking, double résumé, matrice de conformité</td>
+        </tr>
+        <tr>
+          <td><strong>Pré-qualification / Go-No-Go</strong><br><span style="font-size:12px;color:var(--muted)">Screening rapide avant décision de répondre</span></td>
+          <td>Tout sauf l'essentiel</td>
+          <td>Qualification OCR, extraction du plan, résumé fidèle global, analyse critique des sections contractuelles uniquement</td>
+        </tr>
+        <tr>
+          <td><strong>Veille / exploration amont</strong><br><span style="font-size:12px;color:var(--muted)">Avant go/no-go, pas encore de décision</span></td>
+          <td>Tout le protocole strict</td>
+          <td>Le mode exploration rapide est acceptable ici. Aucun engagement contractuel n'est en jeu.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-ok">
+      <div class="callout-label">Principe d'adaptation</div>
+      <p>La règle "jamais en mode découverte" s'applique <strong>après la décision de répondre</strong>. En amont, un usage exploratoire de l'IA (screening, lecture rapide, identification des enjeux) est légitime et utile. Ce n'est plus le cas dès qu'on entre dans la production de la réponse.</p>
+    </div>
+
+    <h3>Prérequis de maturité IA</h3>
+    <p>Ce guide suppose un certain niveau de compréhension des outils. Si l'un de ces prérequis n'est pas acquis, le protocole reste utilisable mais le risque d'usage ritualisé augmente.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Prérequis</th><th>Pourquoi c'est nécessaire</th><th>Si absent</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comprendre ce qu'est une fenêtre de contexte</td>
+          <td>Pour interpréter le résultat du diagnostic et décider du chunking</td>
+          <td>Appliquer le diagnostic sans comprendre le verdict → faux sentiment de sécurité</td>
+        </tr>
+        <tr>
+          <td>Distinguer Copilot M365, ChatGPT et Claude</td>
+          <td>Les seuils de chunking et les capacités Vision varient selon l'outil</td>
+          <td>Utiliser un prompt Vision sur un modèle sans Vision → erreur silencieuse</td>
+        </tr>
+        <tr>
+          <td>Identifier une hallucination plausible</td>
+          <td>L'IA ne signale pas ses erreurs. La vérification humaine est non-délégable</td>
+          <td>Accepter une sortie IA non vérifiée → risque contractuel direct</td>
+        </tr>
+        <tr>
+          <td>Savoir ce qu'est un OCR dégradé</td>
+          <td>Pour appliquer le protocole tableaux de la section 01</td>
+          <td>Passer à côté du risque de données structurées mal extraites</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="callout-label">Si les prérequis ne sont pas tous acquis</div>
+      <p>Applique quand même le protocole, mais fais relire chaque output IA par quelqu'un qui maîtrise ces points avant de l'intégrer dans un livrable. La compréhension des mécanismes peut s'acquérir en parallèle de l'usage.</p>
+    </div>
+
   </div>
 </div>
 
@@ -661,7 +758,7 @@
 
     <div class="callout">
       <div class="callout-label">Règle d'or</div>
-      <p>La qualité de l'output est une fonction directe de la qualité du contexte fourni. Ne jamais utiliser l'IA en mode découverte sur un document critique. L'utiliser en mode validation, dans un cadre défini par l'expert humain.</p>
+      <p>La qualité de l'output est une fonction directe de la qualité du contexte fourni. <strong>Après la décision de répondre à un AO</strong>, ne jamais utiliser l'IA en mode découverte sur un document critique : l'utiliser en mode validation, dans un cadre défini par l'expert humain. En amont du go/no-go, un usage exploratoire reste acceptable.</p>
     </div>
 
   </div>
@@ -693,6 +790,37 @@
     </div>
 
     <p><strong>Si le PDF est scannérisé :</strong> passe-le dans Adobe Acrobat (Outils > Reconnaissance de texte) ou ouvre-le dans Word (Fichier > Ouvrir). Vérifie ensuite que le texte reconnu est fidèle sur au moins trois pages de section dense.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Cas particulier critique — tableaux et données structurées</div>
+      <p>Un OCR classique linéarise les tableaux : il transforme une grille de prix ou un tableau de SLA en suite de valeurs sans structure. L'IA reçoit alors du texte incohérent et <strong>comble les lacunes avec des données vraisemblables mais inventées</strong>. Ce mécanisme est particulièrement dangereux sur les tableaux de chiffrage, les grilles de pondération et les matrices de conformité du CDC lui-même.</p>
+    </div>
+
+    <h4>Protocole spécifique pour les tableaux</h4>
+    <p>Avant de confier une section contenant des tableaux à l'IA, effectue cette vérification : copie-colle manuellement le tableau depuis le PDF dans un éditeur de texte. Si les colonnes sont mélangées ou les valeurs déplacées, l'OCR a échoué sur cette structure.</p>
+    <p><strong>Solutions selon le contexte :</strong></p>
+    <ul style="list-style:none; margin:12px 0 20px; padding:0;">
+      <li style="padding:6px 0; border-bottom:1px solid var(--border); font-size:14.5px;">→ <strong>Modèle Vision disponible (GPT-5.4, Claude, Gemini) :</strong> fournis une capture d'écran du tableau plutôt que le texte extrait. Les modèles multimodaux lisent les tableaux directement depuis l'image avec une fiabilité bien supérieure à l'OCR.</li>
+      <li style="padding:6px 0; border-bottom:1px solid var(--border); font-size:14.5px;">→ <strong>Adobe Acrobat Pro :</strong> utilise "Exporter vers Excel" sur les pages concernées. Acrobat préserve la structure tabulaire mieux que tout OCR générique.</li>
+      <li style="padding:6px 0; font-size:14.5px;">→ <strong>En dernier recours :</strong> ressaisie manuelle des valeurs critiques (chiffres contractuels, seuils de SLA, pondérations). Un tableau de 10 lignes se ressaisit en 5 minutes. Une erreur de chiffrage peut coûter le bid.</li>
+    </ul>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">P-OCR · Extraction de tableau via Vision</span>
+        <span class="prompt-type">Sur capture d'écran du tableau — modèle multimodal uniquement</span>
+      </div>
+      <div class="prompt-body">Voici une image d'un tableau extrait d'un cahier des charges.
+
+Extrais l'intégralité de ce tableau sous forme structurée :
+- reproduis toutes les colonnes et toutes les lignes
+- conserve les en-têtes exacts
+- pour chaque cellule vide, indique explicitement "vide" plutôt que de l'ignorer
+- si une valeur est illisible, indique "[illisible]" sans la deviner
+- présente le résultat en format Markdown tableau
+
+Ne résume pas. Ne complète pas. Reproduis uniquement ce qui est visible.</div>
+    </div>
 
     <h4>Vérification 2 — Structure exploitable</h4>
     <p>Ouvre le panneau Signets (ou Plan) du PDF. Si les titres de sections y apparaissent comme éléments cliquables, le document est structuré. Sinon, le plan devra être extrait par prompt et vérifié manuellement.</p>
@@ -986,8 +1114,8 @@ Ne produis que la structure. N'inclus aucun résumé de contenu.</div>
     <div class="section-num">04</div>
     <div class="section-head">
       <div class="section-tag">Extraction du contenu</div>
-      <h2 class="section-title">Double résumé par chunk</h2>
-      <div class="section-subtitle">Deux passes obligatoires. Deux livrables distincts. Deux usages différents.</div>
+      <h2 class="section-title">Triple résumé par chunk</h2>
+      <div class="section-subtitle">Trois passes obligatoires. Trois livrables distincts. Trois niveaux de lecture.</div>
     </div>
   </div>
 </div>
@@ -995,7 +1123,7 @@ Ne produis que la structure. N'inclus aucun résumé de contenu.</div>
 <div class="content">
   <div class="container">
 
-    <p>Pour chaque chunk, deux passes successives. Jamais une seule. La première produit un livrable documentaire. La seconde produit un livrable décisionnel.</p>
+    <p>Pour chaque chunk, trois passes successives. Jamais une seule. La première produit un livrable documentaire. La seconde produit un livrable de gestion des risques. La troisième produit un livrable stratégique.</p>
 
     <h3>Passe 1 — Résumé fidèle</h3>
     <p>Objectif : restitution strictement factuelle, sans interprétation, sans ajout. Ce résumé ira dans la note de synthèse sous le titre correspondant. Il constitue la base légale et documentaire.</p>
@@ -1035,9 +1163,34 @@ Format : liste structurée par catégorie.
 Ne reformule pas le contenu déjà résumé. Ne produis que l'analyse.</div>
     </div>
 
+    <h3>Passe 3 — Analyse causale</h3>
+    <p>Objectif : comprendre le <em>pourquoi</em> derrière le <em>quoi</em>. Une exigence bien extraite mais mal comprise stratégiquement produit une réponse techniquement conforme et commercialement à côté. Cette passe est particulièrement critique pour un bid manager qui n'est pas expert du domaine client.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Mécanisme du risque causal</div>
+      <p>Un CDC dit "disponibilité 99,9% 24h/24". L'extraction le capture. Mais la finalité peut être "continuité de service pour des opérations critiques de sécurité" ou "conformité réglementaire sectorielle". La réponse technique est identique en apparence, la proposition de valeur est radicalement différente. Confondre le libellé et la finalité, c'est rater la stratégie du client.</p>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-header">
+        <span class="prompt-label">Prompt — Analyse causale</span>
+        <span class="prompt-type">Passe 3 / Note analytique — section causalité</span>
+      </div>
+      <div class="prompt-body">Sur la base de ce même document, pour chaque exigence principale identifiée dans cette section :
+
+Formule en une phrase la finalité opérationnelle ou stratégique qu'elle sert du point de vue du client.
+Distingue :
+- la contrainte exprimée (ce qui est demandé)
+- l'objectif sous-jacent (pourquoi le client le demande)
+- l'enjeu business ou réglementaire que cette exigence protège
+
+Si la finalité n'est pas déductible du texte de cette section, indique-le explicitement.
+Ne déduis pas. Ne projette pas. Base-toi uniquement sur les éléments présents dans le document.</div>
+    </div>
+
     <div class="callout">
-      <div class="callout-label">Deux documents, deux usages</div>
-      <p><strong>Note fidèle :</strong> ce que dit le CDC. Usage : soutenance, conformité, référence. <br><strong>Note analytique :</strong> ce que le CDC implique. Usage : réunion de qualification, stratégie de réponse, management des risques.</p>
+      <div class="callout-label">Trois documents, trois usages</div>
+      <p><strong>Note fidèle :</strong> ce que dit le CDC. Usage : soutenance, conformité, référence. <br><strong>Note analytique (risques) :</strong> ce que le CDC implique. Usage : réunion de qualification, stratégie de réponse, management des risques.<br><strong>Note analytique (causalité) :</strong> pourquoi le client l'a formulé ainsi. Usage : différenciation de l'offre, alignement proposition de valeur.</p>
     </div>
 
   </div>
@@ -1366,7 +1519,7 @@ Contraintes :
 
     <h4>P-03 · Analyse critique</h4>
     <div class="prompt-box">
-      <div class="prompt-header"><span class="prompt-label">P-03</span><span class="prompt-type">Étape 4 — Passe 2 — Note analytique</span></div>
+      <div class="prompt-header"><span class="prompt-label">P-03</span><span class="prompt-type">Étape 4 — Passe 2 — Note analytique (risques)</span></div>
       <div class="prompt-body">Sur la base de ce document, identifie :
 
 1. Exigences implicites : attendus non formulés explicitement
@@ -1376,6 +1529,33 @@ Contraintes :
 
 Format : liste structurée par catégorie.
 Ne reformule pas le résumé. Ne produis que l'analyse.</div>
+    </div>
+
+    <h4>P-03b · Analyse causale</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-03b</span><span class="prompt-type">Étape 4 — Passe 3 — Note analytique (causalité)</span></div>
+      <div class="prompt-body">Pour chaque exigence principale de cette section, formule en une phrase :
+- la contrainte exprimée (ce qui est demandé)
+- l'objectif sous-jacent (pourquoi le client le demande)
+- l'enjeu business ou réglementaire que cette exigence protège
+
+Si la finalité n'est pas déductible du texte, indique-le explicitement.
+Ne déduis pas. Ne projette pas. Base-toi uniquement sur les éléments présents dans le document.</div>
+    </div>
+
+    <h4>P-OCR · Extraction de tableau via Vision</h4>
+    <div class="prompt-box">
+      <div class="prompt-header"><span class="prompt-label">P-OCR</span><span class="prompt-type">Étape 1 — Sur capture d'écran tableau — modèle multimodal</span></div>
+      <div class="prompt-body">Voici une image d'un tableau extrait d'un cahier des charges.
+
+Extrais l'intégralité de ce tableau sous forme structurée :
+- reproduis toutes les colonnes et toutes les lignes
+- conserve les en-têtes exacts
+- pour chaque cellule vide, indique "vide" plutôt que de l'ignorer
+- si une valeur est illisible, indique "[illisible]" sans la deviner
+- présente le résultat en format Markdown tableau
+
+Ne résume pas. Ne complète pas. Reproduis uniquement ce qui est visible.</div>
     </div>
 
     <h4>P-04 · Extraction pour matrice</h4>
@@ -1476,7 +1656,8 @@ Ton : factuel, direct, sans formules creuses.</div>
     <ul class="checklist">
       <li>Le plan extrait par l'IA a été comparé à la table des matières originale</li>
       <li>Toutes les sections ont été traitées (aucun chunk omis)</li>
-      <li>Le résumé fidèle et l'analyse critique ont été produits pour chaque chunk</li>
+      <li>Le résumé fidèle, l'analyse critique et l'analyse causale ont été produits pour chaque chunk</li>
+      <li>Les tableaux et données structurées ont été traités via Vision ou export Excel, pas via OCR seul</li>
       <li>Aucun résumé ne contient d'interprétations ou de solutions non présentes dans le CDC</li>
     </ul>
 
@@ -1504,6 +1685,112 @@ Ton : factuel, direct, sans formules creuses.</div>
       <li>Synthèse exécutive : une page, go/no-go argumenté</li>
       <li>Plan de réponse : lots, responsables, planning validés en équipe</li>
     </ul>
+
+  </div>
+</div>
+
+<!-- SECTION FAIL : CAS D'ÉCHEC -->
+<div id="s-fail" class="section-break" style="background: #2e0f0f;">
+  <div class="container">
+    <div class="section-num" style="color:#c8410a; opacity:0.5;">11</div>
+    <div class="section-head">
+      <div class="section-tag" style="color:#f0a080;">Limites du protocole</div>
+      <h2 class="section-title">Cas d'échec<br>et seuils d'arrêt</h2>
+      <div class="section-subtitle">Quand arrêter l'IA. Que faire quand le protocole échoue. Comment documenter une application partielle.</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="container">
+
+    <p>Le protocole décrit ce qui se passe quand tout fonctionne. Dans la pratique, trois types de situations peuvent le mettre en échec. Les ignorer, c'est laisser l'utilisateur seul précisément quand la situation est la plus critique.</p>
+
+    <h3>Situation 1 — Le diagnostic échoue sur les trois phases</h3>
+    <p>Le modèle tronque, hallucine ou rate le milieu du document même sur des chunks. Le protocole ne peut pas être appliqué dans ces conditions sur ce document avec cet outil.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Signal d'échec</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Phase 1 : sections manquantes ou inventées</td>
+          <td>Vérifier l'OCR. Si le PDF est exploitable, changer d'outil (essayer Claude ou GPT-5.4 directement). Si le problème persiste : repasser humain sur cette section.</td>
+        </tr>
+        <tr>
+          <td>Phase 2 : rappel milieu systématiquement faux sur plusieurs chunks</td>
+          <td>Réduire la taille des chunks à 10 pages maximum. Si l'échec persiste à cette granularité : l'outil est inutilisable sur ce document. Documenter et passer humain.</td>
+        </tr>
+        <tr>
+          <td>Phase 3 : occurrences inventées avec fausses localisations</td>
+          <td>Ne pas utiliser l'IA pour la détection des contradictions. Cette passe doit être 100% humaine sur ce document.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Situation 2 — Le document résiste au traitement</h3>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Seuils d'arrêt — quand repasser 100% humain</div>
+      <p>Certains documents ne sont pas traitables par l'IA dans des conditions acceptables. Ce n'est pas un échec du protocole : c'est une information à documenter et à communiquer à l'équipe.</p>
+    </div>
+
+    <table class="data-table">
+      <thead><tr><th>Situation</th><th>Seuil d'arrêt</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>PDF entièrement scannérisé, OCR de mauvaise qualité, tableaux omniprésents</td>
+          <td>Taux d'erreur OCR > 20% sur un échantillon de 5 pages</td>
+          <td>Extraction manuelle des sections critiques. IA utilisable uniquement sur les parties textuelles propres.</td>
+        </tr>
+        <tr>
+          <td>Document fortement réglementé avec renvois croisés denses (ex : marchés de défense)</td>
+          <td>Plus de 3 renvois inter-sections non résolus par le modèle sur un chunk test</td>
+          <td>Lecture humaine obligatoire des sections de renvoi. L'IA peut résumer, pas analyser les dépendances.</td>
+        </tr>
+        <tr>
+          <td>Document en langue étrangère ou technique hors domaine du bid manager</td>
+          <td>Dès que le bid manager ne peut pas vérifier la fidélité d'un résumé</td>
+          <td>Faire intervenir un expert domaine sur la vérification. Ne pas utiliser l'IA sans filet de vérification humaine compétente.</td>
+        </tr>
+        <tr>
+          <td>Modèle IA indisponible, accès restreint ou données classifiées</td>
+          <td>Impossibilité d'accéder à l'outil dans le contexte de sécurité requis</td>
+          <td>Protocole 100% humain. La méthode (chunking thématique, double note, matrice) reste applicable sans IA.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Situation 3 — Application partielle assumée</h3>
+    <p>Sous contrainte de délai ou de ressources, il est parfois nécessaire d'appliquer le protocole partiellement. C'est acceptable à condition de le documenter explicitement et de concentrer les étapes complètes sur les sections à risque maximal.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">Règle d'application partielle</div>
+      <p>Si tu ne peux pas appliquer le protocole complet, applique-le là où le risque est le plus élevé. Les sections contractuelles (SLA, pénalités, propriété intellectuelle) et les critères d'évaluation ne sont jamais sacrifiables. Le contexte et le planning peuvent être traités avec une passe unique.</p>
+    </div>
+
+    <table class="data-table">
+      <thead><tr><th>Contrainte</th><th>Ce qu'on garde en priorité</th><th>Ce qu'on peut alléger</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Délai très court (moins d'un jour)</td>
+          <td>Qualification OCR, extraction plan, résumé fidèle sections contractuelles, matrice exigences obligatoires</td>
+          <td>Passe causale, harmonisation, note analytique complète</td>
+        </tr>
+        <tr>
+          <td>Équipe réduite (bid manager seul)</td>
+          <td>Diagnostic, chunking, double résumé sections critiques, matrice partielle</td>
+          <td>Triple résumé sur sections contextuelles, détection contradictions automatisée</td>
+        </tr>
+        <tr>
+          <td>AO à enjeu modéré</td>
+          <td>Qualification OCR, extraction plan, résumé fidèle global, matrice simplifiée</td>
+          <td>Diagnostic complet, passe causale, note analytique détaillée</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Documentation de l'application partielle</h4>
+    <p>Quelle que soit la raison, toute application partielle doit être documentée dans un mémo d'une demi-page joint à la matrice de conformité, indiquant : les étapes sautées, la raison, les sections non traitées ou traitées en mode allégé, et le niveau de risque résiduel estimé. Ce mémo protège l'équipe bid en cas de contestation post-soumission.</p>
 
   </div>
 </div>
