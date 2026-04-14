@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA native vs IA agentique</title>
+<style>
+  :root {
+    --bg: #f9f8f5;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.12);
+    --overlay-bg: rgba(249,248,245,0.97);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --text-primary: #e8e6de;
+      --text-secondary: #a8a69e;
+      --text-tertiary: #6e6d68;
+      --border: rgba(255,255,255,0.12);
+      --overlay-bg: rgba(28,28,26,0.97);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: Georgia, 'Times New Roman', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 48px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-bottom: 40px;
+    text-align: center;
+    font-style: italic;
+  }
+  .diagram-wrap { width: 100%; max-width: 1100px; }
+  svg { width: 100%; height: auto; display: block; }
+
+  .c-teal rect  { fill: #E1F5EE; stroke: #0F6E56; }
+  .c-teal text  { fill: #085041; }
+  .c-teal .sub  { fill: #0F6E56; }
+  .c-amber rect { fill: #FAEEDA; stroke: #854F0B; }
+  .c-amber text { fill: #633806; }
+  .c-amber .sub { fill: #854F0B; }
+  .c-blue rect  { fill: #E6F1FB; stroke: #185FA5; }
+  .c-blue text  { fill: #0C447C; }
+  .c-blue .sub  { fill: #185FA5; }
+  .c-gray rect  { fill: #F1EFE8; stroke: #5F5E5A; }
+  .c-gray text  { fill: #444441; }
+  .c-gray .sub  { fill: #5F5E5A; }
+
+  @media (prefers-color-scheme: dark) {
+    .c-teal rect  { fill: #085041; stroke: #5DCAA5; }
+    .c-teal text  { fill: #9FE1CB; }
+    .c-teal .sub  { fill: #5DCAA5; }
+    .c-amber rect { fill: #633806; stroke: #EF9F27; }
+    .c-amber text { fill: #FAC775; }
+    .c-amber .sub { fill: #EF9F27; }
+    .c-blue rect  { fill: #0C447C; stroke: #85B7EB; }
+    .c-blue text  { fill: #B5D4F4; }
+    .c-blue .sub  { fill: #85B7EB; }
+    .c-gray rect  { fill: #444441; stroke: #B4B2A9; }
+    .c-gray text  { fill: #D3D1C7; }
+    .c-gray .sub  { fill: #B4B2A9; }
+  }
+
+  .node { cursor: pointer; }
+  .node:hover rect { opacity: 0.82; transition: opacity 0.15s; }
+  .axis-line { stroke: var(--text-secondary); }
+  .axis-label-main { font-family: Georgia, serif; font-size: 14px; font-weight: 600; fill: var(--text-primary); }
+  .axis-label-sub  { font-family: Georgia, serif; font-size: 11px; font-style: italic; fill: var(--text-secondary); }
+  .box-title { font-family: Georgia, serif; font-size: 13px; font-weight: 600; }
+  .box-sub   { font-family: Georgia, serif; font-size: 11px; font-style: italic; }
+  .box-item  { font-family: Georgia, serif; font-size: 11px; }
+  .box-cta   { font-family: Georgia, serif; font-size: 11px; font-weight: 600; }
+
+  .legend {
+    margin-top: 28px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: Georgia, serif;
+    font-style: italic;
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+  .panel-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .panel-backdrop.open { display: flex; }
+
+  .panel {
+    background: var(--overlay-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 32px 36px;
+    position: relative;
+  }
+
+  .panel-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: Georgia, serif;
+    font-style: italic;
+    letter-spacing: 0.03em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .badge-teal  { background: #E1F5EE; color: #085041; border: 1px solid #0F6E56; }
+  .badge-amber { background: #FAEEDA; color: #633806; border: 1px solid #854F0B; }
+  .badge-blue  { background: #E6F1FB; color: #0C447C; border: 1px solid #185FA5; }
+  .badge-gray  { background: #F1EFE8; color: #444441; border: 1px solid #5F5E5A; }
+  @media (prefers-color-scheme: dark) {
+    .badge-teal  { background: #085041; color: #9FE1CB; border-color: #5DCAA5; }
+    .badge-amber { background: #633806; color: #FAC775; border-color: #EF9F27; }
+    .badge-blue  { background: #0C447C; color: #B5D4F4; border-color: #85B7EB; }
+    .badge-gray  { background: #444441; color: #D3D1C7; border-color: #B4B2A9; }
+  }
+
+  .panel h2 {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .panel .panel-tagline {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+  .panel-section { margin-bottom: 22px; }
+  .panel-section h3 {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .examples-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .examples-list li {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-primary);
+    padding-left: 16px;
+    position: relative;
+  }
+  .examples-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--text-tertiary);
+  }
+  .examples-list li strong { font-weight: 600; }
+  .examples-list li span { color: var(--text-secondary); }
+
+  .panel-insight {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+  .panel-insight p { margin-bottom: 10px; }
+  .panel-insight p:last-child { margin-bottom: 0; }
+
+  .panel-question {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    font-family: Georgia, serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .panel-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-tertiary);
+    font-size: 22px;
+    line-height: 1;
+    padding: 4px;
+    font-family: Georgia, serif;
+  }
+  .panel-close:hover { color: var(--text-primary); }
+</style>
+</head>
+<body>
+
+<h1>IA native &amp; IA agentique</h1>
+<p class="subtitle">Deux dimensions indépendantes — conception vs comportement</p>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 980 600" role="img">
+  <title>Matrice IA native vs IA agentique</title>
+  <desc>Matrice à deux axes : conception (native/greffée) et comportement (agentique/réactif). Cliquer sur chaque quadrant pour en savoir plus.</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- Axe horizontal y=300, de x=30 à x=930 -->
+  <line x1="88"  y1="300" x2="930" y2="300" class="axis-line" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="88"  y1="300" x2="30"  y2="300" class="axis-line" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Axe vertical x=480, entre les deux colonnes (gauche finit à 460, droite commence à 500) -->
+  <line x1="480" y1="520" x2="480" y2="62" class="axis-line" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="480" y1="520" x2="480" y2="536" class="axis-line" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Labels axe vertical -->
+  <text class="axis-label-main" x="480" y="28"  text-anchor="middle">Agentique</text>
+  <text class="axis-label-sub"  x="480" y="44"  text-anchor="middle">agit, enchaîne, décide</text>
+  <text class="axis-label-main" x="480" y="562" text-anchor="middle">Réactif</text>
+  <text class="axis-label-sub"  x="480" y="578" text-anchor="middle">répond à la demande</text>
+
+  <!-- Labels axe horizontal : dans les marges latérales libres -->
+  <text class="axis-label-main" x="74"  y="291" text-anchor="end">Greffé</text>
+  <text class="axis-label-main" x="946" y="291" text-anchor="end">Natif</text>
+
+  <!-- Q2 : Greffé + Agentique — amber (gauche, haut) x=130..460 -->
+  <g class="node c-amber" onclick="openPanel('amber')">
+    <rect x="130" y="60" width="330" height="226" rx="10" stroke-width="0.5"/>
+    <text class="box-title" x="295" y="96"  text-anchor="middle">Greffé + agentique</text>
+    <text class="box-sub sub" x="295" y="114" text-anchor="middle">Autonome, mais rajouté</text>
+    <text class="box-item" x="295" y="146" text-anchor="middle">Agent RPA + LLM</text>
+    <text class="box-item" x="295" y="165" text-anchor="middle">LangChain sur outils existants</text>
+    <text class="box-item" x="295" y="184" text-anchor="middle">Chatbot autonome sur vieux SI</text>
+    <text class="box-item" x="295" y="203" text-anchor="middle">Agent sur SI non instrumenté</text>
+    <text class="box-cta"  x="295" y="264" text-anchor="middle">→ Risque d'intégration  ↗</text>
+  </g>
+
+  <!-- Q1 : Natif + Agentique — teal (droite, haut) x=500..830 -->
+  <g class="node c-teal" onclick="openPanel('teal')">
+    <rect x="500" y="60" width="330" height="226" rx="10" stroke-width="0.5"/>
+    <text class="box-title" x="665" y="96"  text-anchor="middle">Natif + agentique</text>
+    <text class="box-sub sub" x="665" y="114" text-anchor="middle">Le cas le plus avancé</text>
+    <text class="box-item" x="665" y="146" text-anchor="middle">Claude Code</text>
+    <text class="box-item" x="665" y="165" text-anchor="middle">Devin (Cognition)</text>
+    <text class="box-item" x="665" y="184" text-anchor="middle">Copilot Studio orchestré</text>
+    <text class="box-item" x="665" y="203" text-anchor="middle">Agents IA sur mesure</text>
+    <text class="box-cta"  x="665" y="264" text-anchor="middle">→ Gouvernance critique  ↗</text>
+  </g>
+
+  <!-- Q4 : Greffé + Réactif — gray (gauche, bas) x=130..460 -->
+  <g class="node c-gray" onclick="openPanel('gray')">
+    <rect x="130" y="315" width="330" height="210" rx="10" stroke-width="0.5"/>
+    <text class="box-title" x="295" y="351" text-anchor="middle">Greffé + réactif</text>
+    <text class="box-sub sub" x="295" y="369" text-anchor="middle">Le point de départ habituel</text>
+    <text class="box-item" x="295" y="401" text-anchor="middle">Bouton "résumer" dans un CRM</text>
+    <text class="box-item" x="295" y="420" text-anchor="middle">Copilot 365 sur SI non préparé</text>
+    <text class="box-item" x="295" y="439" text-anchor="middle">Chatbot sur FAQ existante</text>
+    <text class="box-item" x="295" y="458" text-anchor="middle">Plugin IA sur ERP legacy</text>
+    <text class="box-cta"  x="295" y="504" text-anchor="middle">→ Valeur limitée  ↗</text>
+  </g>
+
+  <!-- Q3 : Natif + Réactif — blue (droite, bas) x=500..830 -->
+  <g class="node c-blue" onclick="openPanel('blue')">
+    <rect x="500" y="315" width="330" height="210" rx="10" stroke-width="0.5"/>
+    <text class="box-title" x="665" y="351" text-anchor="middle">Natif + réactif</text>
+    <text class="box-sub sub" x="665" y="369" text-anchor="middle">Conçu pour l'IA, ponctuel</text>
+    <text class="box-item" x="665" y="401" text-anchor="middle">Cursor / GitHub Copilot</text>
+    <text class="box-item" x="665" y="420" text-anchor="middle">Claude.ai, ChatGPT</text>
+    <text class="box-item" x="665" y="439" text-anchor="middle">Notion AI</text>
+    <text class="box-item" x="665" y="458" text-anchor="middle">Perplexity</text>
+    <text class="box-cta"  x="665" y="504" text-anchor="middle">→ Dépendance architecturale  ↗</text>
+  </g>
+</svg>
+</div>
+
+<div class="legend">
+  <span><span class="dot" style="background:#1D9E75"></span>Natif + agentique</span>
+  <span><span class="dot" style="background:#BA7517"></span>Greffé + agentique</span>
+  <span><span class="dot" style="background:#378ADD"></span>Natif + réactif</span>
+  <span><span class="dot" style="background:#888780"></span>Greffé + réactif</span>
+</div>
+
+<!-- Panel : Natif + Agentique -->
+<div class="panel-backdrop" id="panel-teal" onclick="closeOnBackdrop(event,'teal')">
+  <div class="panel">
+    <button class="panel-close" onclick="closePanel('teal')">×</button>
+    <span class="panel-badge badge-teal">Natif + agentique</span>
+    <h2>Le cas le plus avancé</h2>
+    <p class="panel-tagline">L'IA est au cœur de la conception et le système agit de manière autonome. Les deux dimensions se renforcent.</p>
+    <div class="panel-section">
+      <h3>Exemples</h3>
+      <ul class="examples-list">
+        <li><strong>Claude Code</strong> <span>— conçu dès l'origine pour qu'un modèle lise, écrive, exécute, teste et itère sur une base de code. L'agent dispose d'un environnement instrumenté, de périmètres d'action explicites, d'une boucle de feedback intégrée.</span></li>
+        <li><strong>Devin (Cognition)</strong> <span>— environnement de développement entièrement repensé pour un agent autonome. L'agent planifie, code, débogue, navigue sur le web, sans intervention humaine à chaque étape. L'architecture native lui fournit les guardrails et la traçabilité que ce niveau d'autonomie exige.</span></li>
+        <li><strong>Systèmes multi-agents sur mesure</strong> <span>— orchestrateur et agents spécialisés avec mémoire partagée, outils dédiés, protocoles de handoff. Chaque composant a été pensé pour être consommé ou piloté par un autre agent. Rien n'a été adapté après coup.</span></li>
+        <li><strong>Plateformes de trading nouvelle génération</strong> <span>— architecture de décision, flux de données, mécanismes de validation et circuits coupe-feu conçus en même temps que la capacité agentique. L'agent n'est pas posé sur un système existant.</span></li>
+      </ul>
+    </div>
+    <div class="panel-section">
+      <h3>Ce que ça signifie pour un comité de direction</h3>
+      <div class="panel-insight">
+        <p>C'est le quadrant qui crée le plus de valeur et qui exige le plus de maturité organisationnelle pour y accéder. Deux conditions sont nécessaires simultanément : une décision d'architecture (refondre, pas adapter) et une décision de gouvernance (définir ce que l'agent peut faire seul, ce qui requiert validation, ce qui reste humain).</p>
+      </div>
+    </div>
+    <div class="panel-question">La question stratégique n'est pas "faut-il y aller" — c'est "pour quels processus sommes-nous prêts à assumer les deux conditions en même temps ?"</div>
+  </div>
+</div>
+
+<!-- Panel : Greffé + Agentique -->
+<div class="panel-backdrop" id="panel-amber" onclick="closeOnBackdrop(event,'amber')">
+  <div class="panel">
+    <button class="panel-close" onclick="closePanel('amber')">×</button>
+    <span class="panel-badge badge-amber">Greffé + agentique</span>
+    <h2>Le cas le plus risqué</h2>
+    <p class="panel-tagline">Le système agit de manière autonome, enchaîne des décisions, produit des effets réels — sur une architecture qui n'a pas été conçue pour ça.</p>
+    <div class="panel-section">
+      <h3>Exemples</h3>
+      <ul class="examples-list">
+        <li><strong>Agent RPA augmenté d'un LLM</strong> <span>— robot d'automatisation classique (UiPath, Automation Anywhere) auquel on a branché un modèle pour gérer les cas non prévus dans les scripts. Le système sous-jacent reste rigide, non instrumenté pour l'IA, sans traçabilité des choix du modèle.</span></li>
+        <li><strong>Agent LangChain ou AutoGen sur outils existants</strong> <span>— connecteurs vers une messagerie, un CRM, un agenda. L'agent orchestre et agit, mais la conception des outils cibles n'a jamais anticipé qu'un système autonome les manipulerait.</span></li>
+        <li><strong>Copilot Studio sur SI non préparé</strong> <span>— les flux agentiques sont réels, mais si le SI n'expose pas des APIs stables, des périmètres d'action clairs, des logs exploitables, l'agent opère dans un environnement qu'il ne peut pas interpréter correctement.</span></li>
+        <li><strong>Agent de surveillance sur alertes legacy</strong> <span>— il détecte, analyse, escalade ou agit. Mais les données qu'il consomme sont hétérogènes, mal structurées, produites par des systèmes qui n'ont jamais été conçus pour être lus par une IA en temps réel.</span></li>
+      </ul>
+    </div>
+    <div class="panel-section">
+      <h3>Ce que ça signifie pour un comité de direction</h3>
+      <div class="panel-insight">
+        <p>C'est le quadrant qui concentre le plus de risques opérationnels à court terme. La raison est mécanique : l'autonomie d'action du système dépasse la capacité de l'architecture à le contraindre, le tracer et le corriger.</p>
+        <p>La question n'est pas d'interdire ce quadrant — certains cas d'usage le justifient pleinement. C'est de poser trois questions avant de déployer : qu'est-ce que l'agent peut faire sans validation humaine ? Comment auditons-nous ses décisions ? Comment l'arrêtons-nous si nécessaire ?</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Panel : Natif + Réactif -->
+<div class="panel-backdrop" id="panel-blue" onclick="closeOnBackdrop(event,'blue')">
+  <div class="panel">
+    <button class="panel-close" onclick="closePanel('blue')">×</button>
+    <span class="panel-badge badge-blue">Natif + réactif</span>
+    <h2>Conçu pour l'IA, ponctuel</h2>
+    <p class="panel-tagline">L'IA est au cœur de la conception, mais le système attend qu'on lui demande quelque chose avant d'agir. Pas d'initiative, pas de chaîne d'actions autonomes.</p>
+    <div class="panel-section">
+      <h3>Exemples</h3>
+      <ul class="examples-list">
+        <li><strong>Cursor / GitHub Copilot</strong> <span>— l'éditeur est entièrement repensé autour du modèle. Chaque frappe, chaque contexte de fichier, chaque suggestion est architecturalement liée à l'IA. Mais c'est le développeur qui demande, le modèle qui répond. Une action à la fois.</span></li>
+        <li><strong>Claude.ai, ChatGPT</strong> <span>— la plateforme est native par construction, le modèle n'est pas une fonctionnalité ajoutée. Pourtant, rien ne se passe sans un message de l'utilisateur. C'est le cas le plus visible de ce quadrant.</span></li>
+        <li><strong>Notion AI</strong> <span>— intégrée dans l'architecture du produit, pas greffée par API en périphérie. Mais elle agit sur commande explicite ("résume ce bloc", "reformule cette phrase") et s'arrête là.</span></li>
+        <li><strong>Perplexity</strong> <span>— conçu nativement pour raisonner sur des sources, pas pour adapter une interface de recherche classique. Réactif néanmoins : une requête, une réponse.</span></li>
+      </ul>
+    </div>
+    <div class="panel-section">
+      <h3>Ce que ça signifie pour un comité de direction</h3>
+      <div class="panel-insight">
+        <p>Ces systèmes posent une question d'architecture ("avons-nous conçu nos outils pour l'IA ou les avons-nous adaptés ?"), mais pas encore de question de gouvernance autonome. Le risque principal n'est pas que le système agisse à votre place — c'est qu'il soit tellement intégré qu'en changer devient structurellement coûteux : la dépendance architecturale.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Panel : Greffé + Réactif -->
+<div class="panel-backdrop" id="panel-gray" onclick="closeOnBackdrop(event,'gray')">
+  <div class="panel">
+    <button class="panel-close" onclick="closePanel('gray')">×</button>
+    <span class="panel-badge badge-gray">Greffé + réactif</span>
+    <h2>Le point de départ habituel</h2>
+    <p class="panel-tagline">L'état dans lequel se trouvent la majorité des organisations aujourd'hui. L'IA a été ajoutée sur des systèmes existants et répond à des demandes ponctuelles sans initiative propre.</p>
+    <div class="panel-section">
+      <h3>Exemples</h3>
+      <ul class="examples-list">
+        <li><strong>Bouton "résumer" dans un CRM</strong> <span>— le CRM existait avant, l'IA a été branchée dessus par API. L'utilisateur clique, obtient un résumé, le système reprend son cours normal. Rien n'a été repensé.</span></li>
+        <li><strong>Copilot 365 sur organisation non préparée</strong> <span>— si les données ne sont pas gouvernées, les processus non revus, les droits d'accès non structurés, l'IA tourne sur un substrat qui n'a pas été conçu pour elle. Le résultat est une surcouche, pas une intégration native.</span></li>
+        <li><strong>Chatbot sur FAQ existante</strong> <span>— la base de connaissance n'a pas bougé, le SI de tickets non plus. On a mis un modèle devant. Valeur marginale, friction persistante.</span></li>
+        <li><strong>Plugin IA sur ERP legacy</strong> <span>— le cœur du système date des années 2000, l'IA répond à des questions sur les données qu'il contient. La conception sous-jacente n'a pas changé d'une ligne.</span></li>
+      </ul>
+    </div>
+    <div class="panel-section">
+      <h3>Ce que ça signifie pour un comité de direction</h3>
+      <div class="panel-insight">
+        <p>C'est le quadrant du "on a fait quelque chose" sans transformation réelle. La valeur existe, souvent visible et rapide à obtenir — ce qui explique pourquoi ce point d'entrée est légitime. Le risque est de s'y installer : accumuler des greffes sans jamais questionner l'architecture, jusqu'à ce que le coût de la dette technique dépasse le bénéfice des usages.</p>
+      </div>
+    </div>
+    <div class="panel-question">La question stratégique n'est pas "faut-il sortir de ce quadrant" — c'est "pour quels processus critiques le passage au quadrant natif ou agentique crée-t-il un avantage compétitif mesurable ?"</div>
+  </div>
+</div>
+
+<script>
+  function openPanel(id) {
+    document.getElementById('panel-' + id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePanel(id) {
+    document.getElementById('panel-' + id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeOnBackdrop(e, id) {
+    if (e.target === document.getElementById('panel-' + id)) closePanel(id);
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') ['teal','amber','blue','gray'].forEach(closePanel);
+  });
+</script>
+</body>
+</html>
