@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manuel de l'Ingénierie du Flux Sémantique</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:           #fef9f3;
+    --sidebar:      #f2ede7;
+    --card:         #f8f3ed;
+    --text:         #1d1b18;
+    --muted:        #54433c;
+    --accent:       #823b18;
+    --accent-sec:   #a03f34;
+    --accent-dk:    #4A2E24;
+    --border:       #dac1b8;
+    --border-light: #e6e2dc;
+    --code-bg:      #f8f7f4;
+    --code-border:  #dddbd5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── SIDEBAR ── */
+  nav {
+    width: 260px;
+    min-width: 260px;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.2rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  nav .brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    line-height: 1.25;
+    margin-bottom: 0.3rem;
+  }
+
+  nav .brand-sub {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    display: block;
+    line-height: 1.5;
+  }
+
+  nav ul { list-style: none; }
+  nav ul li { margin-bottom: 0.1rem; }
+
+  nav ul li a {
+    display: block;
+    padding: 0.32rem 0.65rem;
+    border-radius: 3px;
+    font-size: 0.825rem;
+    font-weight: 400;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+
+  nav ul li a:hover { background: var(--border-light); color: var(--text); }
+  nav ul li a.active { background: var(--accent-dk); color: #fff; font-weight: 500; }
+
+  nav ul li.section-title {
+    font-size: 0.67rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-dk);
+    margin: 1.4rem 0 0.4rem 0.65rem;
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 4rem 3rem;
+  }
+
+  /* ── HEADER ── */
+  .doc-header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .doc-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .doc-header h1 em { color: var(--accent-sec); font-style: italic; }
+
+  .doc-header .subtitle {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── HEADINGS ── */
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--text);
+    margin: 3.5rem 0 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--accent);
+    margin: 2rem 0 0.75rem;
+  }
+
+  p { margin-bottom: 1.25rem; font-weight: 300; }
+  strong { font-weight: 600; color: var(--text); }
+
+  ul.piliers-list, ul.cycle-list, ul.interdep-list {
+    list-style: none;
+    margin: 0 0 1.5rem;
+  }
+
+  ul.piliers-list li,
+  ul.cycle-list li,
+  ul.interdep-list li {
+    padding: 0.5rem 0 0.5rem 1.1rem;
+    border-left: 2px solid var(--border);
+    margin-bottom: 0.5rem;
+    font-weight: 300;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  ul.piliers-list li strong,
+  ul.cycle-list li strong,
+  ul.interdep-list li strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── CHAPEAU / FILIATION ── */
+  .chapeau {
+    background: var(--card);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .chapeau strong { color: var(--accent); font-weight: 600; }
+
+  /* ── CALLOUT PRÉCISION ── */
+  .callout {
+    display: flex;
+    gap: 0.9rem;
+    background: #fff5f2;
+    border: 1px solid #f0d0c4;
+    border-left: 4px solid var(--accent-sec);
+    border-radius: 0 4px 4px 0;
+    padding: 1rem 1.25rem;
+    margin: 2rem 0;
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .callout .icon { flex-shrink: 0; }
+  .callout strong { color: var(--accent-sec); font-weight: 600; }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 1.5rem 0 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    background: #ffffff;
+  }
+
+  thead tr { background: var(--accent); }
+
+  thead th {
+    padding: 0.85rem 1.25rem;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  tbody tr { border-bottom: 1px solid var(--border-light); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fef9f3; }
+
+  tbody td { padding: 0.85rem 1.25rem; vertical-align: top; font-weight: 400; }
+  td strong { color: var(--accent); font-weight: 600; }
+
+  /* ── BADGE PILIER ── */
+  .pilier-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pilier-num {
+    width: 2.75rem;
+    height: 2.75rem;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .pilier-meta { display: flex; flex-direction: column; gap: 0.1rem; }
+
+  .pilier-meta .label {
+    font-size: 0.67rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .pilier-meta .name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* ── ÉCHEC ── */
+  .echec {
+    background: #fdf0ee;
+    border-left: 4px solid #c0392b;
+    border-radius: 0 4px 4px 0;
+    padding: 0.85rem 1.2rem;
+    margin: 1.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #7a2a20;
+    font-style: italic;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--code-bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.825rem;
+    line-height: 1.85;
+    padding: 1.4rem 1.6rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1.25rem 0 2.5rem;
+    border: 1px solid var(--code-border);
+    border-left: 4px solid var(--accent);
+    white-space: pre;
+  }
+
+  .code-block .tag     { color: var(--accent); font-weight: 600; }
+  .code-block .comment { color: #a09080; font-style: italic; }
+  .code-block .value   { color: var(--accent-sec); font-weight: 500; }
+
+  /* ── GRILLE VALIDATION ── */
+  .grille {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.1rem 1.4rem;
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 2;
+  }
+
+  .grille strong { color: var(--accent-dk); font-weight: 600; font-family: 'Inter', sans-serif; }
+
+  /* ── ANNEXE ── */
+  .annexe-note {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border-light); margin: 3rem 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 300;
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════ -->
+<nav>
+  <div class="brand">Manuel de l'Ingénierie<br>du Flux Sémantique</div>
+  <span class="brand-sub">Les 5 Piliers de l'Acte<br>d'Énonciation Expert</span>
+  <ul>
+    <li class="section-title">Fondation</li>
+    <li><a href="#chapeau">Théorie chapeau</a></li>
+
+    <li class="section-title">Introduction</li>
+    <li><a href="#intro">À l'apprenant</a></li>
+
+    <li class="section-title">Guide Holistique</li>
+    <li><a href="#matrice">Matrice des 5 Piliers</a></li>
+    <li><a href="#cycle">Cycle Opératoire</a></li>
+    <li><a href="#interdep">Interdépendances</a></li>
+    <li><a href="#orchestrateur">Posture de l'Orchestrateur</a></li>
+
+    <li class="section-title">Les Piliers</li>
+    <li><a href="#p1">Pilier 1 — Systèmes</a></li>
+    <li><a href="#p2">Pilier 2 — Halliday</a></li>
+    <li><a href="#p3">Pilier 3 — Pragmatique</a></li>
+    <li><a href="#p4">Pilier 4 — Hegel</a></li>
+    <li><a href="#p5">Pilier 5 — Cybernétique</a></li>
+
+    <li class="section-title">Annexe</li>
+    <li><a href="#annexe">Filiation Épistémique</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     CONTENU PRINCIPAL
+════════════════════════════════════════════ -->
+<main>
+
+  <!-- EN-TÊTE -->
+  <div class="doc-header">
+    <h1>Manuel de l'Ingénierie<br>du <em>Flux Sémantique</em></h1>
+    <div class="subtitle">Les 5 Piliers de l'Acte d'Énonciation Expert</div>
+  </div>
+
+  <!-- THÉORIE CHAPEAU -->
+  <div class="chapeau" id="chapeau">
+    🏛️ <strong>Théorie chapeau — Benveniste</strong> — Ce cadre repose sur la Théorie de l'Énonciation (Benveniste, <em>Problèmes de linguistique générale II</em>, 1974) comme fondation holistique. L'énonciation est "la mise en fonctionnement de la langue par un acte individuel d'utilisation". L'ingénierie du prompt est précisément cet acte. Les cinq piliers en sont les cinq dimensions constitutives. Ce cadre est une instrumentalisation raisonnée : chaque emprunt est choisi pour sa filiation directe, non pour sa notoriété.
+  </div>
+
+  <!-- ══════════════════════════════════════
+       INTRODUCTION
+  ══════════════════════════════════════ -->
+  <h2 id="intro">Introduction — À l'Apprenant</h2>
+
+  <h3>Ce que tu tiens entre les mains</h3>
+  <p>Ce manuel ne t'apprend pas à "mieux écrire des prompts". Il t'apprend à <strong>énoncer</strong> : à être l'auteur conscient d'un acte de langage qui produit des effets mesurables sur un système d'IA.</p>
+  <p>La distinction est concrète. Écrire un prompt, c'est taper du texte. Énoncer, c'est mobiliser simultanément un cadre, une structure, une intention, une tension et un regard critique sur ce qu'on vient de produire. Ce manuel formalise ces cinq dimensions en cinq piliers opératoires.</p>
+
+  <h3>Pourquoi cinq piliers, et pas une liste de conseils</h3>
+  <p>Chaque pilier est adossé à une théorie qui décrit précisément ce qui se passe dans un acte d'énonciation. Ce n'est pas un recueil de bonnes pratiques tirées de l'expérience : c'est un cadre structuré, où chaque outil a une raison d'être explicite et une limite assumée.</p>
+  <p>Le fondement de l'ensemble est la théorie de l'énonciation de Benveniste : "la mise en fonctionnement de la langue par un acte individuel d'utilisation". Chaque fois que tu construis un prompt, tu accomplis exactement cet acte, avec un sujet (toi), un interlocuteur (le modèle), un cadre (la session), une intention et une dynamique. Les cinq piliers en sont les cinq dimensions constitutives.</p>
+
+  <h3>Ce que ce manuel ne promet pas</h3>
+  <p>Il ne promet pas que le modèle comprend ton intention. Il te donne les outils pour réduire les zones d'ambiguïté et orienter mécaniquement les réponses vers ce que tu veux produire.</p>
+  <p>La limite est explicite : le modèle est un instrument probabiliste. Il traite ton texte, pas ta pensée. L'humain reste le seul porteur de l'intention initiale et le seul juge de la pertinence du résultat.</p>
+
+  <h3>Comment travailler ce manuel</h3>
+  <p>Chaque pilier suit la même architecture :</p>
+  <ul class="piliers-list">
+    <li><strong>Filiation</strong> : pourquoi cette théorie, pas une autre</li>
+    <li><strong>Rôle</strong> : ce que ce pilier fait concrètement dans l'acte d'énonciation</li>
+    <li><strong>Matrice opératoire</strong> : les mécanismes et leurs effets attendus</li>
+    <li><strong>Précision</strong> : la limite honnête du mécanisme</li>
+    <li><strong>Échec si absent</strong> : ce qui se produit quand le pilier manque</li>
+    <li><strong>Exercice</strong> : un prompt canonique à déconstruire, adapter, réutiliser</li>
+  </ul>
+  <p>Les piliers ne sont pas indépendants. Ils forment un cycle où chacun prépare le suivant, et où le cinquième referme la boucle sur le premier. Les maîtriser séparément est une étape. Les orchestrer ensemble est l'objectif.</p>
+
+  <h3>La posture requise</h3>
+  <p>Ce manuel suppose une posture d'<strong>orchestrateur</strong>, pas d'utilisateur. La différence est simple : l'utilisateur agit sur le contenu qu'il demande. L'orchestrateur agit sur le processus qui produit ce contenu. C'est un niveau au-dessus, et c'est ce niveau que les cinq piliers, ensemble, permettent d'atteindre et de tenir.</p>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       GUIDE HOLISTIQUE
+  ══════════════════════════════════════ -->
+  <h2 id="matrice">Matrice des 5 Piliers</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Théorie Source</th>
+          <th>Dimension énonciative</th>
+          <th>Métaphore</th>
+          <th>Fonction Critique</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>Théorie des Systèmes (Bertalanffy, Wiener)</td>
+          <td>Stabilité du cadre d'énonciation</td>
+          <td>L'Aquarium</td>
+          <td>Maintenir la cohérence contextuelle sur la durée de la session.</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>Linguistique Textuelle (Halliday & Hasan, 1976)</td>
+          <td>Texture de l'énoncé</td>
+          <td>Le Tissu</td>
+          <td>Assurer la cohésion structurelle et la lisibilité formelle du prompt.</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>Pragmatique Linguistique (Grice, Austin, Searle)</td>
+          <td>Force d'action de l'intention (force illocutoire)</td>
+          <td>Le Contrat</td>
+          <td>Supprimer l'implicite et aligner l'instruction sur l'intention réelle.</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>Dialectique Hégélienne (Hegel, 1807)</td>
+          <td>Dynamique génératrice de sens</td>
+          <td>Le Creuset</td>
+          <td>Produire un dépassement synergique (Aufhebung) par tension thèse/antithèse.</td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>Cybernétique de 2nd Ordre (von Foerster, 1974)</td>
+          <td>Réflexivité de l'auteur du prompt</td>
+          <td>La Boucle</td>
+          <td>Piloter et corriger le processus via une boucle réflexive active.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="cycle">Le Cycle Opératoire</h2>
+  <ul class="cycle-list">
+    <li><strong>Étape 1 — Stabilisation (Systèmes) :</strong> Définir les règles de base (axiomes) pour créer une base de cohérence contextuelle.</li>
+    <li><strong>Étape 2 — Texturation (Halliday) :</strong> Structurer formellement le prompt : balisage, connecteurs logiques typés, compression formelle.</li>
+    <li><strong>Étape 3 — Alignement (Pragmatique) :</strong> Contractualiser l'intention via les quatre maximes de Grice, explicitement nommées.</li>
+    <li><strong>Étape 4 — Propulsion (Hegel) :</strong> Activer la tension thèse/antithèse pour extraire un dépassement synergique (Aufhebung) non-trivial.</li>
+    <li><strong>Étape 5 — Audit (Cybernétique) :</strong> Introduire la boucle réflexive active pour corriger le processus et élever la qualité.</li>
+  </ul>
+
+  <h2 id="interdep">Interdépendances Structurelles</h2>
+  <ul class="interdep-list">
+    <li><strong>Systèmes → Halliday :</strong> Un cadre stable est le prérequis d'un texte bien tissé.</li>
+    <li><strong>Halliday → Pragmatique :</strong> Un texte cohésif sans intention explicite reste un formulaire vide.</li>
+    <li><strong>Pragmatique → Hegel :</strong> La dialectique ne peut produire une synthèse pertinente que si l'intention est posée.</li>
+    <li><strong>Hegel → Cybernétique :</strong> La synthèse produite doit être auditée — la boucle valide ou invalide le dépassement synergique.</li>
+    <li><strong>Cybernétique → Systèmes :</strong> L'audit réinjecte des corrections dans le cadre systémique, bouclant le cycle.</li>
+  </ul>
+
+  <h2 id="orchestrateur">La Posture de l'Orchestrateur</h2>
+  <p>Sous l'angle de Benveniste, l'ingénieur du prompt expert est un <strong>auteur du prompt conscient (énonciateur)</strong> : il sait que chaque acte de langage engage un sujet (lui), un interlocuteur (le modèle), un cadre (la session), une intention (le contrat) et une dynamique (le flux). L'humain reste le seul détenteur de l'intention initiale et le seul juge de la pertinence finale.</p>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       PILIER 1
+  ══════════════════════════════════════ -->
+  <h2 id="p1">Pilier 1 — Théorie des Systèmes</h2>
+
+  <div class="pilier-header">
+    <div class="pilier-num">1</div>
+    <div class="pilier-meta">
+      <span class="label">Métaphore</span>
+      <span class="name">L'Aquarium</span>
+    </div>
+  </div>
+
+  <div class="chapeau">
+    🔗 <strong>Filiation</strong> — Bertalanffy (<em>Théorie Générale des Systèmes</em>, 1968) et Wiener (<em>Cybernétique</em>, 1948) ont formalisé les systèmes dynamiques à boucles de rétroaction. Une session LLM est un tel système : entrées (prompts), sorties (réponses), tendance naturelle à la dérive de cohérence contextuelle sans mécanisme actif de régulation.
+  </div>
+
+  <h3>Le Rôle</h3>
+  <p>Maintenir l'équilibre actif (homéostasie) de la session — empêcher la <strong>dérive de cohérence contextuelle</strong> par laquelle le modèle atténue progressivement les instructions initiales au profit des entrées les plus récentes.</p>
+
+  <h3>Matrice Opératoire</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mécanisme</th><th>Conséquence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Boucle de rétroaction négative :</strong> Réinjecter les contraintes de départ à chaque étape critique.</td>
+          <td>Réduction des dérives et incohérences en session longue.</td>
+        </tr>
+        <tr>
+          <td><strong>Verrouillage sémantique :</strong> Définir des règles de base (axiomes) immuables en début de session.</td>
+          <td>Stabilité du cadre pour la durée de la session active.</td>
+        </tr>
+        <tr>
+          <td><strong>Gestion de la redondance :</strong> Supprimer les répétitions sans valeur systémique.</td>
+          <td>Clarté du signal contextuel et réduction de la dilution des instructions.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="icon">⚠️</span>
+    <div><strong>Précision</strong> — Le verrouillage sémantique est effectif dans les limites de la fenêtre de contexte active. Il ne persiste pas entre sessions : chaque nouvelle session nécessite une réinitialisation du cadre.</div>
+  </div>
+
+  <div class="echec">
+    ✗ Sans approche systémique, la session dérive : le modèle se contredit, perd le fil des instructions initiales et produit des réponses génériques.
+  </div>
+
+  <h3>Exercice : Le Prompt "Ancre de Cohérence"</h3>
+  <div class="code-block"><span class="tag">Agis en tant qu'Expert en Logique Systémique.</span>
+<span class="comment">[CONTEXTE]</span> : <span class="value">Analyse de la viabilité d'un projet de ville durable.</span>
+<span class="comment">[RÈGLE D'ÉQUILIBRE]</span> : À chaque fin de réponse, vérifie la cohérence avec :
+  <span class="value">1. Réalisme économique</span>
+  <span class="value">2. Impact carbone zéro</span>
+  <span class="value">3. Acceptabilité sociale</span>
+Si une contradiction apparaît, corrige avant de soumettre.
+Ne sors jamais de ce cadre, même si je pose des questions ouvertes.</div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       PILIER 2
+  ══════════════════════════════════════ -->
+  <h2 id="p2">Pilier 2 — Linguistique Textuelle</h2>
+
+  <div class="pilier-header">
+    <div class="pilier-num">2</div>
+    <div class="pilier-meta">
+      <span class="label">Métaphore</span>
+      <span class="name">Le Tissu</span>
+    </div>
+  </div>
+
+  <div class="chapeau">
+    🔗 <strong>Filiation</strong> — Halliday & Hasan (<em>Cohesion in English</em>, 1976) : la <strong>cohésion</strong> (liens formels entre les parties du texte) et la <strong>cohérence</strong> (alignement logique global) font d'un texte un texte. Halliday distingue trois types de cohésion opérationnels en prompting : référentielle, conjonctive, lexicale. La cohérence relève du Pilier 3.
+  </div>
+
+  <h3>Le Rôle</h3>
+  <p>Tisser la cohésion structurelle interne du prompt. Dimension énonciative couverte : <strong>la texture de l'énoncé</strong>.</p>
+
+  <h3>Matrice Opératoire</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mécanisme (Halliday)</th><th>Type de Cohésion</th><th>Connecteurs / Outils</th><th>Conséquence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Balisage structurel</strong></td>
+          <td>Cohésion référentielle</td>
+          <td><code>[CONTEXTE]</code>, <code>[INSTRUCTION]</code>, <code>[CONTRAINTE]</code>, <code>[FORMAT]</code></td>
+          <td>Le modèle identifie la hiérarchie de chaque bloc.</td>
+        </tr>
+        <tr>
+          <td><strong>Connectivité logique typée</strong></td>
+          <td>Cohésion conjonctive</td>
+          <td>Causalité : <em>parce que, donc</em> / Condition : <em>si</em> / Séquence : <em>d'abord, ensuite</em> / Concession : <em>bien que</em></td>
+          <td>Le modèle suit la logique de l'auteur.</td>
+        </tr>
+        <tr>
+          <td><strong>Compression formelle</strong></td>
+          <td>Cohésion lexicale</td>
+          <td>Suppression des formules de remplissage (phatiques) et répétitions</td>
+          <td>Densité maximale — chaque élément porte une charge structurelle.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="icon">⚠️</span>
+    <div><strong>Précision</strong> — La compréhension du modèle reste probabiliste : la cohésion formelle réduit l'espace d'interprétation sans l'éliminer. Elle est nécessaire, non suffisante.</div>
+  </div>
+
+  <div class="echec">
+    ✗ Prompt atomisé : une remarque secondaire reçoit autant d'attention que l'instruction principale.
+  </div>
+
+  <h3>Exercice : Le Prompt "Tissu Cohésif"</h3>
+  <div class="code-block">Voici une transcription brute <span class="comment">[TRANSCRIPTION]</span>.
+
+<span class="tag">ÉTAPE 1 — Cohésion référentielle :</span>
+Supprime les éléments parasites (hésitations, répétitions, digressions).
+Extrais et balise :
+  <span class="comment">[CONTEXTE]</span> / <span class="comment">[INSTRUCTION-1]</span> / <span class="comment">[INSTRUCTION-2]</span> / <span class="comment">[INSTRUCTION-3]</span> / <span class="comment">[FORMAT]</span>
+
+<span class="tag">ÉTAPE 2 — Cohésion conjonctive :</span>
+Relie les blocs par des connecteurs typés :
+  <span class="value">Séquence (d'abord... ensuite... enfin...)</span>
+  <span class="value">Condition (si... alors...)</span>
+  <span class="value">Finalité (afin de... pour que...)</span>
+  <span class="value">Concession (cependant... bien que...)</span>
+Indique le type entre crochets.
+
+<span class="tag">ÉTAPE 3 — Cohésion lexicale :</span>
+Chaque terme clé en forme canonique, une seule fois.
+Supprime toute paraphrase non-intentionnelle.
+Restitue le prompt restructuré avant d'y répondre.</div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       PILIER 3
+  ══════════════════════════════════════ -->
+  <h2 id="p3">Pilier 3 — Pragmatique Linguistique</h2>
+
+  <div class="pilier-header">
+    <div class="pilier-num">3</div>
+    <div class="pilier-meta">
+      <span class="label">Métaphore</span>
+      <span class="name">Le Contrat</span>
+    </div>
+  </div>
+
+  <div class="chapeau">
+    🔗 <strong>Filiation</strong> — Austin (1962), Searle (1969), Grice (1975) : le langage agit. Un énoncé possède une <strong>force d'action (force illocutoire)</strong> — une intention d'action (performative) qui dépasse sa valeur littérale. Le modèle traite l'énoncé littéral, non l'intention. La pragmatique est le parent naturel d'un pilier dont l'objectif est d'aligner les deux.
+  </div>
+
+  <h3>Le Rôle</h3>
+  <p>Contractualiser l'intention : transformer un énoncé ambigu en contrat explicite.</p>
+
+  <h3>Matrice Opératoire</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mécanisme</th><th>Référence</th><th>Conséquence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Explicitation des 4 Maximes</strong></td>
+          <td>Grice (1975)</td>
+          <td>Suppression du malentendu : le modèle exécute, il n'interprète pas.</td>
+        </tr>
+        <tr>
+          <td><strong>Désambiguïsation sémantique</strong></td>
+          <td>Principe de coopération (Grice)</td>
+          <td>Alignement terminologique.</td>
+        </tr>
+        <tr>
+          <td><strong>Ancrage Opératoire</strong></td>
+          <td>Actes d'action (Austin, Searle)</td>
+          <td>Mode de traitement plus contraint.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="icon">⚠️</span>
+    <div><strong>Précision</strong> — L'ancrage opératoire produit un effet mécanique de contrainte probabiliste sur la distribution des sorties du modèle. Ce n'est pas un processus cognitif.</div>
+  </div>
+
+  <div class="echec">
+    ✗ "Peux-tu m'aider ?" → "Oui."
+  </div>
+
+  <h3>Exercice : Le Prompt "Contrat des 4 Maximes"</h3>
+  <div class="code-block"><span class="comment">[RÔLE]</span> : <span class="value">Tu es un analyste stratégique senior spécialisé en transformation digitale.</span>
+
+<span class="tag">[MAXIME DE QUANTITÉ]</span> :
+Exactement trois leviers stratégiques. Ni plus, ni moins.
+
+<span class="tag">[MAXIME DE QUALITÉ]</span> :
+Chaque levier étayé par un exemple réel ou précédent sectoriel vérifiable.
+
+<span class="tag">[MAXIME DE RELATION]</span> :
+Périmètre strict : distribution alimentaire en Europe, horizon 2025-2027.
+Toute référence hors périmètre signalée explicitement.
+
+<span class="tag">[MAXIME DE MANIÈRE]</span> :
+Ton factuel, direct. Format : tableau — Levier / Exemple / Impact estimé.
+
+<span class="tag">[INTENTION RÉELLE]</span> :
+<span class="value">Convaincre un comité de direction sceptique que ces leviers
+sont actionnables dans les 6 prochains mois.</span></div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       PILIER 4
+  ══════════════════════════════════════ -->
+  <h2 id="p4">Pilier 4 — Dialectique Hégélienne</h2>
+
+  <div class="pilier-header">
+    <div class="pilier-num">4</div>
+    <div class="pilier-meta">
+      <span class="label">Métaphore</span>
+      <span class="name">Le Creuset</span>
+    </div>
+  </div>
+
+  <div class="chapeau">
+    🔗 <strong>Filiation</strong> — Hegel (<em>Phénoménologie de l'Esprit</em>, 1807) décrit un mécanisme en trois temps : on pose une position (la thèse), on lui oppose une contradiction (l'antithèse), et de cette tension émerge quelque chose de nouveau — ni l'un, ni l'autre, mais un troisième terme qui dépasse les deux en gardant ce que chacun contenait de juste. Hegel appelle ce moment l'<strong>Aufhebung</strong> — un dépassement synergique : une synthèse qui n'arbitre pas entre deux camps, mais produit une valeur que ni l'un ni l'autre ne contenait seul. C'est précisément ce mécanisme que ce pilier active dans un prompt.
+  </div>
+
+  <h3>Le Rôle</h3>
+  <p>Générer un <strong>dépassement synergique (Aufhebung)</strong> par tension dialectique simulée. Sans cette tension : réponse consensuelle, lisse, sans profondeur — la "bouillie tiède".</p>
+
+  <h3>Matrice Opératoire</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mécanisme</th><th>Moment dialectique</th><th>Conséquence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Confrontation thèse/antithèse</strong></td>
+          <td>Position + Contradiction</td>
+          <td>Élimination des réponses consensuelles.</td>
+        </tr>
+        <tr>
+          <td><strong>Avocat du Diable</strong></td>
+          <td>Négation déterminée</td>
+          <td>Résistance interne testée.</td>
+        </tr>
+        <tr>
+          <td><strong>Demande d'Aufhebung</strong></td>
+          <td>Dépassement synergique</td>
+          <td>Valeur absente des deux positions initiales.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="icon">⚠️</span>
+    <div><strong>Précision</strong> — L'Aufhebung est une synthèse statistiquement contrainte par la structure du prompt. C'est la structuration de la tension par l'ingénieur — non le modèle — qui garantit la non-trivialité.</div>
+  </div>
+
+  <div class="echec">
+    ✗ La pensée reste en Thèse. Consensus mou, vraisemblance maximisée, pertinence absente.
+  </div>
+
+  <h3>Exercice : Le Prompt "Le Creuset Dialectique"</h3>
+  <div class="code-block">Nous allons procéder en trois temps dialectiques.
+
+<span class="tag">[THÈSE]</span> — <span class="value">Agent A (L'Optimiste) :</span>
+Présente les 3 avantages majeurs de lancer ce produit demain.
+Argumente chaque avantage avec un exemple concret.
+
+<span class="tag">[ANTITHÈSE]</span> — <span class="value">Agent B (Le Sceptique) :</span>
+Pour chaque avantage de A, identifie une faille critique ou un risque de marché.
+Cite le mécanisme de la faille, pas seulement son existence.
+
+<span class="tag">[AUFHEBUNG — Dépassement synergique]</span> :
+Ne choisis pas entre A et B. Dépasse les deux.
+<span class="value">Une solution que ni A ni B ne contenait à lui seul.</span>
+Nomme explicitement ce que tu as dépassé dans chaque position.</div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       PILIER 5
+  ══════════════════════════════════════ -->
+  <h2 id="p5">Pilier 5 — Cybernétique de Second Ordre</h2>
+
+  <div class="pilier-header">
+    <div class="pilier-num">5</div>
+    <div class="pilier-meta">
+      <span class="label">Métaphore</span>
+      <span class="name">La Boucle</span>
+    </div>
+  </div>
+
+  <div class="chapeau">
+    🔗 <strong>Filiation</strong> — Von Foerster (<em>Observing Systems</em>, 1974) : la cybernétique de second ordre intègre l'observateur dans le système observé — <strong>réflexivité active</strong> : l'acte d'observation transforme le système. La Boucle traduit ce retour actif qui modifie le système par le fait même du retour.
+  </div>
+
+  <h3>Le Rôle</h3>
+  <p>Piloter le processus qui produit le contenu, pas le contenu lui-même. Seul pilier qui agit sur le méta-niveau : il régule les quatre autres.</p>
+
+  <h3>Matrice Opératoire</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Mécanisme</th><th>Principe CSO</th><th>Conséquence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Boucle Réflexive Active</strong></td>
+          <td>Inclusion de l'observateur</td>
+          <td>Auto-correction et élévation mesurable.</td>
+        </tr>
+        <tr>
+          <td><strong>Audit de Biais</strong></td>
+          <td>Réflexivité épistémique</td>
+          <td>Réduction des boucles de confirmation.</td>
+        </tr>
+        <tr>
+          <td><strong>Inversion de Pilotage</strong></td>
+          <td>Récursivité</td>
+          <td>Optimisation récursive sous supervision humaine.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="icon">⚠️</span>
+    <div><strong>Précision</strong> — Le modèle exécute une simulation d'auto-évaluation sur instruction. L'ingénieur du prompt est l'observateur de second ordre réel : il introduit la boucle, définit les critères, et valide l'élévation effective.</div>
+  </div>
+
+  <div class="echec">
+    ✗ Présupposés et biais d'entraînement se renforcent mutuellement, invisiblement.
+  </div>
+
+  <h3>Exercice : Le Prompt "La Boucle Réflexive"</h3>
+  <div class="code-block">Après avoir produit ton analyse <span class="comment">[ANALYSE]</span>, active la boucle réflexive :
+
+<span class="tag">BOUCLE 1 — Autocritique de contenu :</span>
+<span class="value">Trois arguments ignorés pouvant contredire ta conclusion.</span>
+<span class="value">Un biais de représentativité dans ton choix d'exemples.</span>
+<span class="value">Un biais de confirmation dans ta structure argumentative.</span>
+
+<span class="tag">BOUCLE 2 — Autocritique de forme :</span>
+<span class="value">Maxime de Quantité respectée (ni trop, ni trop peu) ?</span>
+<span class="value">Maxime de Relation respectée (périmètre strict) ?</span>
+
+<span class="tag">PRODUCTION V2 :</span>
+Intègre les autocritiques des deux boucles.</div>
+
+  <div class="grille">
+    <strong>Grille de validation — ingénieur du prompt</strong><br>
+    ☐ &nbsp;La V2 dépasse la V1 sur la robustesse argumentative ?<br>
+    ☐ &nbsp;Les biais ont été corrigés, pas seulement mentionnés ?<br>
+    ☐ &nbsp;La V2 introduit des angles absents de la V1 ?<br><br>
+    Trois cases cochées → élévation réelle.<br>
+    Une case vide → relancer avec instruction ciblée.
+  </div>
+
+  <hr>
+
+    <!-- ══════════════════════════════════════
+       ANNEXE
+  ══════════════════════════════════════ -->
+  <h2 id="annexe">Annexe — Tableau de Filiation Épistémique</h2>
+  <p class="annexe-note">Chaque emprunt théorique est justifié par sa filiation directe à la dimension énonciative qu'il couvre — non par sa notoriété.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Pilier</th>
+          <th>Théorie & Auteurs</th>
+          <th>Filiation & Statut</th>
+          <th>Métaphore</th>
+          <th>Limite</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>Bertalanffy, Wiener</td>
+          <td>Directe — Application directe</td>
+          <td>L'Aquarium</td>
+          <td>Fenêtre de contexte active</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>Halliday & Hasan (1976)</td>
+          <td>Directe — 3 cohésions</td>
+          <td>Le Tissu</td>
+          <td>Compréhension probabiliste</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>Grice, Austin, Searle</td>
+          <td>Directe — 4 maximes</td>
+          <td>Le Contrat</td>
+          <td>Effet mécanique, non cognitif</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>Hegel (1807)</td>
+          <td>Directe — Processus dialectique</td>
+          <td>Le Creuset</td>
+          <td>Aufhebung structurelle, non délibérative</td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>Von Foerster (1974)</td>
+          <td>Directe par transposition</td>
+          <td>La Boucle</td>
+          <td>Observateur réel = humain</td>
+        </tr>
+        <tr style="background:#f8f3ed; font-weight:500;">
+          <td><strong>Chapeau</strong></td>
+          <td><strong>Benveniste (1974)</strong></td>
+          <td><strong>Directe — Théorie fondatrice</strong></td>
+          <td>—</td>
+          <td>Le modèle est instrument, non sujet</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Manuel de l'Ingénierie du Flux Sémantique — Les 5 Piliers de l'Acte d'Énonciation Expert<br>
+    Cadre pédagogique à filiation théorique directe. Fondation : Benveniste (1974).
+  </footer>
+</main>
+</body>
+</html>
