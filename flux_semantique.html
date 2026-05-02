@@ -958,6 +958,8 @@
     </table>
   </div>
 
+  <p style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:2rem;line-height:1.75;">Les cinq piliers décrivent cinq plans distincts d'un même acte d'énonciation, pas cinq étapes successives ou cinq techniques adjacentes. Le cycle qui suit présente un ordre pédagogique de construction — l'ordre dans lequel les maîtriser. Ce n'est pas l'ordre d'activation en situation : la section Orchestration montre que cet ordre varie selon l'objectif.</p>
+
   <h2 id="cycle">Le Cycle Opératoire</h2>
   <ul class="cycle-list">
     <li><strong>Étape 1 — Stabilisation (Systèmes) :</strong> Définir les règles de base (axiomes) pour créer une base de cohérence contextuelle.</li>
@@ -1109,6 +1111,7 @@
   <p>Maintenir l'équilibre actif (homéostasie) de la session — empêcher la <strong>dérive de cohérence contextuelle</strong> par laquelle le modèle atténue progressivement les instructions initiales au profit des entrées les plus récentes.</p>
 
   <h3>Matrice Opératoire</h3>
+  <p style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:1rem;line-height:1.75;">Les trois mécanismes du Pilier 1 n'agissent pas au même moment. Le verrouillage sémantique pose le cadre une fois, en amont. La boucle de rétroaction négative le maintient dans la durée, d'un tour à l'autre. La gestion de la redondance nettoie le signal à l'intérieur de chaque prompt. Les confondre produit soit un cadre jamais posé, soit un cadre posé mais non maintenu, soit un cadre maintenu dans un bruit inutile.</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -1335,13 +1338,14 @@ Ne sors jamais de ce cadre, même si je pose des questions ouvertes.</div>
   </div>
 
   <div class="chapeau">
-    🔗 <strong>Filiation</strong> — Halliday & Hasan (<em>Cohesion in English</em>, 1976) : la <strong>cohésion</strong> (liens formels entre les parties du texte) et la <strong>cohérence</strong> (alignement logique global) font d'un texte un texte. Halliday distingue trois types de cohésion opérationnels en prompting : référentielle, conjonctive, lexicale. La cohérence relève du Pilier 3.
+    🔗 <strong>Filiation</strong> — Halliday & Hasan (<em>Cohesion in English</em>, 1976) : la <strong>cohésion</strong> (liens formels entre les parties du texte) et la <strong>cohérence</strong> (alignement logique global) font d'un texte un texte. Halliday distingue trois types de cohésion opérationnels en prompting : référentielle, conjonctive, lexicale. Le Pilier 2 traite la cohésion formelle et la lisibilité des relations dans l'énoncé. Le Pilier 3 traite la finalité pragmatique de ces relations, c'est-à-dire ce qu'elles engagent comme contrat d'action.
   </div>
 
   <h3>Le Rôle</h3>
   <p>Tisser la cohésion structurelle interne du prompt. Dimension énonciative couverte : <strong>la texture de l'énoncé</strong>.</p>
 
   <h3>Matrice Opératoire</h3>
+  <p style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:1rem;line-height:1.75;">Le Pilier 2 n'agit pas sur ce que vous voulez obtenir, mais sur la manière dont les éléments du prompt sont rendus lisibles comme ensemble structuré. Il hiérarchise les blocs, explicite leurs relations et densifie leur formulation. Il ne fixe pas encore le contrat d'action de la demande, qui relève du Pilier 3.</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -1389,7 +1393,7 @@ Ne sors jamais de ce cadre, même si je pose des questions ouvertes.</div>
       <div class="ped-body-mecanique">
         Il faut distinguer deux niveaux de balisage qui n'opèrent pas au même endroit.
         <p class="ped-mecanique-titre">Balisage structurel — agit sur le modèle</p>
-        Il utilise les conventions de hiérarchie du texte : niveaux de titres (<code>#</code>, <code>##</code>, <code>###</code>), indentation, listes typées. Une instruction placée en titre de niveau 1 avec ses contraintes en sous-niveaux indentés ne peut pas être confondue avec un élément contextuel. C'est ce balisage qui crée la cohésion référentielle au sens de Halliday : les relations hiérarchiques entre les parties du prompt sont portées par la forme, pas inférées du sens.
+        Il utilise les conventions de hiérarchie du texte : niveaux de titres (<code>#</code>, <code>##</code>, <code>###</code>), indentation, listes typées. Une instruction placée en titre de niveau 1 avec ses contraintes en sous-niveaux indentés réduit fortement le risque d'être traitée comme un élément contextuel secondaire. C'est ce balisage qui crée la cohésion référentielle au sens de Halliday : les relations hiérarchiques entre les parties du prompt sont portées par la forme, pas inférées du sens.
         <p class="ped-mecanique-titre">Balisage sémantique — agit sur l'auteur du prompt</p>
         Les étiquettes verbales (<code>[CONTEXTE]</code>, <code>[INSTRUCTION]</code>, <code>[CONTRAINTE]</code>, <code>[FORMAT]</code>) agissent principalement sur vous, pas sur le modèle. Si le texte porte lui-même son intention, l'étiquette n'apporte pas de signal supplémentaire au modèle. Elle vous oblige en revanche à vérifier que chaque bloc a bien un rôle identifiable avant de soumettre : c'est un geste de rigueur rédactionnelle, pas une nécessité technique.
         <p style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border-light);font-size:0.85rem;color:var(--muted);">
@@ -1612,6 +1616,7 @@ Restitue le prompt restructuré avant d'y répondre.</div>
   <p>Contractualiser l'intention : transformer un énoncé ambigu en contrat explicite.</p>
 
   <h3>Matrice Opératoire</h3>
+  <p style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:1rem;line-height:1.75;">Le Pilier 3 ne traite pas une seule ambiguïté, mais trois. L'explicitation des maximes ferme les zones de sous-spécification coopérative : ce qui manque pour que la demande soit précise. La désambiguïsation sémantique fixe le sens des termes dont dépend la qualité de la réponse. L'ancrage opératoire fixe le type d'acte demandé au modèle. Les confondre produit soit un prompt clair mais lexicalement flottant, soit un prompt bien défini sur les termes mais sans direction d'action, soit un prompt directif construit sur des termes encore instables.</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -1621,7 +1626,7 @@ Restitue le prompt restructuré avant d'y répondre.</div>
         <tr>
           <td><strong>Explicitation des 4 Maximes</strong></td>
           <td>Grice (1975)</td>
-          <td>Suppression du malentendu : le modèle exécute, il n'interprète pas.</td>
+          <td>Suppression du malentendu : le modèle interprète dans un espace plus contraint, au lieu de combler librement les zones laissées ouvertes.</td>
         </tr>
         <tr>
           <td><strong>Désambiguïsation sémantique</strong></td>
@@ -1780,7 +1785,7 @@ Sur cette base, analyse la performance de l'équipe sur le dernier trimestre.</d
         <p class="ped-mecanique-titre">Génératif</p>
         Le modèle produit quelque chose de nouveau à partir de contraintes données. Verbes d'ancrage : <em>crée, rédige, conçois, génère.</em>
         <p style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border-light);font-size:0.85rem;color:var(--muted);">
-          Le geste opératoire est double : choisir le type d'acte avant de formuler la demande, puis ouvrir le prompt par le verbe qui l'ancre. Ce verbe n'est pas un détail stylistique : il contraint la distribution des sorties du modèle vers le registre d'action défini.
+          Le geste opératoire est double : choisir le type d'acte avant de formuler la demande, puis ouvrir le prompt par le verbe qui l'ancre. Ce verbe n'est pas un détail stylistique : il contraint la distribution des sorties du modèle vers le registre d'action défini. L'ancrage fixe le régime dans lequel la réponse se déploie ; il ne contrôle pas la qualité réflexive de cette réponse, qui relève du Pilier 5.
         </p>
       </div>
     </div>
@@ -1870,6 +1875,7 @@ sont actionnables dans les 6 prochains mois.</span></div>
   <p>Générer un <strong>dépassement synergique (Aufhebung)</strong> par tension dialectique simulée. Sans cette tension : réponse consensuelle, lisse, sans profondeur — la "bouillie tiède".</p>
 
   <h3>Matrice Opératoire</h3>
+  <p style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:1rem;line-height:1.75;">Le Pilier 4 n'est pas une machine à produire une synthèse plus brillante. Il ne fonctionne que si trois conditions sont tenues dans cet ordre : une opposition réelle entre deux positions incompatibles, une mise à l'épreuve interne de chacune, puis une demande explicite de dépassement. Si l'une de ces conditions manque, le résultat retombe soit dans la réponse consensuelle, soit dans la critique de surface, soit dans la synthèse artificielle.</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -2134,6 +2140,7 @@ Nomme explicitement ce que tu as dépassé dans chaque position.</div>
   <p>Piloter le processus qui produit le contenu, pas le contenu lui-même. Seul pilier qui agit sur le méta-niveau : il régule les quatre autres.</p>
 
   <h3>Matrice Opératoire</h3>
+  <p style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:1rem;line-height:1.75;">Le Pilier 5 n'attribue pas au modèle une réflexivité réelle. Il organise, sous supervision humaine, trois opérations distinctes : auditer la qualité d'une réponse, exposer les biais de son raisonnement, et déléguer temporairement le pilotage du processus dans un cadre contraint. L'observateur de second ordre réel reste l'auteur du prompt, qui définit les critères et valide l'élévation.</p>
   <div class="table-wrap">
     <table>
       <thead>
