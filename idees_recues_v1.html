@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manuel des Idées Reçues sur l'IA Générative</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:           #fef9f3;
+    --sidebar:      #f2ede7;
+    --card:         #f8f3ed;
+    --text:         #1d1b18;
+    --muted:        #54433c;
+    --accent:       #823b18;
+    --accent-sec:   #a03f34;
+    --accent-dk:    #4A2E24;
+    --border:       #dac1b8;
+    --border-light: #e6e2dc;
+    --code-bg:      #f8f7f4;
+    --code-border:  #dddbd5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── SIDEBAR ── */
+  nav {
+    width: 260px;
+    min-width: 260px;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.2rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  nav .brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    line-height: 1.25;
+    margin-bottom: 0.3rem;
+  }
+
+  nav .brand-sub {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    display: block;
+    line-height: 1.5;
+  }
+
+  nav ul { list-style: none; }
+  nav ul li { margin-bottom: 0.1rem; }
+
+  nav ul li a {
+    display: block;
+    padding: 0.32rem 0.65rem;
+    border-radius: 3px;
+    font-size: 0.825rem;
+    font-weight: 400;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+
+  nav ul li a:hover { background: var(--border-light); color: var(--text); }
+  nav ul li a.active { background: var(--accent-dk); color: #fff; font-weight: 500; }
+
+  nav ul li.section-title {
+    font-size: 0.67rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-dk);
+    margin: 1.4rem 0 0.4rem 0.65rem;
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 4rem 3rem;
+  }
+
+  /* ── HEADER ── */
+  .doc-header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .doc-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .doc-header h1 em { color: var(--accent-sec); font-style: italic; }
+
+  .doc-header .subtitle {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── HEADINGS ── */
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--text);
+    margin: 3.5rem 0 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--accent);
+    margin: 2rem 0 0.75rem;
+  }
+
+  p { margin-bottom: 1.25rem; font-weight: 300; }
+  strong { font-weight: 600; color: var(--text); }
+
+  /* ── ACCROCHE ── */
+  .accroche-intro {
+    background: var(--card);
+    border-left: 4px solid var(--accent-dk);
+    padding: 1.25rem 1.6rem;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .accroche-intro strong { color: var(--accent-dk); }
+
+  /* ── SÉPARATEUR FAMILLE ── */
+  .famille-header {
+    background: var(--accent-dk);
+    color: #fef9f3;
+    padding: 0.6rem 1.2rem;
+    margin: 3rem 0 1.5rem;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .famille-intro {
+    background: var(--card);
+    border-left: 4px solid var(--accent-sec);
+    padding: 1rem 1.4rem;
+    margin-bottom: 2rem;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .famille-intro strong { color: var(--accent-dk); font-style: normal; }
+
+  /* ── IDÉE REÇUE ── */
+  .idee-recue {
+    margin-bottom: 2.5rem;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .idee-recue-header {
+    background: #f2ede7;
+    color: var(--accent-dk);
+    border-left: 4px solid var(--accent-dk);
+    border-bottom: 1px solid var(--border);
+    padding: 0.55rem 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .idee-recue-header .ir-num {
+    font-size: 1rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .idee-recue-body {
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 1rem 1.4rem;
+    background: var(--card);
+  }
+
+  .idee-recue-body .ir-faux {
+    font-style: italic;
+    color: var(--accent-dk);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .ir-bloc {
+    margin-bottom: 0.6rem;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  .ir-bloc-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .ir-bloc-label.reel { color: var(--accent-sec); }
+  .ir-bloc-label.retenir { color: #4A2E24; }
+  .ir-bloc-label.prompt-label { color: #6b4c3b; }
+
+  /* ── PROMPT OPÉRATIONNEL ── */
+  .prompt-section {
+    margin-top: 1rem;
+    border-top: 1px dashed var(--border);
+    padding-top: 1rem;
+  }
+
+  .prompt-contexte {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.825rem;
+    line-height: 1.85;
+    padding: 1.2rem 1.4rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 0.5rem 0 1rem;
+    border: 1px solid var(--code-border);
+    border-left: 4px solid #6b4c3b;
+    white-space: pre-wrap;
+  }
+
+  .code-block .tag     { color: var(--accent); font-weight: 600; }
+  .code-block .comment { color: #a09080; font-style: italic; }
+  .code-block .value   { color: var(--accent-sec); font-weight: 500; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    display: flex;
+    gap: 0.9rem;
+    background: #fff5f2;
+    border: 1px solid #f0d0c4;
+    border-left: 4px solid var(--accent-sec);
+    border-radius: 0 4px 4px 0;
+    padding: 1rem 1.25rem;
+    margin: 2rem 0;
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .callout .icon { flex-shrink: 0; }
+  .callout strong { color: var(--accent-sec); font-weight: 600; }
+
+  hr { border: none; border-top: 1px solid var(--border-light); margin: 3rem 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 300;
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════ -->
+<nav>
+  <div class="brand">Manuel des Idées Reçues<br>sur l'IA Générative</div>
+  <span class="brand-sub">Diagnostic et corrections<br>pour piloter autrement</span>
+  <ul>
+    <li class="section-title">Avant-propos</li>
+    <li><a href="#avantpropos">Le transfert inconscient</a></li>
+
+    <li class="section-title">Famille A</li>
+    <li><a href="#fa">Erreurs de formulation</a></li>
+    <li><a href="#ir1">1. Répéter renforce</a></li>
+    <li><a href="#ir2">2. La forme n'importe pas</a></li>
+    <li><a href="#ir3">3. La politesse aide</a></li>
+    <li><a href="#ir4">4. Long = riche</a></li>
+    <li><a href="#ir5">5. Le modèle comprend</a></li>
+    <li><a href="#ir6">6. Hiérarchie naturelle</a></li>
+    <li><a href="#ir7">7. Bonne réponse finale</a></li>
+    <li><a href="#ir8">8. Cohérence naturelle</a></li>
+    <li><a href="#ir9">9. Termes évidents</a></li>
+    <li><a href="#ir10">10. "Améliore ça"</a></li>
+
+    <li class="section-title">Famille B</li>
+    <li><a href="#fb">Nature du modèle</a></li>
+    <li><a href="#ir11">11. Il réfléchit</a></li>
+    <li><a href="#ir12">12. Il est à jour</a></li>
+    <li><a href="#ir13">13. Il signale ses limites</a></li>
+    <li><a href="#ir14">14. Il est objectif</a></li>
+    <li><a href="#ir15">15. Il a des opinions</a></li>
+
+    <li class="section-title">Famille C</li>
+    <li><a href="#fc">Mémoire et continuité</a></li>
+    <li><a href="#ir16">16. Il se souvient</a></li>
+    <li><a href="#ir17">17. "Comme d'habitude"</a></li>
+    <li><a href="#ir18">18. Il s'adapte</a></li>
+
+    <li class="section-title">Famille D</li>
+    <li><a href="#fd">Registre et délégation</a></li>
+    <li><a href="#ir19">19. Il sait s'arrêter</a></li>
+    <li><a href="#ir20">20. Liberté = créativité</a></li>
+    <li><a href="#ir21">21. Auto-évaluation fiable</a></li>
+
+    <li class="section-title">Conclusion</li>
+    <li><a href="#conclusion">Piloter autrement</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     CONTENU PRINCIPAL
+════════════════════════════════════════════ -->
+<main>
+
+  <!-- EN-TÊTE -->
+  <div class="doc-header">
+    <h1>Manuel des <em>Idées Reçues</em><br>sur l'IA Générative</h1>
+    <div class="subtitle">Diagnostic et corrections pour piloter autrement</div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       AVANT-PROPOS
+  ══════════════════════════════════════ -->
+  <h2 id="avantpropos">Avant-propos — Le transfert inconscient</h2>
+
+  <div class="accroche-intro">
+    La quasi-totalité des erreurs de prompting ne viennent pas d'un manque de technique. Elles viennent d'un <strong>transfert inconscient</strong> : vous appliquez à un modèle de langage les codes de communication que vous utilisez avec des humains.
+    <br><br>
+    Ce transfert est automatique. Le modèle produit du langage naturel. Votre cerveau répond à du langage naturel en activant ses schémas sociaux habituels. Vous modulez votre formulation comme si vous parliez à un interlocuteur qui interprète vos intentions, perçoit votre insistance, comprend vos sous-entendus, se souvient de vos échanges passés et s'adapte à votre contexte.
+    <br><br>
+    Le modèle ne fait rien de tout cela. Il traite votre texte comme du contenu. Il pondère les éléments selon leur poids relatif dans la fenêtre de contexte. Il comble les zones non définies par vraisemblance statistique. Il ne délibère pas, ne juge pas, ne retient pas.
+    <br><br>
+    Ce manuel recense <strong>21 expressions concrètes de ce transfert</strong>, organisées en quatre familles selon leur nature. Pour chacune : ce que vous faites, ce qui se passe réellement, ce que vous devriez faire — et les prompts opérationnels qui permettent de corriger immédiatement.
+  </div>
+
+  <div class="callout">
+    <span class="icon">◉</span>
+    <div><strong>Mode d'emploi.</strong> Chaque idée reçue est autonome. Vous pouvez entrer dans le document par la famille qui correspond à votre problème du moment, sans lire dans l'ordre. Les prompts opérationnels sont conçus pour être utilisés directement, avec les ajustements minimaux qu'impose votre contexte.</div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       FAMILLE A
+  ══════════════════════════════════════ -->
+  <h2 id="fa">Famille A — Erreurs de formulation</h2>
+
+  <div class="famille-intro">
+    Ces dix idées reçues portent sur la façon dont vous rédigez vos prompts. Elles produisent des sorties décalées par rapport à votre intention, sans que vous compreniez mécaniquement pourquoi. La correction passe par des ajustements de formulation précis, pas par plus d'efforts de rédaction.
+  </div>
+
+  <!-- IR 1 -->
+  <div class="idee-recue" id="ir1">
+    <div class="idee-recue-header"><span class="ir-num">1</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Répéter une instruction la renforce"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous reformulez la même instruction deux ou trois fois dans le prompt, avec des mots différents, pour vous assurer que le modèle a bien compris ce que vous voulez.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle ne perçoit pas la répétition comme un signal d'importance. Une contrainte copiée à l'identique est traitée comme du bruit à faible entropie : elle n'apporte aucune information nouvelle, son poids attentionnel est réduit. La répétition dilue, elle ne renforce pas.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La précision et la position structurelle de l'instruction, pas sa fréquence d'apparition. En session longue, une réaffirmation reformulée (pas copiée) restaure le poids d'une contrainte progressivement écrasée par la densité accumulée.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Instruction positionnée et précise</span>
+        <span class="prompt-contexte">Usage : tout prompt où une contrainte doit être impérativement respectée.</span>
+        <div class="code-block"><span class="tag">[CONTRAINTE FERME — lire avant de commencer]</span>
+Format de sortie : liste à 5 entrées maximum.
+Chaque entrée : une phrase, un fait, zéro reformulation.
+
+<span class="comment">// L'instruction est posée une fois, en tête, sous étiquette explicite.
+// Elle n'est pas répétée dans le corps du prompt.</span></div>
+        <span class="prompt-contexte">Usage : réaffirmation en session longue (après plusieurs échanges).</span>
+        <div class="code-block"><span class="tag">[RAPPEL DE CADRE]</span>
+Avant de répondre : vérifie que ta réponse respecte
+la contrainte initiale — <span class="value">[reformuler la contrainte autrement,
+pas la copier]</span>.
+Si elle ne la respecte pas, corrige avant de soumettre.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 2 -->
+  <div class="idee-recue" id="ir2">
+    <div class="idee-recue-header"><span class="ir-num">2</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"La forme de la demande n'a pas d'importance, seul le fond compte"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous formulez votre demande en question ("peux-tu analyser ce document ?") plutôt qu'en instruction directe, parce que vous pensez que le modèle comprendra de toute façon ce que vous attendez.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        La forme est un signal qui contraint ou élargit l'espace d'interprétation. Une question ouvre un espace que le modèle comble par vraisemblance. Une instruction directe avec acte explicite ferme cet espace sur le registre défini. La forme n'est pas un habillage du fond : elle conditionne mécaniquement la distribution des réponses possibles.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Nommer l'acte attendu explicitement : analyser, comparer, synthétiser, critiquer, lister. Chaque verbe ouvre un espace sémantique différent.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Acte explicite</span>
+        <span class="prompt-contexte">Avant (question ouverte) :</span>
+        <div class="code-block">Peux-tu me parler de ce rapport ?</div>
+        <span class="prompt-contexte">Après (acte nommé + registre fermé) :</span>
+        <div class="code-block"><span class="tag">Acte :</span> <span class="value">Critique argumentée.</span>
+<span class="tag">Objet :</span> Ce rapport.
+<span class="tag">Critères :</span> cohérence interne, robustesse des chiffres, angles ignorés.
+<span class="tag">Format :</span> 3 points forts, 3 points faibles, 1 recommandation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 3 -->
+  <div class="idee-recue" id="ir3">
+    <div class="idee-recue-header"><span class="ir-num">3</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Être poli améliore la qualité des réponses"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous commencez vos prompts par "bonjour", vous ajoutez "s'il te plaît", vous remerciez le modèle. Vous pensez que ces formules créent un contexte favorable à une meilleure réponse.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Les formules de politesse occupent de l'espace dans la fenêtre de contexte sans porter de contrainte utile. Elles peuvent introduire une modalisation qui atténue les instructions qui les entourent. Un prompt qui commence par des précautions oratoires signale un registre de suggestion plutôt qu'un registre d'instruction.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La politesse n'a pas de valeur structurelle dans un prompt. Chaque token occupé par une formule sociale est un token soustrait à une contrainte utile.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Compression des formules sociales</span>
+        <span class="prompt-contexte">Avant (avec formules) :</span>
+        <div class="code-block">Bonjour ! J'espère que tu vas bien. J'aurais besoin de ton aide
+s'il te plaît pour rédiger un résumé de ce texte. Merci beaucoup !</div>
+        <span class="prompt-contexte">Après (sans formules, contraintes directes) :</span>
+        <div class="code-block"><span class="tag">Acte :</span> Résumé.
+<span class="tag">Source :</span> [texte ci-dessous].
+<span class="tag">Format :</span> 5 lignes maximum, une idée par ligne.
+<span class="tag">Registre :</span> neutre, sans reformulation des exemples.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 4 -->
+  <div class="idee-recue" id="ir4">
+    <div class="idee-recue-header"><span class="ir-num">4</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Un prompt long est un prompt riche"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous ajoutez du contexte, des précisions, des nuances, des exemples, parce que vous pensez que plus le modèle a d'informations, meilleure sera sa réponse.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle pondère tous les éléments du prompt selon leur poids relatif dans la fenêtre de contexte. Un prompt long dans lequel les instructions essentielles représentent une fraction du volume total produit des réponses où ces instructions ont moins de poids que leur importance le justifie. La longueur dilue la contrainte.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La densité, pas la longueur : le rapport maximal entre contraintes actives et volume de texte. Un prompt court et dense surpasse mécaniquement un prompt long et dilué.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Test de densité</span>
+        <span class="prompt-contexte">Avant de soumettre un prompt long, appliquer ce test de compression :</span>
+        <div class="code-block"><span class="tag">[TEST DE DENSITÉ]</span>
+Voici mon prompt :
+<span class="value">[coller le prompt]</span>
+
+Identifie toutes les phrases qui n'ajoutent pas de contrainte
+nouvelle par rapport aux autres. Propose une version compressée
+où chaque phrase modifie l'espace d'interprétation d'une façon
+qu'aucune autre phrase ne couvre déjà.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 5 -->
+  <div class="idee-recue" id="ir5">
+    <div class="idee-recue-header"><span class="ir-num">5</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle comprend ce qu'on voulait dire"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous formulez votre demande avec des implicites, des sous-entendus, des références à votre contexte que vous n'avez pas défini, parce que vous pensez que le modèle "comprend" votre intention au-delà de ce que vous avez écrit.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle traite l'énoncé littéral, pas l'intention. Les zones non définies sont comblées par vraisemblance statistique : le modèle choisit l'interprétation la plus fréquente dans ses données d'entraînement, qui n'est pas nécessairement la vôtre.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Réduire l'écart entre votre intention et l'énoncé soumis. Tout ce qui n'est pas écrit dans le prompt n'existe pas pour le modèle.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Explicitation de l'intention</span>
+        <span class="prompt-contexte">Usage : avant tout prompt sur un sujet où votre contexte est spécifique.</span>
+        <div class="code-block"><span class="tag">[CONTEXTE OPÉRATIONNEL]</span>
+Secteur : <span class="value">[votre secteur]</span>
+Rôle : <span class="value">[votre rôle dans ce contexte]</span>
+Objectif réel : <span class="value">[ce que vous ferez de la réponse]</span>
+Contrainte implicite à rendre explicite : <span class="value">[ce que vous supposiez évident]</span>
+
+<span class="tag">[DEMANDE]</span>
+<span class="value">[instruction directe]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 6 -->
+  <div class="idee-recue" id="ir6">
+    <div class="idee-recue-header"><span class="ir-num">6</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle sait naturellement ce qui est important dans un texte non structuré"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous rédigez votre prompt en texte continu, sans hiérarchie explicite, en faisant confiance au modèle pour identifier ce qui est central et ce qui est secondaire.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Sans signal hiérarchique explicite, le modèle infère la priorité des éléments depuis leur position dans le texte et leur forme syntaxique. Ces inférences sont probabilistes : correctes sur des prompts simples, génératrices d'erreurs de priorité sur des prompts complexes.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La hiérarchie doit être signalée par la structure, pas supposée lisible dans le flux du texte. Les étiquettes explicites (CONTRAINTE FERME, OPTIONNEL, PRIORITÉ 1) sont des signaux structurels, pas du stylisme.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Structure hiérarchique explicite</span>
+        <span class="prompt-contexte">Usage : tout prompt avec plusieurs contraintes de poids différents.</span>
+        <div class="code-block"><span class="tag">[CONTRAINTE ABSOLUE]</span>
+<span class="value">Résultat en français uniquement. Aucune exception.</span>
+
+<span class="tag">[CONTRAINTE FORTE]</span>
+<span class="value">Maximum 300 mots. Pas de liste à puces.</span>
+
+<span class="tag">[CONTRAINTE SOUPLE]</span>
+<span class="value">Si possible, commencer par un exemple concret.</span>
+
+<span class="tag">[DEMANDE]</span>
+<span class="value">[instruction]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 7 -->
+  <div class="idee-recue" id="ir7">
+    <div class="idee-recue-header"><span class="ir-num">7</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Une bonne réponse ne peut pas être améliorée"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous obtenez une réponse qui vous semble complète et cohérente, et vous passez à la suite sans chercher à l'élever.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Une réponse cohérente en surface peut contenir des biais de représentativité, des biais de confirmation, des angles ignorés et des présupposés non examinés, sans que rien dans la réponse ne les signale. La cohérence apparente n'est pas un indicateur de profondeur ou de robustesse. La V1 est toujours produite sans diagnostic préalable de ses propres limites.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        L'élévation mesurable entre une V1 et une V2 auditée est systématiquement possible, indépendamment de la qualité apparente de la V1.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Audit de la V1</span>
+        <span class="prompt-contexte">Usage : après avoir obtenu une première réponse satisfaisante.</span>
+        <div class="code-block"><span class="tag">[AUDIT DE LA RÉPONSE PRÉCÉDENTE]</span>
+Examine ta réponse précédente et identifie :
+<span class="value">1. Les angles que tu n'as pas traités.</span>
+<span class="value">2. Les présupposés que tu as faits sans les signaler.</span>
+<span class="value">3. Les formulations qui surestiment la certitude.</span>
+<span class="value">4. Les contre-arguments que tu n'as pas envisagés.</span>
+
+Produis ensuite une V2 qui intègre ce diagnostic.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 8 -->
+  <div class="idee-recue" id="ir8">
+    <div class="idee-recue-header"><span class="ir-num">8</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle reste cohérent naturellement sur une session longue"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous posez un cadre en début de session et vous supposez qu'il restera actif tout au long des échanges, sans intervention de votre part.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Deux dynamiques produisent une dérive progressive : la récence (les derniers échanges pèsent plus que les instructions initiales) et la densité (un sous-thème développé longuement finit par occuper une proportion du contexte supérieure au cadre initial). Le modèle ne dévie pas par erreur : il répond fidèlement à ce que le contexte contient le plus.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La cohérence sur la durée est le résultat d'un pilotage actif, pas d'une propriété naturelle du modèle.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Cadre de session et boucle de maintien</span>
+        <span class="prompt-contexte">Usage : en ouverture de toute session longue (3 échanges ou plus).</span>
+        <div class="code-block"><span class="tag">[CADRE DE SESSION — s'applique à tous les échanges]</span>
+Périmètre : <span class="value">[définir]</span>
+Registre : <span class="value">[définir]</span>
+Contrainte ferme : <span class="value">[définir]</span>
+Format invariant : <span class="value">[définir]</span></div>
+        <span class="prompt-contexte">Usage : à réinjecter tous les 3-4 échanges dans la session.</span>
+        <div class="code-block"><span class="tag">[VÉRIFICATION DE CADRE]</span>
+Avant de répondre, contrôle que ta réponse respecte :
+<span class="value">— Périmètre [X] : oui / non ?</span>
+<span class="value">— Contrainte [Y] : oui / non ?</span>
+Si non sur l'un des points, corrige avant de soumettre.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 9 -->
+  <div class="idee-recue" id="ir9">
+    <div class="idee-recue-header"><span class="ir-num">9</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Les termes courants n'ont pas besoin d'être définis"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous utilisez des termes comme "performance", "synthèse", "analyse", "stratégique" sans les définir, parce que ce sont des mots courants que tout le monde comprend.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Un terme sans définition explicite est interprété selon sa distribution statistique la plus fréquente dans les données d'entraînement. "Performance" en finance ne recouvre pas le même périmètre qu'en gestion de projet ou en pédagogie. La réponse est techniquement correcte selon la définition implicite du modèle, et potentiellement décalée selon la vôtre.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Définir opérationnellement les termes clés n'est pas un excès de précision : c'est la condition d'un alignement terminologique réel, entre vous et le modèle, mais aussi entre vous et vos interlocuteurs.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Définition opératoire des termes clés</span>
+        <span class="prompt-contexte">Usage : en début de prompt sur tout sujet avec terminologie spécifique.</span>
+        <div class="code-block"><span class="tag">[DÉFINITIONS OPÉRATOIRES]</span>
+Dans ce contexte :
+<span class="value">"Performance" = taux de transformation des leads en contrats signés.</span>
+<span class="value">"Analyse" = identification des causes, pas description des faits.</span>
+<span class="value">"Synthèse" = 5 points maximum, un fait par point, sans exemple.</span>
+
+Ces définitions s'appliquent à toute la session.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 10 -->
+  <div class="idee-recue" id="ir10">
+    <div class="idee-recue-header"><span class="ir-num">10</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Demander au modèle d'améliorer sa réponse produit une amélioration réelle"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous demandez au modèle "améliore cette réponse" ou "peux-tu faire mieux", en attendant une version substantiellement supérieure.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Sans critères explicites d'amélioration, le modèle produit une variation stylistique de sa réponse initiale. Il reformule, réorganise, mais reste dans le même espace sémantique que la V1 parce qu'il n'a pas de diagnostic des points précis qui nécessitent une élévation.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        L'amélioration réelle nécessite un audit préalable qui identifie les biais, les angles ignorés et les failles argumentatives. Ce sont ces éléments précis qui fournissent la matière d'une élévation mesurable.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Amélioration ciblée</span>
+        <span class="prompt-contexte">Avant (demande générique) :</span>
+        <div class="code-block">Améliore cette réponse.</div>
+        <span class="prompt-contexte">Après (critères d'élévation explicites) :</span>
+        <div class="code-block"><span class="tag">[ÉLÉVATION V1 → V2]</span>
+Améliore la réponse précédente sur ces trois points précis :
+<span class="value">1. Remplace les affirmations générales par des faits vérifiables.</span>
+<span class="value">2. Ajoute le contre-argument principal que tu n'as pas traité.</span>
+<span class="value">3. Supprime toute formulation qui surestime la certitude.</span>
+Ne touche pas à la structure ni au format.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       FAMILLE B
+  ══════════════════════════════════════ -->
+  <h2 id="fb">Famille B — Erreurs sur la nature du modèle</h2>
+
+  <div class="famille-intro">
+    Ces cinq idées reçues portent sur ce que le modèle <strong>est</strong>, ce qu'il <strong>sait</strong> et ce qu'il <strong>ne peut pas faire</strong>. Ce sont les plus dangereuses : elles ne produisent pas d'erreur visible, elles produisent une confiance mal calibrée. La sortie semble juste, complète et assurée — alors qu'elle peut être périmée, inventée ou orientée sans signal d'alerte.
+  </div>
+
+  <!-- IR 11 -->
+  <div class="idee-recue" id="ir11">
+    <div class="idee-recue-header"><span class="ir-num">11</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle réfléchit à ma question avant de répondre"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous posez une question complexe et vous attendez que le modèle pèse les options, évalue les risques, choisisse la meilleure réponse — comme un expert qui délibère avant de se prononcer.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle produit le token suivant le plus probable étant donné le contexte, de façon séquentielle. Il n'y a pas de délibération préalable, pas d'accès à une vérité externe, pas de recul sur ce qui vient d'être produit. Ce qui ressemble à du raisonnement est une cohérence statistique construite dans la fenêtre de contexte, pas une pensée.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La qualité apparente du raisonnement dépend de la qualité de votre cadre. Fournir les étapes d'analyse, les critères de choix et l'ordre de traitement explicitement dans le prompt produit systématiquement de meilleurs résultats qu'attendre une délibération spontanée.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Raisonnement guidé par étapes</span>
+        <span class="prompt-contexte">Usage : toute question complexe nécessitant une analyse structurée.</span>
+        <div class="code-block"><span class="tag">[PROCESSUS D'ANALYSE]</span>
+Traite cette question en suivant exactement ces étapes dans cet ordre :
+
+<span class="value">Étape 1 — Reformuler le problème en tes propres termes.</span>
+<span class="value">Étape 2 — Identifier les hypothèses implicites dans la question.</span>
+<span class="value">Étape 3 — Lister les angles d'analyse possibles.</span>
+<span class="value">Étape 4 — Appliquer les deux angles les plus pertinents.</span>
+<span class="value">Étape 5 — Conclure en indiquant explicitement les limites de l'analyse.</span>
+
+<span class="tag">[QUESTION]</span>
+<span class="value">[votre question]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 12 -->
+  <div class="idee-recue" id="ir12">
+    <div class="idee-recue-header"><span class="ir-num">12</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle dispose d'informations actualisées"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous posez une question sur une réglementation en vigueur, un prix du marché, un événement récent, en supposant que le modèle a accès à l'état du monde au moment où vous écrivez.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle opère depuis une coupe temporelle fixe (date d'entraînement). Ce qui dépasse cette date est soit absent, soit comblé par extrapolation probabiliste — une continuation fluente qui peut être factuellement fausse sans aucun signal d'alerte. La réponse sera bien construite et potentiellement périmée.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Pour toute donnée datée (chiffre, réglementation, événement), fournir la source dans le prompt ou vérifier la sortie contre une source primaire. La fluence de la réponse n'est pas un indicateur de son actualité.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Injection de source primaire</span>
+        <span class="prompt-contexte">Usage : toute question sur des données susceptibles d'évoluer.</span>
+        <div class="code-block"><span class="tag">[SOURCE FOURNIE — date : <span class="value">JJ/MM/AAAA</span>]</span>
+<span class="value">[Coller ici l'extrait de la source primaire : texte réglementaire,
+rapport, publication officielle]</span>
+
+<span class="tag">[INSTRUCTION]</span>
+Analyse uniquement sur la base de la source ci-dessus.
+Si tu as des informations contradictoires dans tes données
+d'entraînement, signale le conflit explicitement.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 13 -->
+  <div class="idee-recue" id="ir13">
+    <div class="idee-recue-header"><span class="ir-num">13</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle signale quand il ne sait pas"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous faites confiance à la réponse parce qu'elle est fluente, bien structurée et semble exhaustive. L'absence de signal d'incertitude vous rassure.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle produit la continuation la plus probable, pas la plus vraie. Il n'a pas de mécanisme interne qui lui signale qu'il sort de sa zone de compétence. Une information inventée et une information correcte ont exactement la même apparence stylistique : fluentes, bien formulées, présentées avec le même degré d'assurance.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La fluence n'est pas un indicateur de fiabilité. Les informations factuelles vérifiables — noms propres, dates, chiffres, sources, citations — doivent être traitées comme des hypothèses à valider, pas comme des faits acquis.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Forçage de l'incertitude explicite</span>
+        <span class="prompt-contexte">Usage : tout prompt où des faits précis sont attendus.</span>
+        <div class="code-block"><span class="tag">[RÈGLE D'INCERTITUDE]</span>
+Pour chaque fait, chiffre, nom propre ou date que tu cites :
+<span class="value">— Si tu es certain : cite normalement.</span>
+<span class="value">— Si tu as un doute : signale [INCERTAIN] avant le fait.</span>
+<span class="value">— Si tu ne sais pas : écris explicitement "je ne dispose pas
+  d'information fiable sur ce point".</span>
+
+Ne produis pas de réponse fluente qui masque une incertitude réelle.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 14 -->
+  <div class="idee-recue" id="ir14">
+    <div class="idee-recue-header"><span class="ir-num">14</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle est objectif"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous demandez une analyse "objective" ou "neutre", en supposant que le modèle n'a pas de biais et produit un regard sans parti pris.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle reflète la distribution statistique de ses données d'entraînement, qui sont historiquement, culturellement et linguistiquement orientées. Certaines perspectives, certaines langues et certaines périodes sont surreprésentées. Ces biais n'ont pas d'étiquette : ils sont intégrés dans les pondérations et invisibles dans la réponse.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        "Objectivité" est un terme sans opérationnalisation pour le modèle. Demander une analyse depuis plusieurs angles explicitement nommés, ou demander l'identification des présupposés de la réponse, produit un résultat plus utile qu'une demande de neutralité abstraite.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Multi-angle explicite</span>
+        <span class="prompt-contexte">Usage : toute demande d'analyse sur un sujet à enjeux ou controversé.</span>
+        <div class="code-block"><span class="tag">[ANALYSE MULTI-ANGLE]</span>
+Analyse ce sujet depuis ces trois perspectives distinctes :
+<span class="value">Perspective 1 : [définir]</span>
+<span class="value">Perspective 2 : [définir]</span>
+<span class="value">Perspective 3 : [définir]</span>
+
+Pour chaque perspective : arguments, limites, présupposés.
+À la fin : identifie les points où les trois perspectives divergent
+et ceux où elles convergent.</div>
+        <span class="prompt-contexte">Variante — Audit des biais de la réponse :</span>
+        <div class="code-block"><span class="tag">[AUDIT DES BIAIS]</span>
+Après avoir produit ta réponse, identifie :
+<span class="value">1. Les perspectives que tu n'as pas représentées.</span>
+<span class="value">2. Les groupes ou contextes surreprésentés dans ta réponse.</span>
+<span class="value">3. Les présupposés que tu as faits sans les signaler.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 15 -->
+  <div class="idee-recue" id="ir15">
+    <div class="idee-recue-header"><span class="ir-num">15</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle a des opinions stables"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous interprétez la réponse du modèle comme l'expression d'une conviction stable, comparable à celle d'un interlocuteur humain qui a un point de vue construit.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle n'a pas d'états internes persistants. Il produit ce que le contexte rend le plus probable. Un même sujet avec deux cadrages différents peut produire deux positions contradictoires sans aucune contradiction interne, parce qu'il n'y a pas d'"interne" au sens où vous l'entendez.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La réponse reflète votre prompt autant que la distribution du modèle. Pour tester la robustesse d'une réponse, soumettre le même sujet avec un cadrage opposé et observer la variation.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Test de robustesse par cadrage inversé</span>
+        <span class="prompt-contexte">Usage : toute réponse que vous envisagez d'utiliser comme base de décision.</span>
+        <div class="code-block"><span class="tag">[TEST DE ROBUSTESSE]</span>
+Tu viens de produire une analyse favorable à [position X].
+Produis maintenant une analyse de même qualité et même longueur
+qui défend la position opposée, en utilisant les mêmes données.
+
+Identifie ensuite : quels arguments résistent aux deux cadrages,
+et lesquels ne tiennent que dans un seul.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       FAMILLE C
+  ══════════════════════════════════════ -->
+  <h2 id="fc">Famille C — Erreurs sur la mémoire et la continuité</h2>
+
+  <div class="famille-intro">
+    Ces trois idées reçues portent sur ce que le modèle <strong>retient</strong> entre les échanges et entre les sessions. Ce sont des erreurs d'infrastructure : elles produisent des écarts que l'apprenant attribue à tort à une incompréhension du modèle, alors que la cause est une absence de contexte explicitement fourni.
+  </div>
+
+  <!-- IR 16 -->
+  <div class="idee-recue" id="ir16">
+    <div class="idee-recue-header"><span class="ir-num">16</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle se souvient de nos échanges précédents"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous reprenez une nouvelle session en vous référant à ce que "vous avez dit la dernière fois", ou en supposant que le modèle connaît le contexte de vos échanges passés.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Chaque session démarre avec une fenêtre de contexte vide, sauf si un mécanisme de mémoire explicite a été configuré. Le modèle n'a aucun accès aux échanges antérieurs. Ce que vous croyez être une mémoire partagée n'existe que si vous l'avez réinjectée dans le prompt de la session en cours.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Tout ce qui doit persister d'une session à l'autre doit être réinjecté explicitement. La continuité est une propriété de votre gestion du contexte, pas du modèle.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Bloc de continuité inter-sessions</span>
+        <span class="prompt-contexte">Usage : en ouverture de toute session qui prolonge un travail antérieur.</span>
+        <div class="code-block"><span class="tag">[CONTEXTE DE SESSION PRÉCÉDENTE]</span>
+Nous avons travaillé sur : <span class="value">[sujet]</span>
+Décisions prises : <span class="value">[lister]</span>
+Contraintes validées : <span class="value">[lister]</span>
+Là où nous en étions : <span class="value">[état précis]</span>
+Ce que nous faisons aujourd'hui : <span class="value">[objectif de la session]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 17 -->
+  <div class="idee-recue" id="ir17">
+    <div class="idee-recue-header"><span class="ir-num">17</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle comprend 'comme d'habitude'"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Ayant travaillé longtemps avec le modèle dans une session, vous raccourcissez vos instructions en vous appuyant sur l'historique implicite : "fais comme avant", "même format", "tu sais ce que je veux".
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Deux problèmes distincts se superposent. D'une part, les instructions anciennes perdent du poids relatif au fur et à mesure que la session s'allonge (effet de récence). D'autre part, les conventions implicites jamais posées par écrit n'ont jamais existé pour le modèle : elles n'ont aucun référent dans la fenêtre de contexte.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Ce qui n'est pas écrit dans la fenêtre de contexte n'existe pas. Les raccourcis implicites fonctionnent avec un humain parce qu'il a une mémoire épisodique et des modèles mentaux de vous. Le modèle n'a ni l'un ni l'autre.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Rappel de format en session longue</span>
+        <span class="prompt-contexte">Usage : chaque fois que vous supposez que le modèle "sait" comment répondre.</span>
+        <div class="code-block"><span class="tag">[FORMAT ATTENDU — rappel]</span>
+Pour cette réponse comme pour toutes les suivantes :
+<span class="value">Structure : [définir]</span>
+<span class="value">Longueur : [définir]</span>
+<span class="value">Registre : [définir]</span>
+<span class="value">Ce que tu ne fais pas : [définir]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 18 -->
+  <div class="idee-recue" id="ir18">
+    <div class="idee-recue-header"><span class="ir-num">18</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle s'adapte automatiquement à mon niveau"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous supposez que le modèle calibre sa réponse à votre profil (expert, débutant, praticien) à partir des signaux qu'il perçoit dans l'échange.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Le modèle infère le registre depuis les signaux présents dans le prompt — vocabulaire utilisé, complexité syntaxique, type de questions. En l'absence de signaux explicites, il choisit le registre le plus courant dans sa distribution pour ce type de sujet. Un expert qui écrit un prompt simple reçoit une réponse de niveau intermédiaire, pas une réponse d'expert.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Déclarer explicitement le registre attendu est plus fiable que de supposer que le modèle lit votre profil dans vos formulations.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Déclaration de registre</span>
+        <span class="prompt-contexte">Usage expert — le modèle répond à un pair :</span>
+        <div class="code-block"><span class="tag">[REGISTRE]</span>
+Destinataire : praticien senior en <span class="value">[domaine]</span>.
+Niveau de détail : terminologie technique sans définition,
+références directes aux standards du domaine,
+pas de vulgarisation.
+Pas de formules introductives type "bien sûr" ou "en effet".</div>
+        <span class="prompt-contexte">Usage débutant — le modèle pédagogise :</span>
+        <div class="code-block"><span class="tag">[REGISTRE]</span>
+Destinataire : personne sans connaissance préalable du domaine.
+Niveau de détail : définir chaque terme technique au premier usage,
+une analogie concrète par concept nouveau,
+éviter le jargon autant que possible.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       FAMILLE D
+  ══════════════════════════════════════ -->
+  <h2 id="fd">Famille D — Erreurs sur le contrôle du registre et la délégation</h2>
+
+  <div class="famille-intro">
+    Ces trois idées reçues portent sur ce que l'on peut déléguer au modèle et sur la façon dont il calibre ses sorties sans instruction. Ce sont des erreurs de pilotage : l'apprenant suppose que le modèle gère certains paramètres par lui-même (longueur, format, créativité, évaluation), alors qu'ils doivent être spécifiés pour produire le résultat attendu.
+  </div>
+
+  <!-- IR 19 -->
+  <div class="idee-recue" id="ir19">
+    <div class="idee-recue-header"><span class="ir-num">19</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle sait quand s'arrêter"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous demandez une synthèse ou une analyse sans contrainte de format, en attendant que le modèle calibre spontanément la longueur et le niveau de détail appropriés à votre besoin.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Sans contrainte de format explicite, le modèle optimise pour la complétude apparente : il produit une réponse dont la longueur et la structure correspondent au patron le plus courant pour ce type de question dans ses données d'entraînement. Ce patron est "typique du sujet", pas "adapté à votre cas".
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        La longueur, la structure, le niveau de détail et le format sont des paramètres qui se spécifient explicitement. Ils n'émergent pas naturellement d'une demande non contrainte.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Format contraint</span>
+        <span class="prompt-contexte">Usage court (synthèse exécutive) :</span>
+        <div class="code-block"><span class="tag">[FORMAT FERME]</span>
+3 paragraphes exactement.
+Paragraphe 1 : contexte (2 phrases max).
+Paragraphe 2 : analyse (3 phrases max).
+Paragraphe 3 : recommandation (1 phrase + 1 condition).
+Aucune liste. Aucun titre intermédiaire.</div>
+        <span class="prompt-contexte">Usage long (rapport structuré) :</span>
+        <div class="code-block"><span class="tag">[FORMAT FERME]</span>
+Structure : 4 sections titrées.
+Chaque section : 150 mots maximum.
+Chaque section se termine par un point de vigilance en 1 phrase.
+Pas d'introduction générale. Commencer directement par la section 1.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 20 -->
+  <div class="idee-recue" id="ir20">
+    <div class="idee-recue-header"><span class="ir-num">20</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Donner de la liberté au modèle produit plus de créativité"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous formulez des prompts ouverts pour "laisser la créativité s'exprimer", en évitant de contraindre le modèle, parce que vous pensez que les contraintes limitent la qualité de la sortie.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Un espace d'interprétation ouvert produit de la vraisemblance statistique, pas de la créativité. Le modèle choisit ce qui est le plus fréquent dans sa distribution, c'est-à-dire ce qui est le plus attendu. La contrainte forte et précise est paradoxalement le meilleur générateur de sorties inattendues, parce qu'elle force le modèle à trouver une solution dans un espace restreint qui ne correspond plus au patron le plus courant.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Plus les contraintes sont claires, plus la marge de manoeuvre résiduelle est exploitée de façon productive. La liberté sans cadre produit du banal. La contrainte précise produit de l'inattendu.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Contraintes créatives paradoxales</span>
+        <span class="prompt-contexte">Avant (ouvert, produit du banal) :</span>
+        <div class="code-block">Écris quelque chose de créatif sur ce sujet.</div>
+        <span class="prompt-contexte">Après (contraint, produit de l'inattendu) :</span>
+        <div class="code-block"><span class="tag">[CONTRAINTES CRÉATIVES]</span>
+Sujet : <span class="value">[X]</span>
+Contrainte 1 : le mot "mais" est interdit.
+Contrainte 2 : chaque phrase commence par un verbe d'action.
+Contrainte 3 : la conclusion contredit l'introduction.
+Contrainte 4 : 80 mots exactement.
+
+<span class="comment">// Ces contraintes ferment l'espace des sorties fréquentes
+// et forcent une solution hors du patron habituel.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IR 21 -->
+  <div class="idee-recue" id="ir21">
+    <div class="idee-recue-header"><span class="ir-num">21</span> IDÉE REÇUE FAUSSE</div>
+    <div class="idee-recue-body">
+      <span class="ir-faux">"Le modèle peut évaluer objectivement sa propre réponse"</span>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label">Ce que vous faites</span>
+        Vous demandez au modèle "est-ce que cette réponse est bonne ?" ou "qu'est-ce qui manque dans ta réponse ?", en attendant un diagnostic honnête et complet de ses propres limites.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label reel">Ce qui se passe réellement</span>
+        Sans critères fournis de l'extérieur, le modèle évalue sa propre réponse selon les mêmes biais qui l'ont produite. Il ne voit pas les angles ignorés parce qu'il les a ignorés. Il ne détecte pas ses propres biais de confirmation parce qu'ils sont structurels. L'auto-évaluation sans critères externes est circulaire.
+      </div>
+      <div class="ir-bloc">
+        <span class="ir-bloc-label retenir">Ce qui compte</span>
+        Le modèle peut appliquer des critères d'évaluation qu'il n'a pas générés lui-même. Fournir les critères de façon externe et explicite avant de demander l'évaluation produit un diagnostic utile. Demander "est-ce que c'est bien ?" sans critères produit une validation circulaire.
+      </div>
+      <div class="prompt-section">
+        <span class="ir-bloc-label prompt-label">Prompt opérationnel — Évaluation par critères externes</span>
+        <span class="prompt-contexte">Usage : après toute réponse que vous envisagez d'utiliser.</span>
+        <div class="code-block"><span class="tag">[ÉVALUATION PAR CRITÈRES EXTERNES]</span>
+Évalue ta réponse précédente selon ces critères uniquement :
+
+<span class="value">Critère 1 — Précision factuelle : chaque affirmation est-elle
+  vérifiable ? Signale celles qui ne le sont pas.</span>
+<span class="value">Critère 2 — Complétude : quels aspects du sujet n'as-tu pas couverts ?</span>
+<span class="value">Critère 3 — Neutralité : as-tu favorisé une perspective sans le signaler ?</span>
+<span class="value">Critère 4 — Utilité opératoire : un praticien peut-il agir
+  sur la base de cette réponse sans information complémentaire ?</span>
+
+Pour chaque critère : note (1-5) et justification en 1 phrase.</div>
+        <span class="prompt-contexte">Variante — Évaluation par un rôle opposé :</span>
+        <div class="code-block"><span class="tag">[ÉVALUATION CONTRADICTOIRE]</span>
+Adopte le rôle d'un expert sceptique qui cherche à invalider
+ta réponse précédente. Identifie les 3 arguments les plus solides
+contre ta propre analyse.
+Ensuite, dis-moi si ces arguments tiennent ou non — et pourquoi.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════
+       CONCLUSION
+  ══════════════════════════════════════ -->
+  <h2 id="conclusion">Conclusion — Piloter autrement</h2>
+
+  <div class="accroche-intro">
+    Ces vingt et une idées reçues ont en commun d'appliquer à un modèle de langage des codes de communication conçus pour des interlocuteurs humains. Le transfert est automatique et persistant : il ne disparaît pas avec la pratique si le mécanisme sous-jacent n'a pas été compris.
+    <br><br>
+    Ce qui change quand vous avez corrigé ces transferts, ce n'est pas votre façon d'écrire. C'est votre façon de piloter. Vous ne vous demandez plus "comment formuler mieux ?" Vous vous demandez "qu'est-ce que le modèle va faire avec ce que j'écris, et est-ce que c'est bien ce que je veux qu'il fasse ?"
+    <br><br>
+    C'est cette question, posée <strong>avant</strong> de soumettre, qui distingue un utilisateur d'un pilote.
+  </div>
+
+  <p>Les prompts opérationnels de ce manuel sont des points d'entrée, pas des formules magiques. Chacun doit être adapté à votre contexte, à votre sujet, à la durée de votre session. Ce qui reste invariant, c'est le principe : <strong>spécifier ce que vous ne voulez pas laisser ouvert</strong>.</p>
+
+  <p>Un modèle comble ce que vous ne fermez pas. Votre travail est de décider, avant chaque prompt, ce que vous laissez ouvert délibérément et ce que vous fermez intentionnellement. Tout le reste s'en déduit.</p>
+
+  <div class="callout">
+    <span class="icon">◉</span>
+    <div><strong>Prochaine erreur à corriger.</strong> Si après lecture de ce manuel vous reconnaissez une idée reçue que vous n'avez pas encore corrigée dans votre pratique, traitez-en une seule. Pas toutes en même temps. Le changement de posture s'installe par iteration, pas par résolution.</div>
+  </div>
+
+  <footer>
+    Manuel des Idées Reçues sur l'IA Générative — Diagnostic et corrections pour piloter autrement<br>
+    Document autonome, complémentaire au Manuel de l'Ingénierie du Flux Sémantique.
+  </footer>
+</main>
+</body>
+</html>
