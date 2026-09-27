@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline LLM-ese</title>
+<meta name="description" content="Pipeline de prompts en huit étapes pour instruire, tester et rédiger la thèse du LLM-ese : diffusion de la langue des modèles dans la langue courante et boucle d'apprentissage entre humains et machines.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,700;1,300&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f1ea;
+    --accent: #c8410a;
+    --accent-light: #f0c4b0;
+    --muted: #7a7062;
+    --border: #d8d0c4;
+    --highlight: #fff8e7;
+    --code-bg: #1a1916;
+    --code-text: #e8dfc8;
+    --ph: #d9a960;
+    --ok: #1a6b4a;
+    --loop-r: #c8410a;
+    --loop-b: #1e4a8a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* COVER */
+  .cover {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 88px 24px 72px;
+  }
+  .cover-inner { max-width: 880px; margin: 0 auto; }
+  .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .cover h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(38px, 6vw, 68px);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 28px;
+  }
+  .cover h1 em { font-style: italic; font-weight: 300; color: var(--accent-light); }
+  .thesis {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(18px, 2.2vw, 22px);
+    line-height: 1.5;
+    color: #d8cfbf;
+    border-left: 2px solid var(--accent);
+    padding-left: 20px;
+    max-width: 720px;
+  }
+  .toc {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0 32px;
+  }
+  .toc a {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    padding: 9px 0;
+    border-bottom: 1px solid #2e2b26;
+    color: #d8cfbf;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .toc a:hover { color: var(--accent-light); }
+  .toc span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    min-width: 34px;
+  }
+
+  /* CONTENT */
+  main { max-width: 880px; margin: 0 auto; padding: 0 24px 96px; }
+  section { padding-top: 72px; }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 36px 0 12px;
+  }
+  p { margin-bottom: 16px; max-width: 720px; }
+  ul, ol { margin: 0 0 16px 22px; max-width: 700px; }
+  li { margin-bottom: 6px; }
+  strong { font-weight: 600; }
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.88em;
+    background: #ebe4d8;
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  .callout {
+    background: var(--highlight);
+    border-left: 3px solid var(--accent);
+    padding: 18px 22px;
+    margin: 24px 0;
+    max-width: 720px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* STEP */
+  .step-head {
+    display: flex;
+    gap: 18px;
+    align-items: baseline;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #fff;
+    background: var(--accent);
+    padding: 3px 9px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .step-head h2 { margin-bottom: 0; }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+    max-width: 720px;
+  }
+  .meta div {
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .meta b {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .why {
+    font-size: 15px;
+    color: #3a352e;
+    max-width: 720px;
+  }
+  .why::before {
+    content: 'Pourquoi à cette place — ';
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* PROMPT */
+  .prompt-box {
+    background: var(--code-bg);
+    border-radius: 2px;
+    margin: 24px 0;
+    max-width: 760px;
+    overflow: hidden;
+  }
+  .prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px 10px 24px;
+    border-bottom: 1px solid #2e2b26;
+  }
+  .prompt-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent-light);
+  }
+  .copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: transparent;
+    color: #b8ad98;
+    border: 1px solid #4a453d;
+    padding: 4px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .copy:hover { color: var(--paper); border-color: var(--accent); }
+  .prompt-body {
+    padding: 20px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--code-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .prompt-body .ph { color: var(--ph); font-style: italic; }
+
+  .gate {
+    border: 1px solid var(--ok);
+    border-left-width: 4px;
+    padding: 14px 18px;
+    margin: 20px 0 8px;
+    max-width: 720px;
+    font-size: 15px;
+  }
+  .gate b {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ok);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 20px 0; max-width: 760px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  td:first-child { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); white-space: nowrap; }
+
+  /* DIAGRAM */
+  figure { margin: 28px 0; max-width: 760px; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+  .refs li { font-size: 14px; }
+  footer {
+    border-top: 1px solid var(--border);
+    margin-top: 72px;
+    padding-top: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 600px) {
+    .cover { padding: 56px 16px 48px; }
+    main { padding: 0 16px 64px; }
+    section { padding-top: 52px; }
+    .step-head { flex-direction: column; gap: 8px; }
+    .prompt-body { padding: 16px; font-size: 12px; }
+    .prompt-header { padding: 10px 12px 10px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="cover-inner">
+    <div class="label">Pipeline de prompts · Support de formation</div>
+    <h1>Le LLM-ese,<br><em>ou la langue qui apprend de celle qui l'apprend</em></h1>
+    <p class="thesis">La langue des grands modèles de langage se diffuse dans la langue courante et, par des boucles d'apprentissage qui vont de la machine à l'humain puis de l'humain à la machine, finit par ne plus former qu'une seule langue.</p>
+    <nav class="toc">
+      <a href="#principe"><span>—</span>Pourquoi un pipeline</a>
+      <a href="#boucle"><span>—</span>La boucle à instruire</a>
+      <a href="#p00"><span>P-00</span>Décomposer la thèse</a>
+      <a href="#p01"><span>P-01</span>Caractériser le LLM-ese</a>
+      <a href="#p02"><span>P-02</span>Diffusion vers l'humain</a>
+      <a href="#p03"><span>P-03</span>Retour vers la machine</a>
+      <a href="#p04"><span>P-04</span>Modéliser la boucle</a>
+      <a href="#p05"><span>P-05</span>Épreuve contradictoire</a>
+      <a href="#p06"><span>P-06</span>Rédaction</a>
+      <a href="#p07"><span>P-07</span>Audit du texte produit</a>
+      <a href="#emploi"><span>—</span>Mode d'emploi</a>
+      <a href="#sources"><span>—</span>Sources à vérifier</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ PRINCIPE ============ -->
+<section id="principe">
+  <h2>Pourquoi un pipeline et non un prompt</h2>
+  <p>La thèse enchaîne plusieurs affirmations qui dépendent les unes des autres : il existe un style propre aux modèles ; ce style passe dans la langue des humains ; les textes humains ainsi modifiés reviennent dans les données d'entraînement ; les humains façonnent aussi les modèles ; l'ensemble converge vers une langue unique. La dernière n'est vraie que si toutes les précédentes le sont.</p>
+  <p>Un prompt unique du type « rédige un essai sur le LLM-ese » produit un texte fluide qui affirme toute la chaîne d'un seul tenant. Aucun maillon n'y est testé, parce que le modèle écrit ce qui s'enchaîne bien, et non ce qui a été vérifié. Et ce texte sera lui-même écrit en LLM-ese : le sujet se retournerait contre sa démonstration.</p>
+  <p>Le pipeline sépare donc les maillons. Chaque étape examine une affirmation, avec le type de preuve qui lui convient, et produit un livrable (<code>L0</code> à <code>L7</code>) que l'étape suivante consomme. Entre deux étapes, un <strong>critère de passage</strong> dit ce que le livrable doit contenir pour qu'on continue. S'il manque, on relance l'étape au lieu d'avancer : une erreur de l'étape 1 que l'on laisse passer se retrouve, amplifiée, dans l'essai final.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Étape</th><th>Question traitée</th><th>Entrées</th><th>Livrable</th></tr></thead>
+    <tbody>
+      <tr><td>P-00</td><td>De quelles affirmations la thèse est-elle faite ?</td><td>Thèse</td><td>L0 · assertions et dépendances</td></tr>
+      <tr><td>P-01</td><td>Qu'est-ce que le LLM-ese, et d'où vient-il ?</td><td>L0</td><td>L1 · inventaire des marqueurs</td></tr>
+      <tr><td>P-02</td><td>Passe-t-il réellement dans la langue humaine ?</td><td>L0, L1</td><td>L2 · canaux de diffusion et preuves</td></tr>
+      <tr><td>P-03</td><td>Revient-il vers les modèles, et par où ?</td><td>L0, L1, L2</td><td>L3 · canaux de retour et asymétries</td></tr>
+      <tr><td>P-04</td><td>La boucle converge-t-elle ?</td><td>L2, L3</td><td>L4 · modèle causal de la boucle</td></tr>
+      <tr><td>P-05</td><td>Que vaut la « fusion » face à ses objections ?</td><td>L0, L4</td><td>L5 · objections et thèse reformulée</td></tr>
+      <tr><td>P-06</td><td>Rédiger</td><td>L0 à L5</td><td>L6 · texte du support</td></tr>
+      <tr><td>P-07</td><td>Le texte produit parle-t-il lui-même LLM-ese ?</td><td>L1, L6</td><td>L7 · texte audité</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============ BOUCLE ============ -->
+<section id="boucle">
+  <h2>La boucle à instruire</h2>
+  <p>Avant les prompts, voici l'hypothèse que le pipeline doit tester, sous forme de schéma. Les flèches pleines sont les liens qui renforcent la convergence ; les flèches en pointillés sont les freins possibles. L'étape P-04 demandera au modèle de reconstruire ce schéma à partir des preuves réunies, et non de le recopier : il sert ici d'orientation, pas de résultat.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 430" role="img" aria-label="Boucle entre modèles, textes humains, corpus web et entraînement, avec freins">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c8410a"/></marker>
+        <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1e4a8a"/></marker>
+      </defs>
+      <style>
+        .n rect { fill: #fff8e7; stroke: #0f0e0c; stroke-width: 1.2; }
+        .n text { font: 600 14px 'Instrument Sans', sans-serif; fill: #0f0e0c; text-anchor: middle; }
+        .n .s { font: 400 11.5px 'Instrument Sans', sans-serif; fill: #6a6152; }
+        .r { stroke: #c8410a; stroke-width: 2; fill: none; }
+        .b { stroke: #1e4a8a; stroke-width: 1.6; fill: none; stroke-dasharray: 5 4; }
+        .lr { font: 500 11px 'DM Mono', monospace; fill: #c8410a; }
+        .lb { font: 500 11px 'DM Mono', monospace; fill: #1e4a8a; }
+      </style>
+
+      <g class="n"><rect x="280" y="20" width="200" height="60" rx="2"/><text x="380" y="46">Modèle de langage</text><text class="s" x="380" y="64">style : le LLM-ese</text></g>
+      <g class="n"><rect x="540" y="180" width="200" height="60" rx="2"/><text x="640" y="206">Langue des humains</text><text class="s" x="640" y="224">écrit, puis oral</text></g>
+      <g class="n"><rect x="280" y="340" width="200" height="60" rx="2"/><text x="380" y="366">Corpus web</text><text class="s" x="380" y="384">textes humains + générés</text></g>
+      <g class="n"><rect x="20" y="180" width="200" height="60" rx="2"/><text x="120" y="206">Entraînement</text><text class="s" x="120" y="224">pré-entraînement, RLHF</text></g>
+
+      <!-- boucle renforçante -->
+      <path class="r" d="M480,55 C590,60 640,110 640,176" marker-end="url(#ar)"/>
+      <text class="lr" x="648" y="112">exposition</text>
+      <path class="r" d="M640,244 C640,320 560,370 484,370" marker-end="url(#ar)"/>
+      <text class="lr" x="648" y="312">publication</text>
+      <path class="r" d="M280,370 C180,370 120,320 120,244" marker-end="url(#ar)"/>
+      <text class="lr" x="112" y="312" text-anchor="end">collecte</text>
+      <path class="r" d="M120,176 C120,110 180,60 276,55" marker-end="url(#ar)"/>
+      <text class="lr" x="112" y="112" text-anchor="end">apprentissage</text>
+
+      <!-- lien humain -> modèle direct (préférences) -->
+      <path class="r" d="M540,200 C430,180 330,160 224,200" marker-end="url(#ar)" stroke-width="1.4"/>
+      <text class="lr" x="380" y="160" text-anchor="middle">préférences des annotateurs</text>
+
+      <!-- freins -->
+      <path class="b" d="M565,178 C560,140 575,112 594,99" marker-end="url(#ab)"/>
+      <text class="lb" x="552" y="124" text-anchor="end">stigmatisation</text>
+      <text class="lb" x="552" y="138" text-anchor="end">« ça fait ChatGPT »</text>
+      <path class="b" d="M310,340 L218,246" marker-end="url(#ab)"/>
+      <text class="lb" x="288" y="292">filtrage</text>
+      <text class="lb" x="288" y="306">des données</text>
+    </svg>
+    <figcaption>Hypothèse de départ. En rouge, la boucle qui pousserait vers une langue unique ; en bleu pointillé, deux freins connus. La thèse de la fusion suppose que la boucle rouge l'emporte durablement sur les freins.</figcaption>
+  </figure>
+
+  <div class="callout">
+    <p><strong>Le point à garder en tête pendant tout le pipeline.</strong> Qu'un mot soit plus fréquent dans les textes publiés depuis 2023 ne prouve pas que les humains parlent autrement : cela peut simplement signifier que davantage de textes sont générés. Distinguer « des textes générés circulent » de « la langue des humains a changé » est la question que reprennent les étapes P-02, P-04 et P-05.</p>
+  </div>
+</section>
+
+<!-- ============ P-00 ============ -->
+<section id="p00">
+  <div class="step-head"><span class="step-num">P-00</span><h2>Décomposer la thèse</h2></div>
+  <p class="why">rien ne peut être testé tant que la thèse reste une phrase. Cette étape fixe la liste des affirmations et l'ordre dans lequel les examiner, ce qui règle l'ordre de toutes les étapes suivantes.</p>
+
+  <div class="prompt-box">
+    <div class="prompt-header"><span class="prompt-label">P-00 · Décomposition</span><button class="copy" type="button">Copier</button></div>
+    <div class="prompt-body">Voici une thèse :
+« <span class="ph">[La langue des grands modèles de langage se diffuse dans la langue courante et, par des boucles récursives d'apprentissage entre humains et machines, finit par ne plus former qu'une seule langue.]</span> »
+
+Ne la discute pas encore. Ne donne pas ton avis.
+
+Décompose-la en assertions élémentaires. Une assertion élémentaire est une phrase qu'une observation pourrait rendre vraie ou fausse.
+
+Pour chaque assertion, donne :
+1. Un identifiant (A1, A2…) et sa formulation en une phrase.
+2. Les assertions dont elle dépend (si A2 est fausse, A4 tombe-t-elle ?).
+3. Une observation qui la confirmerait.
+4. Une observation qui la réfuterait. Si tu ne trouves aucune observation capable de la réfuter, écris-le : l'assertion devra être reformulée.
+5. Son statut actuel : établie / plausible / spéculative, avec une raison en une ligne.
+
+Veille à séparer au moins :
+- l'existence d'un style propre aux modèles et son origine ;
+- la présence de ce style dans des textes publiés ;
+- le changement de la langue des humains eux-mêmes, à l'écrit puis à l'oral ;
+- le retour de ce style dans les données d'entraînement ;
+- l'influence des humains sur les modèles ;
+- la convergence vers une langue unique.
+
+Termine par l'ordre d'examen : aucune assertion ne doit être examinée avant celles dont elle dépend.
+
+Format : tableau, puis l'ordre d'examen en liste numérotée.</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Entrée</b>La thèse, telle quelle.</div>
+    <div><b>Livrable</b>L0 · tableau des assertions, dépendances, ordre d'examen.</div>
+  </div>
+
+  <div class="gate"><b>Critère de passage</b>Chaque assertion a une condition de réfutation. L'assertion de convergence dépend de toutes les autres. « Des textes générés circulent » et « la langue humaine a changé » sont deux assertions distinctes. Sinon, relancer en le demandant explicitement.</div>
+</section>
+
+<!-- ============ P-01 ============ -->
+<section id="p01">
+  <div class="step-head"><span class="step-num">P-01</span><h2>Caractériser le LLM-ese</h2></div>
+  <p class="why">on ne peut pas suivre la diffusion d'un style qu'on n'a pas décrit. Cette étape produit la liste des marqueurs que P-02 cherchera chez les humains et que P-07 cherchera dans notre propre texte.</p>
+  <p>Point décisif : beaucoup de tournures attribuées aux modèles existaient avant eux, dans la prose administrative, le discours d'entreprise ou la communication institutionnelle. Si un marqueur est hérité, sa hausse dans les textes humains prouve peu de chose, car les humains avaient déjà ce registre à disposition. Le prompt impose donc de classer chaque marqueur selon son origine.</p>
+
+  <div class="prompt-box">
+    <div class="prompt-header"><span class="prompt-label">P-01 · Inventaire des marqueurs</span><button class="copy" type="button">Copier</button></div>
+    <div class="prompt-body">Contexte : voici la décomposition d'une thèse en assertions (L0).
+<span class="ph">[coller L0]</span>
+
+Tâche : traite les assertions portant sur l'existence et l'origine d'un style propre aux grands modèles de langage (le « LLM-ese »).
+
+1. Dresse l'inventaire des marqueurs de ce style, en français et en anglais, à quatre niveaux :
+   - lexique (mots, adjectifs d'intensité, verbes d'ouverture) ;
+   - tournures de phrase (formules d'introduction et de transition, constructions en « ce n'est pas X, c'est Y ») ;
+   - structure du raisonnement (énumérations en trois, conclusion qui résume, équilibre systématique des points de vue) ;
+   - mise en forme (listes à puces, titres en gras, tirets longs, emojis).
+
+2. Pour chaque marqueur, indique :
+   - un exemple réel de formulation ;
+   - son origine probable, parmi : « propre » (rare avant 2022), « amplifié » (existait, mais nettement plus fréquent chez les modèles), « hérité » (déjà courant dans un registre humain, lequel ?) ;
+   - la cause probable du marqueur : données d'entraînement, ajustement par instructions, préférences des annotateurs humains (RLHF), réglages de génération ;
+   - ton degré de confiance (élevé / moyen / faible).
+
+3. Sépare ce qui est documenté par des études de ce qui relève de l'observation courante. Si tu cites une étude, donne auteurs, année, titre. Si tu n'es pas certain qu'elle existe ou de ce qu'elle dit, écris [À VÉRIFIER]. N'invente aucun chiffre.
+
+Format : un tableau par niveau, puis un paragraphe de cinq lignes maximum sur les causes.</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Entrée</b>L0.</div>
+    <div><b>Livrable</b>L1 · inventaire des marqueurs, classés propre / amplifié / hérité.</div>
+  </div>
+
+  <div class="gate"><b>Critère de passage</b>Chaque marqueur porte une origine et une cause. Au moins un tiers des marqueurs est classé « amplifié » ou « hérité » ; un inventaire où tout serait « propre » indique que le modèle n'a pas fait la distinction. Les chiffres sans source sont marqués [À VÉRIFIER].</div>
+</section>
+
+<!-- ============ P-02 ============ -->
+<section id="p02">
+  <div class="step-head"><span class="step-num">P-02</span><h2>Diffusion vers l'humain</h2></div>
+  <p class="why">c'est le premier arc de la boucle. S'il n'est pas établi, le retour vers la machine (P-03) ne porte que sur des textes générés, et la question d'une langue commune ne se pose plus dans les mêmes termes.</p>
+  <p>L'étape distingue quatre canaux, parce qu'ils ne prouvent pas la même chose. Un texte généré puis copié tel quel augmente la fréquence d'un mot sans rien changer à la langue de celui qui l'a copié. Seuls l'adoption par exposition et le passage à l'oral montrent un changement chez les humains.</p>
+
+  <div class="prompt-box">
+    <div class="prompt-header"><span class="prompt-label">P-02 · Canaux de diffusion</span><button class="copy" type="button">Copier</button></div>
+    <div class="prompt-body">Contexte :
+- décomposition de la thèse (L0) : <span class="ph">[coller L0]</span>
+- inventaire des marqueurs du LLM-ese (L1) : <span class="ph">[coller L1]</span>
+
+Tâche : examine les assertions sur la diffusion de ces marqueurs vers la langue des humains.
+
+1. Distingue quatre canaux :
+   a. copie : texte généré publié sans modification notable ;
+   b. co-écriture : texte humain révisé ou complété par un modèle ;
+   c. adoption : un humain emploie de lui-même, sans assistance, des marqueurs rencontrés dans des textes générés ;
+   d. oral : les marqueurs apparaissent dans la parole spontanée.
+
+2. Pour chaque canal :
+   - dis s'il signifie un changement de la langue des humains ou seulement une présence accrue de texte généré ;
+   - indique quelle observation permet de le distinguer des autres (exemples : parole spontanée non préparée, écrits datés d'avant tout accès aux modèles, comparaison entre populations exposées et non exposées) ;
+   - rassemble les études connues qui le documentent, avec auteurs, année, titre, corpus étudié et résultat principal. Marque [À VÉRIFIER] tout élément dont tu n'es pas sûr.
+
+3. Précise pour quelles langues ces résultats existent. Signale si le français est documenté ou si tu extrapoles depuis l'anglais.
+
+4. Indique ce que les études ne permettent pas encore de dire.
+
+Format : un tableau par canal, puis une liste « ce qui est établi / ce qui ne l'est pas ».</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Entrées</b>L0, L1.</div>
+    <div><b>Livrable</b>L2 · quatre canaux, preuves, limites.</div>
+  </div>
+
+  <div class="gate"><b>Critère de passage</b>Le livrable dit clairement, pour chaque canal, s'il s'agit d'un changement humain ou d'une présence de texte généré. La question du français est traitée explicitement. Aucune étude sans auteur ni année.</div>
+</section>
+
+<!-- ============ P-03 ============ -->
+<section id="p03">
+  <div class="step-head"><span class="step-num">P-03</span><h2>Retour vers la machine</h2></div>
+  <p class="why">c'est le second arc de la boucle, et celui qui justifie le mot « bilatéral ». Il doit être examiné après P-02, car ce qui revient dans les données dépend de ce qui a été publié.</p>
+  <p>L'étape impose de comparer les vitesses des deux côtés. Un modèle change à chaque nouvelle version et s'adresse à des millions de personnes en même temps ; un humain modifie sa langue progressivement, par contact. Si ces deux rythmes sont très différents, les deux côtés ne s'influencent pas à égalité, et le mot « bilatéral » devra être nuancé à l'étape P-05.</p>
+
+  <div class="prompt-box">
+    <div class="prompt-header"><span class="prompt-label">P-03 · Canaux de retour</span><button class="copy" type="button">Copier</button></div>
+    <div class="prompt-body">Contexte :
+- L0 : <span class="ph">[coller L0]</span>
+- L1 : <span class="ph">[coller L1]</span>
+- L2 : <span class="ph">[coller L2]</span>
+
+Tâche : examine les assertions sur l'influence dans le sens humains → modèles, et sur le retour du style des modèles dans leurs propres données.
+
+1. Liste les canaux par lesquels la langue des humains, ou des textes générés, reviennent vers les modèles :
+   - pages web collectées après 2022 pour le pré-entraînement ;
+   - données synthétiques et distillation d'un modèle par un autre ;
+   - annotations humaines utilisées pour l'ajustement (RLHF), en tenant compte du fait que certains annotateurs peuvent eux-mêmes utiliser des modèles ;
+   - retours des utilisateurs (notes, reformulations, choix entre deux réponses).
+
+2. Pour chaque canal : ce qui est documenté, ce qui est supposé, et l'effet attendu sur le style des modèles suivants.
+
+3. Présente l'état des connaissances sur l'entraînement répété d'un modèle sur des données générées (« effondrement des modèles », model collapse) : ce qui a été montré, dans quelles conditions expérimentales, et les parades connues (filtrage, mélange avec des données humaines, conservation de corpus antérieurs à 2022).
+
+4. Compare les deux sens de la boucle sur trois points : vitesse de changement, nombre de personnes ou de systèmes touchés en même temps, capacité à corriger volontairement le style. Conclus : l'influence est-elle symétrique ?
+
+Règle de citation : auteurs, année, titre. [À VÉRIFIER] en cas de doute. Aucun chiffre inventé.
+
+Format : tableau des canaux, paragraphe sur l'effondrement, tableau de comparaison des deux sens.</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Entrées</b>L0, L1, L2.</div>
+    <div><b>Livrable</b>L3 · canaux de retour, état des connaissances, comparaison des deux sens.</div>
+  </div>
+
+  <div class="gate"><b>Critère de passage</b>Les conditions expérimentales des études sur l'effondrement sont précisées ; un résultat obtenu en laboratoire n'est pas présenté comme ce qui arrive aux modèles commerciaux. La question de la symétrie reçoit une réponse argumentée.</div>
+</section>
+
+<!-- ============ P-04 ============ -->
+<section id="p04">
+  <div class="step-head"><span class="step-num">P-04</span><h2>Modéliser la boucle</h2></div>
+  <p class="why">P-02 et P-03 ont examiné chaque arc séparément. La fusion est une affirmation sur la boucle entière : elle ne peut être évaluée qu'une fois les arcs assemblés, avec leurs freins.</p>
+  <p>Une boucle qui s'auto-renforce ne mène pas forcément à une langue unique. Elle peut aussi s'arrêter sur un équilibre, osciller, ou changer de cible si les tics des modèles varient d'une version à l'autre. Le prompt oblige à chercher les boucles qui freinent, car un modèle interrogé sur une boucle décrit spontanément celle qui s'emballe.</p>
+
+  <div class="prompt-box">
+    <div class="prompt-header"><span class="prompt-label">P-04 · Modèle causal</span><button class="copy" type="button">Copier</button></div>
+    <div class="prompt-body">Contexte :
+- L2 (diffusion vers l'humain) : <span class="ph">[coller L2]</span>
+- L3 (retour vers la machine) : <span class="ph">[coller L3]</span>
+
+Tâche : construis le modèle causal de la boucle humains ↔ modèles.
+
+1. Liste les variables (exemple : fréquence d'un marqueur dans les textes publiés, part de texte généré dans les corpus collectés, sensibilité du public aux marqueurs).
+
+2. Liste les liens entre variables. Pour chacun : sens de l'effet (+ : les deux varient dans le même sens ; − : en sens contraire), délai approximatif, et étude ou raisonnement qui le justifie.
+
+3. Identifie les boucles :
+   - boucles de renforcement (R), qui amplifient la convergence ;
+   - boucles d'équilibrage (B), qui la freinent.
+   Tu dois en trouver au moins deux de chaque type. Candidats pour les freins : la stigmatisation des marqueurs (« ça fait ChatGPT ») et leur évitement volontaire, les outils de détection, le filtrage des données par les laboratoires, le changement des tics d'une version de modèle à l'autre.
+
+4. Sous quelles conditions la boucle aboutit-elle à :
+   a. un point fixe, c'est-à-dire une langue commune stable ;
+   b. une oscillation (des marqueurs apparaissent, sont repérés, puis abandonnés) ;
+   c. une séparation entre registres (convergence dans certains genres de texte, pas dans d'autres) ?
+   Indique lequel de ces scénarios les preuves de L2 et L3 soutiennent le mieux, et pourquoi.
+
+5. Donne le schéma en code Mermaid (graph LR), avec le signe sur chaque flèche.
+
+Format : tableau des variables, tableau des liens, liste des boucles, analyse des scénarios, code Mermaid.</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Entrées</b>L2, L3.</div>
+    <div><b>Livrable</b>L4 · modèle causal, boucles R et B, scénarios, schéma Mermaid.</div>
+  </div>
+
+  <div class="gate"><b>Critère de passage</b>Chaque boucle d'équilibrage repose sur un mécanisme décrit, pas sur une simple mention. Le scénario retenu est rattaché à des éléments de L2 ou L3. Le code Mermaid s'affiche sans erreur.</div>
+</section>
+
+<!-- ============ P-05 ============ -->
+<section id="p05">
+  <div class="step-head"><span class="step-num">P-05</span><h2>Épreuve contradictoire</h2></div>
+  <p class="why">la formule « ne plus former qu'un » est la partie la plus forte de la thèse et la moins prouvée. Elle doit être attaquée avant d'être rédigée, et non nuancée après coup.</p>
+
+  <div class="callout">
+    <p><strong>À lancer dans une nouvelle conversation.</strong> Un modèle qui a lui-même produit L1 à L4 a tendance à les prolonger plutôt qu'à les contester : ce qu'il a déjà écrit oriente ce qu'il écrit ensuite. C'est, en petit, le mécanisme étudié ici. On ne lui transmet donc que L0 et L4, sans la prose des étapes précédentes.</p>
+  </div>
+
+  <div class="prompt-box">
+    <div class="prompt-header"><span class="prompt-label">P-05 · Contradicteur</span><button class="copy" type="button">Copier</button></div>
+    <div class="prompt-body">Tu es chargé de contester une thèse. Tu n'as pas participé à son élaboration.
+
+Thèse : « <span class="ph">[thèse initiale]</span> »
+Décomposition (L0) : <span class="ph">[coller L0]</span>
+Modèle causal proposé (L4) : <span class="ph">[coller L4]</span>
+
+1. Attaque en priorité l'assertion de convergence (« ne plus former qu'un »). Distingue :
+   - l'uniformisation du style de certains textes écrits ;
+   - la fusion de la langue elle-même (tous registres, oral compris, toutes communautés de locuteurs).
+
+2. Formule les objections les plus fortes. Examine au moins :
+   - la variété des registres, de l'oral et des dialectes ;
+   - les langues autres que l'anglais ;
+   - le besoin de se distinguer socialement, qui pousse à abandonner un usage dès qu'il devient banal ou qu'il est associé aux machines ;
+   - les précédents historiques : imprimerie et normalisation de l'orthographe, radio et télévision face aux accents, écriture SMS. Qu'avait-on prédit, qu'est-il arrivé ?
+   - le fait que la « langue des modèles » change d'une version à l'autre ;
+   - les limites des preuves citées dans L4 (corpus, période, langue).
+
+3. Classe les objections de la plus forte à la plus faible. Pour chacune : ce qu'il faudrait observer pour y répondre.
+
+4. Rédige la version la plus forte de la thèse qui résiste à ces objections. Elle peut être plus étroite que la thèse initiale ; dis ce qu'elle abandonne.
+
+Format : tableau des objections classées, puis la thèse reformulée en trois phrases maximum, puis la liste de ce qui a été abandonné.</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Entrées</b>Thèse, L0, L4 (nouvelle conversation).</div>
+    <div><b>Livrable</b>L5 · objections classées, thèse reformulée.</div>
+  </div>
+
+  <div class="gate"><b>Critère de passage</b>La thèse reformulée dit explicitement ce qu'elle abandonne de la thèse initiale. Si elle ne change rien, relancer en demandant au modèle de justifier pourquoi aucune objection ne porte.</div>
+</section>
+
+<!-- ============ P-06 ============ -->
+<section id="p06">
+  <div class="step-head"><span class="step-num">P-06</span><h2>Rédaction</h2></div>
+  <p class="why">la rédaction vient en dernier parce qu'elle doit suivre l'ordre des dépendances établi en P-00 et porter la thèse reformulée en P-05, pas la thèse initiale.</p>
+
+  <div class="prompt-box">
+    <div class="prompt-header"><span class="prompt-label">P-06 · Texte du support</span><button class="copy" type="button">Copier</button></div>
+    <div class="prompt-body">Contexte :
+- L0 : <span class="ph">[coller L0]</span>
+- L1 : <span class="ph">[coller L1]</span>
+- L2 : <span class="ph">[coller L2]</span>
+- L3 : <span class="ph">[coller L3]</span>
+- L4 : <span class="ph">[coller L4]</span>
+- L5 : <span class="ph">[coller L5]</span>
+
+Tâche : rédige un <span class="ph">[support de formation / article / essai]</span> destiné à <span class="ph">[public : ex. formateurs, rédacteurs, étudiants]</span>, d'environ <span class="ph">[longueur]</span> mots.
+
+Contraintes de fond :
+1. Défends la thèse reformulée de L5, pas la thèse initiale. Présente la thèse initiale comme point de départ et explique ce qui en a été retiré, et pourquoi.
+2. Suis l'ordre d'examen de L0 : chaque partie ne s'appuie que sur les parties précédentes.
+3. Pour chaque affirmation, respecte le statut établi / plausible / spéculatif de L0, et laisse-le visible dans la formulation.
+4. Présente les boucles d'équilibrage de L4 avec la même place que les boucles de renforcement.
+5. Conserve les mentions [À VÉRIFIER] telles quelles.
+
+Contraintes de forme :
+6. N'utilise pas les marqueurs suivants, relevés dans L1 : <span class="ph">[coller la liste des marqueurs « propres » et « amplifiés » de L1]</span>
+7. Pas de conclusion qui résume ce qui vient d'être dit. La conclusion ouvre sur la question que le texte laisse sans réponse.
+8. Paragraphes rédigés ; listes à puces seulement pour des éléments réellement énumérables.
+
+Format : texte continu avec intertitres.</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Entrées</b>L0 à L5.</div>
+    <div><b>Livrable</b>L6 · texte du support.</div>
+  </div>
+
+  <div class="gate"><b>Critère de passage</b>La thèse défendue est celle de L5. Les boucles d'équilibrage sont présentes. Les [À VÉRIFIER] n'ont pas disparu : un modèle qui les supprime au moment de rédiger les a remplacés par des affirmations non vérifiées.</div>
+</section>
+
+<!-- ============ P-07 ============ -->
+<section id="p07">
+  <div class="step-head"><span class="step-num">P-07</span><h2>Audit du texte produit</h2></div>
+  <p class="why">le texte a été écrit par un modèle. L'interdire de marqueurs en P-06 ne suffit pas : il en remplace souvent un par un autre. Cette étape vérifie le texte à l'aide de l'inventaire de P-01, et la décision finale revient à l'humain.</p>
+  <p>Le pipeline se clôt ainsi sur une petite version de la boucle qu'il étudie : un modèle cherche son propre style dans un texte qu'il a écrit, un humain tranche. Ce qui est remplacé à cette étape, et ce qui est conservé, est un matériau d'observation pour la formation elle-même.</p>
+
+  <div class="prompt-box">
+    <div class="prompt-header"><span class="prompt-label">P-07 · Audit (nouvelle conversation)</span><button class="copy" type="button">Copier</button></div>
+    <div class="prompt-body">Voici un inventaire de marqueurs du style typique des modèles de langage (L1) :
+<span class="ph">[coller L1]</span>
+
+Voici un texte (L6) :
+<span class="ph">[coller L6]</span>
+
+1. Relève chaque occurrence d'un marqueur de L1 dans le texte, ainsi que les tournures équivalentes que L1 ne liste pas mais qui jouent le même rôle.
+2. Pour chaque occurrence : citation exacte, marqueur concerné, et décision proposée :
+   - conserver, si c'est le mot juste à cet endroit (un marqueur n'est pas une faute en soi) ;
+   - remplacer, en proposant une formulation.
+   Justifie chaque décision en une ligne.
+3. Relève séparément les affirmations dont la formulation est plus assurée que leur statut dans le texte (spéculatif présenté comme établi).
+4. Ne réécris pas le texte entier. Ne produis que le tableau des occurrences et la liste des affirmations trop assurées.
+
+Format : tableau (citation | marqueur | décision | remplacement proposé | justification), puis liste.</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Entrées</b>L1, L6 (nouvelle conversation).</div>
+    <div><b>Livrable</b>L7 · tableau d'audit ; le texte final est établi par l'humain.</div>
+  </div>
+
+  <div class="gate"><b>Critère de passage final</b>Toutes les mentions [À VÉRIFIER] ont été vérifiées par un humain dans les sources elles-mêmes, puis corrigées ou supprimées. Aucun prompt de ce pipeline ne peut faire cette vérification à sa place.</div>
+</section>
+
+<!-- ============ MODE D'EMPLOI ============ -->
+<section id="emploi">
+  <h2>Mode d'emploi</h2>
+  <h3>Enchaînement des conversations</h3>
+  <ul>
+    <li><strong>P-00 à P-04</strong> : une seule conversation est possible, mais coller explicitement les livrables demandés dans chaque prompt, même s'ils sont déjà plus haut dans la conversation. Sur une longue conversation, le modèle tient moins bien compte de ce qui est loin dans l'échange.</li>
+    <li><strong>P-05 et P-07</strong> : toujours une nouvelle conversation, pour les raisons données à chaque étape.</li>
+    <li><strong>P-06</strong> : nouvelle conversation recommandée, pour que le texte parte des livrables et non de la prose des échanges précédents.</li>
+  </ul>
+
+  <h3>Où l'humain intervient</h3>
+  <ol>
+    <li>À chaque critère de passage : relire le livrable, relancer si le critère n'est pas rempli.</li>
+    <li>Après P-01 : ajouter à l'inventaire les marqueurs que l'on repère soi-même dans son propre milieu professionnel. Le modèle connaît mal le LLM-ese en français.</li>
+    <li>Après P-05 : choisir la thèse reformulée. Le modèle propose ; c'est à l'auteur de décider jusqu'où il s'engage.</li>
+    <li>Après P-07 : trancher chaque remplacement, puis vérifier toutes les sources.</li>
+  </ol>
+
+  <h3>Variante pour un atelier</h3>
+  <p>Faire exécuter P-01 par les participants sur un corpus de leurs propres écrits, datés d'avant et d'après 2023. Chacun compare la fréquence de quelques marqueurs dans ses textes. La discussion porte alors sur la question laissée ouverte par le schéma : ce qui a changé vient-il d'une adoption personnelle ou de textes co-écrits avec un modèle ?</p>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section id="sources">
+  <h2>Sources à vérifier</h2>
+  <p>Pistes de départ pour les étapes P-01 à P-03. Les références sont données pour être vérifiées dans les textes originaux avant toute citation, comme le pipeline l'exige des sources proposées par le modèle.</p>
+  <ul class="refs">
+    <li>Kobak D., González-Márquez R., Horvát E.-Á., Lause J. — <em>Delving into ChatGPT usage in academic writing through excess vocabulary</em>, 2024 (arXiv 2406.07016). Hausse de mots de style après 2022 dans les résumés PubMed. → P-01, P-02 (canaux copie et co-écriture).</li>
+    <li>Liang W. et al. — <em>Monitoring AI-Modified Content at Scale: A Case Study on the Impact of ChatGPT on AI Conference Peer Reviews</em>, ICML 2024. Estimation de la part de texte modifié par un modèle dans des évaluations par les pairs. → P-02.</li>
+    <li>Geng M., Trotta R. — <em>Is ChatGPT Transforming Academics' Writing Style?</em>, 2024 (arXiv 2404.08627). → P-02.</li>
+    <li>Yakura H. et al. — <em>Empirical evidence of Large Language Model's influence on human spoken communication</em>, 2024 (arXiv 2409.01754). Marqueurs dans la parole de vidéos et podcasts. → P-02 (canal oral).</li>
+    <li>Padmakumar V., He H. — <em>Does Writing with Language Models Reduce Content Diversity?</em>, ICLR 2024. → P-02, P-04.</li>
+    <li>Shumailov I. et al. — <em>AI models collapse when trained on recursively generated data</em>, Nature 631, 2024. → P-03.</li>
+    <li>Kirk R. et al. — <em>Understanding the Effects of RLHF on LLM Generalisation and Diversity</em>, ICLR 2024. → P-01 (causes), P-03.</li>
+  </ul>
+  <p>Aucune de ces études ne porte principalement sur le français. C'est une limite à signaler dans le support, et une raison de plus pour la variante d'atelier ci-dessus.</p>
+
+  <footer>Pipeline LLM-ese · 8 étapes · livrables L0–L7 · supports de formation publics</footer>
+</section>
+
+</main>
+
+<script>
+  document.querySelectorAll('.prompt-box').forEach(function (box) {
+    var btn = box.querySelector('.copy');
+    var body = box.querySelector('.prompt-body');
+    if (!btn || !body) return;
+    btn.addEventListener('click', function () {
+      var text = body.innerText;
+      var done = function () {
+        btn.textContent = 'Copié';
+        setTimeout(function () { btn.textContent = 'Copier'; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
+      } else { fallback(text); done(); }
+    });
+  });
+  function fallback(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+</script>
+</body>
+</html>
