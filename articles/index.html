@@ -1,0 +1,45 @@
+---
+title: Articles LinkedIn
+---
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ page.title }}</title>
+<meta name="description" content="Archive des articles publiés sur LinkedIn.">
+<link rel="stylesheet" href="{{ '/assets/articles.css' | relative_url }}">
+</head>
+<body>
+<main class="page">
+  <nav class="retour"><a href="{{ '/' | relative_url }}">← Accueil</a></nav>
+
+  <header class="entete">
+    <h1>Articles LinkedIn</h1>
+    <p class="chapeau">Archive des articles publiés sur LinkedIn, du plus récent au plus ancien.</p>
+  </header>
+
+  {%- assign articles = site.categories.articles %}
+  {%- if articles and articles.size > 0 %}
+    {%- assign par_annee = articles | group_by_exp: "a", "a.date | date: '%Y'" %}
+    {%- for annee in par_annee %}
+    <section class="annee">
+      <h2>{{ annee.name }}</h2>
+      <ul class="liste">
+        {%- for a in annee.items %}
+        <li>
+          <a class="titre" href="{{ a.url | relative_url }}">{{ a.title }}</a>
+          <span class="meta"><time datetime="{{ a.date | date_to_xmlschema }}">{% include date-fr.html date=a.date %}</time>
+          {%- if a.tags.size > 0 %} · {% for tag in a.tags %}<span class="tag">{{ tag }}</span>{% endfor %}{% endif %}</span>
+          {%- if a.resume %}<p>{{ a.resume }}</p>{% endif %}
+        </li>
+        {%- endfor %}
+      </ul>
+    </section>
+    {%- endfor %}
+  {%- else %}
+    <p class="vide">Aucun article pour l'instant.</p>
+  {%- endif %}
+</main>
+</body>
+</html>
