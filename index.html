@@ -160,8 +160,10 @@ input[type=range]{accent-color:var(--ambre);width:100%;max-width:22rem}
 .page{aspect-ratio:3/4;background:var(--lin);border-radius:1px;transition:opacity .6s,transform .6s,background .6s}
 .document.lu .page.milieu{opacity:.25}
 .document.lu .page.fin{opacity:0;transform:scale(.6)}
-.document.methode .page{opacity:1;transform:none}
-.document.methode .page:nth-child(5n){box-shadow:3px 0 0 var(--ambre)}
+.document{transition:gap .6s}
+.document.methode{column-gap:4px}
+.document.methode .page{opacity:1;transform:none;background:var(--lin)}
+.document.methode .page:nth-child(5n+1){box-shadow:-3px 0 0 var(--ambre)}
 
 /* Scène : prix */
 .barres{display:grid;gap:.6rem}
@@ -461,8 +463,8 @@ input[type=range]{accent-color:var(--ambre);width:100%;max-width:22rem}
       <div class="barre">
         <span class="etiquette">300 pages dans une fenêtre étroite</span>
         <div class="cle">
-          <button class="bouton" id="lire" type="button">Lire d'un coup</button>
-          <button class="bouton" id="methode" type="button">Appliquer la méthode</button>
+          <button class="bouton" id="lire" type="button" aria-pressed="false">Lire d'un coup</button>
+          <button class="bouton" id="methode" type="button" aria-pressed="false">Appliquer la méthode</button>
         </div>
       </div>
       <div class="fenetre">
@@ -810,8 +812,18 @@ input[type=range]{accent-color:var(--ambre);width:100%;max-width:22rem}
   (function(){
     var d=$("document"), etat=$("etat-doc");
     for(var i=0;i<40;i++){ var p=document.createElement("span"); p.className="page"+(i>=12&&i<28?" milieu":"")+(i>=32?" fin":""); d.appendChild(p); }
-    $("lire").addEventListener("click",function(){ d.classList.remove("methode"); d.classList.add("lu"); etat.textContent="Lu d'un coup : le milieu pâlit, les dernières pages disparaissent. Aucune alerte."; });
-    $("methode").addEventListener("click",function(){ d.classList.add("methode"); etat.textContent="Découpé en paquets, chacun résumé trois fois, puis croisé dans une matrice : tout est retrouvé, et les contradictions remontent."; });
+    var textes={
+      lu:"Lu d'un coup : le milieu pâlit, les dernières pages disparaissent. Aucune alerte.",
+      methode:"Découpé en paquets de cinq pages, chacun résumé trois fois, puis croisé dans une matrice : tout est retrouvé, et les contradictions remontent."
+    };
+    function mode(m){
+      d.classList.remove("lu","methode"); void d.offsetWidth; d.classList.add(m);
+      etat.textContent=textes[m];
+      $("lire").setAttribute("aria-pressed", m==="lu");
+      $("methode").setAttribute("aria-pressed", m==="methode");
+    }
+    $("lire").addEventListener("click",function(){ mode("lu"); });
+    $("methode").addEventListener("click",function(){ mode("methode"); });
   })();
 
   /* ---------- Démarche 6 : prix ---------- */
