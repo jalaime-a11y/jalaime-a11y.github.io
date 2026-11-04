@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jean-Christophe Alaime</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Jean-Christophe Alaime : la langue, la machine, et ce que deviennent nos mots quand une IA les lit. Démarches, projets, explorations.">
+<meta property="og:title" content="Jean-Christophe Alaime">
+<meta property="og:description" content="Ce que deviennent nos mots quand une machine les lit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Commissioner:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Mise en page : une seule nuit bleu pétrole (le fond du portrait), une colonne de lecture,
+   des pièces interactives posées comme des instruments sur la page. Thème sombre assumé. */
+:root{
+  --nuit:#1b2a2d;      /* fond, plus profond que le velours du portrait */
+  --velours:#273538;   /* surfaces : le fond exact du portrait */
+  --trait:#3a4d50;     /* filets */
+  --lin:#e8ebe3;       /* texte */
+  --brume:#93a5a2;     /* texte secondaire */
+  --ambre:#e3a948;     /* accent : le mot, la règle, l'intention */
+  --verre:#a9d18e;     /* second accent : la machine, le calcul (le reflet des verres) */
+  /* Voyelles, d'après Rimbaud : A noir, E blanc, I rouge, U vert, O bleu */
+  --v-a:#0b1012; --v-e:#f3efe4; --v-i:#d8563f; --v-u:#6fb57a; --v-o:#5f93d8;
+  --f-display:"Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-texte:"Commissioner", "Segoe UI", system-ui, sans-serif;
+  --f-code:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --t-xs:.78rem; --t-s:.9rem; --t-m:1.05rem; --t-l:1.35rem; --t-xl:clamp(1.7rem,3.6vw,2.4rem); --t-xxl:clamp(2.6rem,8vw,5.6rem);
+  --lecture:40rem; --large:72rem;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--nuit);color:var(--lin);font-family:var(--f-texte);font-size:var(--t-m);line-height:1.65;font-weight:300;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--nuit)}
+a{color:var(--ambre);text-underline-offset:.2em}
+:focus-visible{outline:2px solid var(--ambre);outline-offset:3px;border-radius:2px}
+.enveloppe{max-width:var(--large);margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;text-wrap:balance;line-height:1.08;margin:0}
+h2{font-size:var(--t-xl)}
+h3{font-size:var(--t-l);font-weight:500}
+p{margin:0}
+.etiquette{font-family:var(--f-code);font-size:var(--t-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--brume)}
+.mono{font-family:var(--f-code)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.bouton{background:transparent;border:1px solid var(--trait);color:var(--lin);padding:.45rem .9rem;border-radius:999px;font-size:var(--t-s);transition:border-color .2s,background .2s}
+.bouton:hover{border-color:var(--ambre)}
+.bouton[aria-pressed="true"]{background:var(--ambre);color:var(--nuit);border-color:var(--ambre)}
+
+/* Badge de niveau de preuve : la forme encode le statut, pas seulement la couleur */
+.preuve{display:inline-flex;align-items:center;gap:.4em;font-family:var(--f-code);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .55rem;border-radius:2px;white-space:nowrap;vertical-align:middle}
+.preuve::before{content:"";width:.55em;height:.55em;border-radius:50%}
+.preuve.mesure{border:1px solid var(--verre);color:var(--verre)} .preuve.mesure::before{background:var(--verre)}
+.preuve.hypothese{border:1px dashed var(--ambre);color:var(--ambre)} .preuve.hypothese::before{border:1px solid var(--ambre)}
+.preuve.illustration{border:1px dotted var(--brume);color:var(--brume)} .preuve.illustration::before{background:transparent;border:1px dotted var(--brume)}
+
+/* En-tête */
+.entete{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--nuit) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--trait)}
+.entete .enveloppe{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.7rem}
+.entete .nom{font-family:var(--f-display);font-size:1.05rem;text-decoration:none;color:var(--lin)}
+.entete nav{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:var(--t-s)}
+.entete nav a{color:var(--brume);text-decoration:none}
+.entete nav a:hover{color:var(--lin)}
+@media (max-width:640px){.entete nav a.secondaire{display:none}}
+
+/* Ouverture */
+.ouverture{padding-block:clamp(2.5rem,7vw,5rem) 2rem;position:relative;overflow:hidden}
+.ouverture>.enveloppe{position:relative}
+#constellation{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.5}
+.ouverture .grille{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(1.5rem,4vw,3rem);align-items:end}
+.ouverture h1{font-size:var(--t-xxl);font-weight:400;letter-spacing:-.01em}
+.ouverture h1 em{font-style:italic;color:var(--ambre)}
+.ouverture .these{margin-top:1.2rem;font-size:var(--t-l);max-width:32rem;color:var(--lin);font-weight:300}
+.portrait{width:clamp(120px,18vw,190px);aspect-ratio:1;max-width:100%;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px var(--trait),0 0 0 10px var(--velours);justify-self:end}
+.portrait img{width:100%;height:100%;object-fit:cover;display:block}
+@media (max-width:640px){.ouverture .grille{grid-template-columns:1fr}.portrait{justify-self:start;order:-1}}
+
+/* La pièce maîtresse : vos mots agissent */
+.instrument{margin-top:2.2rem;background:var(--velours);border:1px solid var(--trait);border-radius:6px;padding:clamp(1rem,3vw,1.8rem);display:grid;gap:1.3rem}
+.instrument .tete{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.6rem}
+.instrument label{font-family:var(--f-display);font-size:var(--t-l);font-style:italic}
+.saisie{display:flex;gap:.6rem;flex-wrap:wrap}
+.saisie input{flex:1 1 16rem;min-width:0;background:var(--nuit);border:1px solid var(--trait);border-radius:4px;padding:.7rem .9rem;font-family:var(--f-display);font-size:var(--t-l)}
+.saisie input:focus{border-color:var(--ambre);outline:none}
+.etapes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--trait);border:1px solid var(--trait);border-radius:4px;overflow:hidden}
+.etape{background:var(--nuit);padding:1rem;display:flex;flex-direction:column;gap:.7rem;min-width:0}
+.etape .num{font-family:var(--f-code);font-size:var(--t-xs);color:var(--ambre)}
+.etape h3{font-size:1.05rem}
+.etape .note{font-size:var(--t-xs);color:var(--brume);line-height:1.5}
+@media (max-width:860px){.etapes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.etapes{grid-template-columns:1fr}}
+.jetons{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--f-code);font-size:.85rem}
+.jeton{padding:.15rem .35rem;border-radius:3px;background:var(--velours);border:1px solid var(--trait);white-space:pre;transition:transform .3s}
+.jeton.v{color:var(--nuit);border-color:transparent}
+.jeton.v-a{background:var(--v-a);color:var(--lin);border-color:var(--brume)}
+.jeton.v-e{background:var(--v-e)} .jeton.v-i{background:var(--v-i)} .jeton.v-u{background:var(--v-u)} .jeton.v-o{background:var(--v-o)}
+.jeton.joue{transform:translateY(-4px)}
+.ids{font-family:var(--f-code);font-size:.8rem;color:var(--verre);line-height:1.8;word-break:break-all}
+.vecteurs{display:grid;gap:3px}
+.vecteur{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;height:14px}
+.vecteur span{background:var(--verre);align-self:center;border-radius:1px}
+.calcul{position:relative;height:64px;border:1px solid var(--trait);border-radius:3px;overflow:hidden;background:repeating-linear-gradient(90deg,transparent 0 7px,color-mix(in srgb,var(--verre) 18%,transparent) 7px 8px),repeating-linear-gradient(0deg,transparent 0 7px,color-mix(in srgb,var(--verre) 18%,transparent) 7px 8px)}
+.calcul .onde{position:absolute;inset:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--verre) 55%,transparent),transparent);transform:translateX(-100%)}
+.calcul.actif .onde{animation:balaye 1.4s ease-in-out}
+@keyframes balaye{to{transform:translateX(100%)}}
+.chiffre{font-family:var(--f-code);font-size:var(--t-s);color:var(--lin)}
+
+/* Manifeste */
+.manifeste{padding-block:clamp(3rem,8vw,6rem)}
+.manifeste ol{list-style:none;margin:2rem 0 0;padding:0;display:grid;gap:1.6rem;max-width:52rem}
+.manifeste li{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:1rem;align-items:baseline}
+.manifeste .phrase{font-family:var(--f-display);font-size:clamp(1.3rem,2.6vw,1.8rem);line-height:1.3;font-weight:400}
+.manifeste .phrase em{color:var(--ambre)}
+.manifeste .renvoi{font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume);text-decoration:none;border:1px solid var(--trait);border-radius:999px;padding:.1rem .5rem;justify-self:start;margin-top:.5rem}
+.manifeste .renvoi:hover{color:var(--ambre);border-color:var(--ambre)}
+.manifeste .phrase + .renvoi{display:inline-block}
+
+/* Démarches */
+.demarche{border-top:1px solid var(--trait);padding-block:clamp(2.5rem,6vw,4.5rem)}
+.demarche .tete{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.5rem,4vw,3rem)}
+@media (max-width:860px){.demarche .tete{grid-template-columns:1fr}}
+.demarche .rang{font-family:var(--f-display);font-style:italic;color:var(--ambre);font-size:var(--t-l)}
+.demarche h2{margin-top:.3rem}
+.demarche .repond{margin-top:.9rem;color:var(--brume);font-style:italic;font-size:var(--t-s)}
+.demarche .intention{font-size:var(--t-m);max-width:var(--lecture)}
+.scene{margin-top:2rem;background:var(--velours);border:1px solid var(--trait);border-radius:6px;padding:clamp(1rem,3vw,1.6rem);display:grid;gap:1rem}
+.scene .barre{display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap}
+.scene canvas,.scene svg{width:100%;display:block;max-width:100%}
+.projets{margin-top:1.8rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:8px}
+.projet{background:var(--nuit);border:1px solid var(--trait);border-radius:3px;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.45rem;min-width:0}
+.projet h3{font-size:1.08rem;line-height:1.25}
+.projet p{font-size:var(--t-s);color:var(--brume);line-height:1.55}
+.projet .forme{font-family:var(--f-code);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--verre)}
+.projet .aveugle{color:var(--ambre)}
+
+/* Scène : deux courbes */
+.legende{display:flex;gap:1.2rem;flex-wrap:wrap;font-size:var(--t-xs);color:var(--brume)}
+.legende i{display:inline-block;width:.9em;height:.25em;vertical-align:middle;margin-right:.4em}
+input[type=range]{accent-color:var(--ambre);width:100%;max-width:22rem}
+.curseur{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;font-size:var(--t-s)}
+.curseur output{font-family:var(--f-code);color:var(--ambre);min-width:5ch}
+
+/* Scène : chaîne */
+.chaine{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.chaine li{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;gap:.8rem;align-items:center;padding:.55rem .8rem;border:1px solid var(--trait);border-radius:3px;background:var(--nuit);transition:opacity .4s,border-color .3s,background .3s}
+.chaine li .n{font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume)}
+.chaine li .role{font-size:var(--t-xs);color:var(--brume);font-family:var(--f-code)}
+.chaine li.pulse{border-color:var(--verre);background:color-mix(in srgb,var(--verre) 14%,var(--nuit))}
+.chaine.minimale li:not(.indispensable){opacity:.18}
+.regle{display:inline-block;font-family:var(--f-code);font-size:var(--t-xs);background:var(--ambre);color:var(--nuit);padding:.1rem .45rem;border-radius:2px}
+
+/* Scène : corpus */
+.fenetre{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.2rem}
+@media (max-width:640px){.fenetre{grid-template-columns:1fr}}
+.document{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.page{aspect-ratio:3/4;background:var(--lin);border-radius:1px;transition:opacity .6s,transform .6s,background .6s}
+.document.lu .page.milieu{opacity:.25}
+.document.lu .page.fin{opacity:0;transform:scale(.6)}
+.document.methode .page{opacity:1;transform:none}
+.document.methode .page:nth-child(5n){box-shadow:3px 0 0 var(--ambre)}
+
+/* Scène : prix */
+.barres{display:grid;gap:.6rem}
+.ligne-prix{display:grid;grid-template-columns:6.5rem minmax(0,1fr) 5.5rem;gap:.8rem;align-items:center;font-size:var(--t-s)}
+.ligne-prix .piste{display:flex;height:18px;background:var(--nuit);border-radius:2px;overflow:hidden}
+.ligne-prix .machine{background:var(--verre);transition:width .4s}
+.ligne-prix .humain{background:var(--ambre);transition:width .4s}
+.ligne-prix .total{font-family:var(--f-code);text-align:right;font-variant-numeric:tabular-nums}
+
+/* Scène : strates */
+.strates{display:grid;gap:4px;justify-items:start}
+.strates span{height:6px;background:var(--brume);border-radius:1px;transition:background .3s}
+.strates span.vue{background:var(--ambre)}
+.texte-strate{font-family:var(--f-display);font-size:clamp(1.2rem,2.4vw,1.6rem);line-height:1.4;max-width:46rem;min-height:5.6em}
+
+/* Vérifier */
+.verifier{border-top:1px solid var(--trait);padding-block:clamp(2.5rem,6vw,4.5rem)}
+.enonces{list-style:none;padding:0;margin:1.6rem 0 0;display:grid;gap:8px}
+.enonce{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center;padding:.9rem 1rem;background:var(--velours);border:1px solid var(--trait);border-radius:4px}
+.enonce p{font-family:var(--f-display);font-size:1.12rem;line-height:1.4}
+.choix{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.choix button{font-size:var(--t-xs);font-family:var(--f-code);padding:.3rem .6rem;border-radius:2px;border:1px solid var(--trait);background:var(--nuit)}
+.choix button[aria-pressed="true"]{border-color:var(--ambre);color:var(--ambre)}
+.enonce.juste{border-color:var(--verre)} .enonce.faux{border-color:var(--v-i)}
+.enonce .verdict{grid-column:1/-1;font-size:var(--t-s);color:var(--brume)}
+@media (max-width:640px){.enonce{grid-template-columns:1fr}.choix{justify-content:flex-start}}
+
+/* Territoires inconnus */
+.territoires{border-top:1px solid var(--trait);padding-block:clamp(2.5rem,6vw,4.5rem)}
+.jouets{margin-top:1.8rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1rem}
+.jouet{background:var(--velours);border:1px solid var(--trait);border-radius:6px;padding:1rem;display:flex;flex-direction:column;gap:.7rem;min-width:0}
+.jouet canvas{width:100%;aspect-ratio:4/3;max-width:100%;background:#0c1416;border-radius:3px;display:block}
+.jouet p{font-size:var(--t-s);color:var(--brume)}
+.gong{width:100%;aspect-ratio:4/3;max-width:100%;border-radius:3px;border:none;background:radial-gradient(circle at 50% 50%,#c99b45 0 18%,#8a6427 19% 34%,#b98a3c 35% 37%,#6d4e1f 38% 52%,#0c1416 53%);transition:transform .15s}
+.gong:active,.gong.frappe{transform:scale(.97)}
+
+/* Pied */
+.pied{border-top:1px solid var(--trait);padding-block:2.5rem 3rem;color:var(--brume);font-size:var(--t-s)}
+.pied .enveloppe{display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+.cle{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <div class="enveloppe">
+    <a class="nom" href="#haut">Jean-Christophe Alaime</a>
+    <nav aria-label="Sections">
+      <a href="#manifeste">Manifeste</a>
+      <a href="#demarches">Démarches</a>
+      <a href="#verifier" class="secondaire">Vérifier</a>
+      <a href="#territoires" class="secondaire">Territoires</a>
+    </nav>
+  </div>
+</header>
+
+<main id="haut">
+
+<section class="ouverture">
+  <canvas id="constellation" aria-hidden="true"></canvas>
+  <div class="enveloppe">
+    <div class="grille">
+      <div>
+        <p class="etiquette">Langue, machine, méthode</p>
+        <h1>Jean-Christophe<br><em>Alaime</em></h1>
+        <p class="these">Ce que deviennent nos mots quand une machine les lit, et comment on apprend à lui parler sans la prendre pour un humain.</p>
+      </div>
+      <div class="portrait"><img src="assets/portrait.jpg" alt="Portrait de Jean-Christophe Alaime" width="400" height="400"></div>
+    </div>
+
+    <div class="instrument" aria-labelledby="lbl-phrase">
+      <div class="tete">
+        <label id="lbl-phrase" for="phrase">Écrivez une phrase. Regardez vos mots agir.</label>
+        <div class="cle">
+          <span class="preuve illustration">simulé</span>
+          <span class="etiquette">le vrai découpage dépend de chaque modèle</span>
+        </div>
+      </div>
+      <div class="saisie">
+        <input id="phrase" type="text" value="Le mot juste a une couleur" maxlength="80" autocomplete="off" spellcheck="false">
+        <button class="bouton" id="ecouter" type="button">Écouter la phrase</button>
+      </div>
+      <div class="etapes">
+        <div class="etape">
+          <span class="num">1 · découper</span>
+          <h3>La machine ne lit pas des mots</h3>
+          <div class="jetons" id="jetons" aria-live="polite"></div>
+          <p class="note">Elle lit des fragments. Un mot rare se casse en plusieurs morceaux, un mot courant reste entier.</p>
+        </div>
+        <div class="etape">
+          <span class="num">2 · colorer</span>
+          <h3>Chaque fragment a une couleur</h3>
+          <div class="jetons" id="couleurs"></div>
+          <p class="note">Couleur de la première voyelle, selon Rimbaud : A noir, E blanc, I rouge, U vert, O bleu. Une convention de poète, pas de machine.</p>
+        </div>
+        <div class="etape">
+          <span class="num">3 · chiffrer</span>
+          <h3>Puis devient un nombre</h3>
+          <div class="ids" id="ids"></div>
+          <div class="vecteurs" id="vecteurs" aria-hidden="true"></div>
+          <p class="note">Chaque fragment reçoit un numéro, puis une liste de coordonnées : sa position dans l'espace du sens.</p>
+        </div>
+        <div class="etape">
+          <span class="num">4 · calculer</span>
+          <h3>Et descend jusqu'au calcul</h3>
+          <div class="calcul" id="calcul"><div class="onde"></div></div>
+          <p class="chiffre" id="compte"></p>
+          <p class="note">Là, plus rien n'est humain : des multiplications par milliards. Le sens de la réponse se décide pendant ce trajet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="manifeste" id="manifeste">
+  <div class="enveloppe">
+    <p class="etiquette">Manifeste</p>
+    <h2>D'où vient tout le reste</h2>
+    <ol>
+      <li><span class="etiquette">18 ans</span><div><p class="phrase">La langue me passionne depuis toujours : la décomposition du sens, le <em>mot juste</em>, la sonorité d'un mot, sa couleur.</p><a class="renvoi" href="#d1">→ démarche 1</a></div></li>
+      <li><span class="etiquette">puis</span><div><p class="phrase">Dans l'échange avec la machine, j'ai trouvé un mystère : comment une intention formulée dans un message devient, étape par étape, <em>la pensée d'une machine</em>.</p><a class="renvoi" href="#d2">→ démarche 2</a></div></li>
+      <li><span class="etiquette">donc</span><div><p class="phrase">Cette machine demande un échange qui ressemble à celui qu'on a avec un humain. Les étapes qui suivent n'ont rien d'humain. Ce n'est <em>pas un simulacre d'humain</em> : il faut connaître sa mécanique pour s'y projeter.</p><a class="renvoi" href="#d3">→ démarches 3 à 6</a></div></li>
+      <li><span class="etiquette">enfin</span><div><p class="phrase">Ce qui m'occupe : <em>penser comment on pense</em>, la machine comme l'humain, et comment on construit l'interaction entre les deux.</p><a class="renvoi" href="#d7">→ démarche 7</a></div></li>
+      <li><span class="etiquette">et</span><div><p class="phrase">Plus je vois que mes mots agissent, plus je maîtrise. Alors <em>je vérifie</em>, toujours.</p><a class="renvoi" href="#verifier">→ le fil qui traverse tout</a></div></li>
+    </ol>
+  </div>
+</section>
+
+<div id="demarches">
+
+<!-- 1 -->
+<section class="demarche" id="d1">
+  <div class="enveloppe">
+    <div class="tete">
+      <div>
+        <span class="rang">un</span>
+        <h2>Le mot juste</h2>
+        <p class="repond">« La langue me passionne depuis mes dix-huit ans. »</p>
+      </div>
+      <p class="intention">Décomposer le sens, chercher le mot exact, défendre une voix. Puis observer ce que la machine fait de nos mots, et ce que nos mots deviennent à force de la lire. Un détecteur d'IA ne reconnaît pas une origine, il reconnaît un registre : quand les humains adoptent celui des assistants, il les accuse.</p>
+    </div>
+    <div class="scene">
+      <div class="barre">
+        <span class="etiquette">Quand l'humain se met à écrire comme la machine</span>
+        <span class="preuve illustration">schéma</span>
+      </div>
+      <svg id="courbes" viewBox="0 0 640 220" role="img" aria-label="Deux courbes : textes humains et textes d'assistant. La courbe humaine glisse vers celle de l'assistant, la zone des fausses accusations grandit sous un seuil fixe."></svg>
+      <div class="curseur">
+        <label for="annee">Année</label>
+        <input id="annee" type="range" min="2020" max="2026" step="1" value="2021">
+        <output id="annee-val" for="annee">2021</output>
+      </div>
+      <div class="legende">
+        <span><i style="background:var(--ambre)"></i>textes humains</span>
+        <span><i style="background:var(--verre)"></i>textes d'assistant</span>
+        <span><i style="background:var(--v-i)"></i>seuil du détecteur, fixe</span>
+      </div>
+      <p class="chiffre"><span class="preuve mesure">mesuré</span>&nbsp; textes humains signalés comme IA : 0 % avant 2022, 14,9 % aujourd'hui, 25,3 % hors disciplines techniques.</p>
+    </div>
+    <div class="projets">
+      <article class="projet"><span class="forme">analyse · outil</span><h3>Disséquer sa voix de jeunesse</h3><p>Un cahier d'écrits lu comme un corpus, puis transformé en règles d'écriture qu'on peut rappeler.</p></article>
+      <article class="projet"><span class="forme">démonstration</span><h3>Quand l'humain se met à écrire comme la machine</h3><p>Onze étapes, chacune avec son niveau de preuve.</p></article>
+      <article class="projet"><span class="forme">essai</span><h3>Le copiste de ce qui l'a copié</h3><p>Un style antérieur aux modèles, soupçonné de les imiter.</p></article>
+      <article class="projet"><span class="forme">formation inversée</span><h3>Manuel du parfait locuteur IA</h3><p>Vingt-deux règles pour écrire comme une machine. C'est le plan, pas les mots, qui fait basculer le verdict.</p></article>
+      <article class="projet"><span class="forme">mesure</span><h3>Ce qu'un chiffre vitrine ne prouve pas</h3><p>Zéro erreur sur n textes autorise à dire « au plus 3 sur n », pas « zéro ».</p></article>
+      <article class="projet"><span class="forme">outil <span class="aveugle">· à l'aveugle</span></span><h3>Le saut</h3><p>Rendre une voix aux textes accusés à tort, sans toucher à l'argument.</p></article>
+      <article class="projet"><span class="forme">manuel</span><h3>Le prompt comme acte d'énonciation</h3><p>Cinq piliers, chacun adossé à une théorie du langage et à sa limite.</p></article>
+      <article class="projet"><span class="forme">outil</span><h3>Une intention, plusieurs langues</h3><p>Chaque concept dit dans la langue où il pèse le plus pour un modèle.</p></article>
+      <article class="projet"><span class="forme">protocole</span><h3>M/H : protéger ce que l'humain a validé</h3><p>Écrire à quatre mains sans que la machine réécrive ce qui est stabilisé.</p></article>
+      <article class="projet"><span class="forme">chaîne <span class="aveugle">· à l'aveugle</span></span><h3>Le roman par génération décomposée</h3><p>Bible, registre d'état, révision : et quel modèle écrit le mieux sans consigne ?</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="demarche" id="d2">
+  <div class="enveloppe">
+    <div class="tete">
+      <div>
+        <span class="rang">deux</span>
+        <h2>Ce qui se passe entre la question et le calcul</h2>
+        <p class="repond">« Comment une intention devient la pensée d'une machine. »</p>
+      </div>
+      <p class="intention">Suivre le texte jusqu'aux mathématiques, marques et produits retirés. Séparer la fonction de l'outil, pour raisonner avant de choisir. Et savoir où vit une règle : dans le prompt, elle est relue à chaque fois ; dans le modèle, elle agit sans être lue.</p>
+    </div>
+    <div class="scene">
+      <div class="barre">
+        <span class="etiquette">De la question au GPU</span>
+        <div class="cle">
+          <button class="bouton" id="suivre" type="button">Suivre une requête</button>
+          <button class="bouton" id="minimale" type="button" aria-pressed="false">Chaîne minimale</button>
+        </div>
+      </div>
+      <ol class="chaine" id="chaine">
+        <li><span class="n">01</span><span>Interface : la question est tapée</span><span class="role">optionnel</span></li>
+        <li><span class="n">02</span><span>Orchestration : contexte, historique, consignes <span class="regle" id="regle">règle</span></span><span class="role">optionnel</span></li>
+        <li><span class="n">03</span><span>Recherche : documents ajoutés au contexte</span><span class="role">optionnel</span></li>
+        <li class="indispensable"><span class="n">04</span><span>Inférence : découpage, chiffrage, prédiction</span><span class="role">indispensable</span></li>
+        <li class="indispensable"><span class="n">05</span><span>Modèle : les poids, où la règle peut aussi vivre</span><span class="role">indispensable</span></li>
+        <li class="indispensable"><span class="n">06</span><span>Matériel : la carte graphique calcule</span><span class="role">indispensable</span></li>
+      </ol>
+      <p class="note etiquette">Transverses : observer, filtrer.</p>
+    </div>
+    <div class="projets">
+      <article class="projet"><span class="forme">schéma</span><h3>De la question au GPU</h3><p>La chaîne des fonctions, ce qui est obligatoire, ce qui ne l'est pas, puis les outils réels en regard.</p></article>
+      <article class="projet"><span class="forme">explication</span><h3>Où vit une règle</h3><p>Redire une consigne à chaque appel ou l'apprendre au modèle : W′ = W + B·A.</p></article>
+      <article class="projet"><span class="forme">prototype</span><h3>Le sismographe de la question</h3><p>Voir la profondeur d'une question pendant qu'on l'écrit : le bruit se creuse et vire au vert quand le contexte s'enrichit.</p></article>
+      <article class="projet"><span class="forme">lecture critique</span><h3>Du flou au net</h3><p>Une recherche qui écrit du global au détail, lue en séparant le mesuré du promis.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="demarche" id="d3">
+  <div class="enveloppe">
+    <div class="tete">
+      <div>
+        <span class="rang">trois</span>
+        <h2>Une machine qui n'est pas un simulacre d'humain</h2>
+        <p class="repond">« Une interaction humaine en apparence, des étapes qui ne le sont pas. »</p>
+      </div>
+      <p class="intention">On parle à la machine comme à un humain, et c'est la source de la plupart des erreurs. On croit aussi qu'une seule façon de lui parler suffit. Or la taille d'un modèle impose sa propre manière : une consigne indispensable au petit modèle devient un excès pour le grand.</p>
+    </div>
+    <div class="scene">
+      <div class="barre">
+        <span class="etiquette">L'abîme des paramètres · un point = un milliard de paramètres</span>
+        <span class="preuve hypothese">hypothèse</span>
+      </div>
+      <canvas id="abime" width="1200" height="420" aria-label="Grille de points. Les points ambrés représentent un petit modèle ouvert de 27 milliards de paramètres, les autres le modèle de pointe selon l'hypothèse choisie."></canvas>
+      <div class="curseur">
+        <label for="taille">Taille supposée d'un modèle de pointe (non publiée)</label>
+        <input id="taille" type="range" min="200" max="5000" step="100" value="1500">
+        <output id="taille-val" for="taille">1 500 Md</output>
+      </div>
+      <p class="chiffre" id="rapport"></p>
+    </div>
+    <div class="projets">
+      <article class="projet"><span class="forme">manuel</span><h3>Les idées reçues qu'on transfère à la machine</h3><p>Vingt et une habitudes humaines qui ne servent à rien face à un modèle.</p></article>
+      <article class="projet"><span class="forme">visualisation</span><h3>L'abîme des paramètres</h3><p>Le volume en 3D, le prix en surface, l'énergie en longueur, l'incertitude assumée.</p></article>
+      <article class="projet"><span class="forme">grille</span><h3>Le niveau zéro avant le modèle</h3><p>Quatre questions sur la tâche, et parfois la réponse : aucun modèle.</p></article>
+      <article class="projet"><span class="forme">essai</span><h3>Le problème n'est pas dans le prompt</h3><p>La posture avant l'écriture, et l'erreur de transfert dans les deux sens.</p></article>
+      <article class="projet"><span class="forme">essai</span><h3>Ce qui survit au changement de modèle</h3><p>La méthode reste, la procédure se dégrade en silence.</p></article>
+      <article class="projet"><span class="forme">banc <span class="aveugle">· à l'aveugle</span></span><h3>Dix fois plus vite, pas mieux</h3><p>Le même modèle en ligne et en local : 52 secondes contre 8 minutes 28, même note.</p></article>
+      <article class="projet"><span class="forme">outil</span><h3>Aplatir le web en diapositive</h3><p>Laisser la machine écrire dans sa langue native, le HTML, puis construire le pont vers une présentation modifiable. Réécriture d'un projet libre.</p></article>
+      <article class="projet"><span class="forme">protocole</span><h3>Départager les modèles</h3><p>Un puzzle conçu pour séparer les façons de raisonner.</p></article>
+      <article class="projet"><span class="forme">expérience <span class="aveugle">· à l'aveugle</span></span><h3>Sortir un modèle de ses idées probables</h3><p>Un tirage au hasard fait par du code, une série témoin, un juge qui ignore l'origine.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="demarche" id="d4">
+  <div class="enveloppe">
+    <div class="tete">
+      <div>
+        <span class="rang">quatre</span>
+        <h2>Construire l'interaction : orchestrer des agents</h2>
+        <p class="repond">« Comment on construit l'interaction. »</p>
+      </div>
+      <p class="intention">Maîtriser le langage de chaque agent ne suffit pas. Il faut rendre prévisible ce qui passe de l'un à l'autre, pour que la structure d'ensemble reste cohérente. Le modèle propose, le code dispose : au modèle ce qu'il fait bien, au code et à l'humain la preuve et la décision.</p>
+    </div>
+    <div class="scene">
+      <div class="barre">
+        <span class="etiquette">ESSAIM · des agents naissent, travaillent, s'éteignent</span>
+        <button class="bouton" id="essaim-pause" type="button" aria-pressed="false">Pause</button>
+      </div>
+      <canvas id="essaim" width="1200" height="380" aria-label="Animation : des pastilles apparaissent dans quatre colonnes de rôle, se rapprochent quand leurs sujets sont voisins, puis s'éteignent. Aucun lien n'est tracé entre elles."></canvas>
+      <p class="note etiquette">Colonne = rôle donné à la naissance. Hauteur = sujet. Aucun lien tracé : ils n'existent pas.</p>
+    </div>
+    <div class="projets">
+      <article class="projet"><span class="forme">prototype</span><h3>ESSAIM</h3><p>Une organisation d'agents qui émerge au lieu d'être prescrite, et rendue lisible.</p></article>
+      <article class="projet"><span class="forme">architecture</span><h3>Le modèle propose, le code dispose</h3><p>Quatre étapes sur douze confiées au modèle, chacune encadrée de contrôles : 1/6 → 3/3 → 9/9.</p></article>
+      <article class="projet"><span class="forme">règles</span><h3>Prédire avant de voir</h3><p>Sur un code ancien, l'humain prédit le changement avant de le lire.</p></article>
+      <article class="projet"><span class="forme">récit</span><h3>Le correcteur imaginaire</h3><p>Des agents trompent un juge qui n'existait pas. Chaque scène racontée deux fois.</p></article>
+      <article class="projet"><span class="forme">matrice</span><h3>Conçu pour l'IA, ou capable d'agir</h3><p>Deux questions qu'on confond, rendues indépendantes.</p></article>
+      <article class="projet"><span class="forme">formation</span><h3>Confier une tâche à un agent de code</h3><p>Lancer, relire, valider, intégrer, et découvrir seul la règle d'isolement.</p></article>
+      <article class="projet"><span class="forme">agent</span><h3>Un poste, tâche par tâche</h3><p>Remplacer l'opinion sur l'emploi par un diagnostic.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="demarche" id="d5">
+  <div class="enveloppe">
+    <div class="tete">
+      <div>
+        <span class="rang">cinq</span>
+        <h2>Faire parler un corpus</h2>
+        <p class="repond">« Dégager la connaissance, puis l'interroger. »</p>
+      </div>
+      <p class="intention">Une IA qui lit un document trop long ne prévient pas : elle oublie le milieu, coupe la fin, dilue le reste. La méthode part de ces façons d'échouer pour outiller la lecture d'un corpus et pouvoir ensuite l'interroger sans rien perdre.</p>
+    </div>
+    <div class="scene">
+      <div class="barre">
+        <span class="etiquette">300 pages dans une fenêtre étroite</span>
+        <div class="cle">
+          <button class="bouton" id="lire" type="button">Lire d'un coup</button>
+          <button class="bouton" id="methode" type="button">Appliquer la méthode</button>
+        </div>
+      </div>
+      <div class="fenetre">
+        <div class="document" id="document" aria-hidden="true"></div>
+        <p id="etat-doc">Un document de 300 pages, en 40 paquets. Choisissez une lecture.</p>
+      </div>
+    </div>
+    <div class="projets">
+      <article class="projet"><span class="forme">protocole</span><h3>Lire 300 pages sans rien perdre</h3><p>Découper, résumer trois fois, croiser dans une matrice, traquer les contradictions.</p></article>
+      <article class="projet"><span class="forme">architecture</span><h3>Un fil rouge, trois vues</h3><p>Une recherche documentaire en graphe, décrite pour trois lecteurs sans contradiction.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="demarche" id="d6">
+  <div class="enveloppe">
+    <div class="tete">
+      <div>
+        <span class="rang">six</span>
+        <h2>Penser avec la machine a un prix</h2>
+        <p class="repond">« C'est devenu un vrai budget. »</p>
+      </div>
+      <p class="intention">Chaque réflexion menée avec un modèle se paie, en argent et en énergie. Le modèle le moins cher à l'appel n'est pas le moins cher par tâche livrée : les relances et le temps humain de relecture pèsent souvent plus que la machine.</p>
+    </div>
+    <div class="scene">
+      <div class="barre">
+        <span class="etiquette">Le vrai prix d'une tâche, relectures comprises</span>
+        <span class="preuve illustration">hypothèses modifiables</span>
+      </div>
+      <div class="curseur">
+        <label for="taux">Coût d'une heure humaine</label>
+        <input id="taux" type="range" min="0" max="120" step="5" value="50">
+        <output id="taux-val" for="taux">50 $</output>
+      </div>
+      <div class="barres" id="barres"></div>
+      <div class="legende">
+        <span><i style="background:var(--verre)"></i>machine : appels et relances</span>
+        <span><i style="background:var(--ambre)"></i>humain : relecture et reprise</span>
+      </div>
+      <p class="note etiquette">Fourchette de l'étude d'origine : 1,30 $ à 8,23 $ par tentative, neuf modèles. Ici, quatre modèles fictifs.</p>
+    </div>
+    <div class="projets">
+      <article class="projet"><span class="forme">simulateur</span><h3>Le vrai prix d'une tâche</h3><p>Appel, relances, temps humain, et un badge de fiabilité sur chaque chiffre.</p></article>
+      <article class="projet"><span class="forme">estimation</span><h3>C'est la session qui coûte</h3><p>40 tours coûtent 2,4 fois 20 tours. Chaque étape annonce : fait, hypothèse ou calcul.</p></article>
+      <article class="projet"><span class="forme">formation</span><h3>Le rendement, pas la frugalité</h3><p>−22 % de tokens, −4 % de coût réel : on n'adopte une pratique que si on en voit la cause.</p></article>
+      <article class="projet"><span class="forme">maquettes</span><h3>Cinq façons de lire une consommation</h3><p>Les mêmes données en cinq registres graphiques, comparés comme des hypothèses.</p></article>
+      <article class="projet"><span class="forme">modèle</span><h3>Bascule</h3><p>L'empreinte énergétique de l'IA, rendue visible.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="demarche" id="d7">
+  <div class="enveloppe">
+    <div class="tete">
+      <div>
+        <span class="rang">sept</span>
+        <h2>Penser comment on pense</h2>
+        <p class="repond">« Prendre du recul sur sa propre pensée, et sur la façon dont on la construit. »</p>
+      </div>
+      <p class="intention">Traiter sa propre cognition comme un système qu'on observe : la mémoire de travail qui lâche quand on détaille un nœud, la fatigue de penser avec la machine, les biais qui sont de bons raccourcis au mauvais endroit. Et expliquer en paliers, pour que chacun choisisse jusqu'où il descend.</p>
+    </div>
+    <div class="scene">
+      <div class="barre">
+        <span class="etiquette">Du simple au savant · une question, quatre profondeurs</span>
+        <div class="strates" id="strates" aria-hidden="true"><span style="width:12rem"></span><span style="width:9rem"></span><span style="width:6rem"></span><span style="width:3rem"></span></div>
+      </div>
+      <p class="texte-strate" id="texte-strate" aria-live="polite"></p>
+      <div class="curseur">
+        <label for="profondeur">Profondeur</label>
+        <input id="profondeur" type="range" min="0" max="3" step="1" value="0">
+        <output id="profondeur-val" for="profondeur">le quotidien</output>
+      </div>
+    </div>
+    <div class="projets">
+      <article class="projet"><span class="forme">essai</span><h3>L'outil se fabrique, l'intention se formule</h3><p>Ce qui reste à l'humain : donner un pouvoir, fixer le critère.</p></article>
+      <article class="projet"><span class="forme">essai</span><h3>On ne sait pas ce qu'on ne sait pas</h3><p>Sept familles de questions de profane avant de coder avec une IA.</p></article>
+      <article class="projet"><span class="forme">essai</span><h3>Des instruments anciens pour un travail nouveau</h3><p>Avec l'IA intégrée, la seule érosion qui compte est celle du contrôle.</p></article>
+      <article class="projet"><span class="forme">explication</span><h3>Un bon raccourci au mauvais endroit</h3><p>Les biais comme une chaîne de causes, coupable à chaque maillon.</p></article>
+      <article class="projet"><span class="forme">exposé</span><h3>Du simple au savant</h3><p>Ontologie et épistémologie en quatre strates de vocabulaire.</p></article>
+      <article class="projet"><span class="forme">introspection</span><h3>Tenir une architecture dans sa tête</h3><p>Sa propre mémoire de travail, déboguée comme un système.</p></article>
+      <article class="projet"><span class="forme">témoignage</span><h3>Ce que l'IA fait à la cognition</h3><p>Le goût de penser, l'attrition, la fatigue, à la première personne.</p></article>
+      <article class="projet"><span class="forme">thèse</span><h3>L'apprentissage adapté</h3><p>Huit types de raisonnement, l'élargissement et la profondeur.</p></article>
+      <article class="projet"><span class="forme">simulation</span><h3>Et si j'avais fait autrement ?</h3><p>Rejouer un passé sur des faits réels plutôt qu'inventer un futur.</p></article>
+      <article class="projet"><span class="forme">réflexion</span><h3>Le fil entre les conversations</h3><p>Le travail avec la machine comme un graphe de filiations.</p></article>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<section class="verifier" id="verifier">
+  <div class="enveloppe">
+    <div class="tete" style="display:grid;gap:1rem;max-width:var(--lecture)">
+      <p class="etiquette">Le fil qui traverse tout</p>
+      <h2>Vérifier, toujours</h2>
+      <p>Chaque travail dit ce que vaut chacune de ses phrases : mesurée, déduite, prédite. À votre tour. Classez ces énoncés tirés des projets, puis révélez la clé.</p>
+      <div class="cle"><span class="preuve mesure">mesuré</span><span class="preuve hypothese">déduit</span><span class="preuve illustration">prédit</span></div>
+    </div>
+    <ul class="enonces" id="enonces"></ul>
+    <div class="cle" style="margin-top:1rem">
+      <button class="bouton" id="reveler" type="button">Révéler la clé</button>
+      <span id="score" class="chiffre" aria-live="polite"></span>
+    </div>
+  </div>
+</section>
+
+<section class="territoires" id="territoires">
+  <div class="enveloppe">
+    <div style="display:grid;gap:1rem;max-width:var(--lecture)">
+      <p class="etiquette">Loisirs, pour rebondir</p>
+      <h2>Territoires inconnus</h2>
+      <p>Le son, l'image, la perception. Ici on joue sans lire.</p>
+    </div>
+    <div class="jouets">
+      <div class="jouet">
+        <span class="etiquette">La sphère ambiguë</span>
+        <canvas id="sphere" width="480" height="360" aria-label="Sphère de points en rotation, sans indice de profondeur : son sens de rotation peut sembler s'inverser."></canvas>
+        <p>Dans quel sens tourne-t-elle ? Fixez-la : le sens peut s'inverser, rien dans l'image ne le verrouille.</p>
+      </div>
+      <div class="jouet">
+        <span class="etiquette">Racines et Résonances</span>
+        <button class="gong" id="gong" type="button" aria-label="Frapper le gong"></button>
+        <p>Un site pour une praticienne du son. Les sons naissent dans le navigateur et n'éclatent qu'à votre geste. <a href="https://jalaime-a11y.github.io/racines-et-resonances/">Voir le site</a></p>
+      </div>
+      <div class="jouet">
+        <span class="etiquette">Un synthé sans ses moteurs</span>
+        <canvas id="inertie" width="480" height="360" aria-label="Courbe de hauteur : la note visée en pointillé, la note jouée qui la suit avec du retard selon l'inertie."></canvas>
+        <div class="curseur"><label for="inertie-r">Inertie</label><input id="inertie-r" type="range" min="0" max="100" value="55"><button class="bouton" id="jouer-inertie" type="button">Jouer</button></div>
+        <p>Le caractère d'un instrument à moteurs vient de leur lenteur à atteindre la note. Modéliser l'inertie, c'est garder l'âme sans la mécanique.</p>
+      </div>
+      <div class="jouet">
+        <span class="etiquette">Et encore</span>
+        <p>Traduire un son entendu en réglages de synthé. Piloter Ableton Live par la langue plutôt qu'à la souris. Un chat en papier qui danse sur les mouvements d'une danseuse. Mon double animé dans une vidéo. Des images pour illustrer des articles et fixer des concepts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="enveloppe">
+    <p>Jean-Christophe Alaime. Le parcours professionnel détaillé est sur LinkedIn.</p>
+    <p>Supports publics : <a href="flux_semantique_v5.html">Flux sémantique</a> · <a href="idees_recues_v1.html">Idées reçues</a> · <a href="ia_native_vs_agentique.html">IA native ou agentique</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduit = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var css = getComputedStyle(document.documentElement);
+  function tok(n){ return css.getPropertyValue(n).trim(); }
+  function $(id){ return document.getElementById(id); }
+  function hash(s){ var h=2166136261; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return h>>>0; }
+  function fmt(n){ return n.toLocaleString("fr-FR"); }
+
+  /* ---------- Audio partagé ---------- */
+  var ctx=null;
+  function audio(){ if(!ctx){ var A=window.AudioContext||window.webkitAudioContext; if(!A) return null; ctx=new A(); } if(ctx.state==="suspended") ctx.resume(); return ctx; }
+
+  /* ---------- 1. Vos mots agissent ---------- */
+  var VOY="aeiouyàâäéèêëîïôöûùü";
+  function voyelle(t){
+    var m=t.toLowerCase().match(/[aeiouyàâäéèêëîïôöûùü]/);
+    if(!m) return null;
+    var c=m[0];
+    if("aàâä".indexOf(c)>=0) return "a";
+    if("eéèêë".indexOf(c)>=0) return "e";
+    if("iîïy".indexOf(c)>=0) return "i";
+    if("oôö".indexOf(c)>=0) return "o";
+    return "u";
+  }
+  var courants={"le":1,"la":1,"les":1,"un":1,"une":1,"de":1,"des":1,"et":1,"a":1,"à":1,"est":1,"mot":1,"en":1,"du":1,"il":1,"elle":1,"je":1,"tu":1,"on":1,"que":1,"qui":1,"ne":1,"pas":1,"se":1,"ce":1,"sa":1,"son":1,"au":1,"par":1,"pour":1,"sur":1,"avec":1,"dans":1,"plus":1,"juste":1,"couleur":1};
+  function syllabes(w){
+    var re=new RegExp("[^"+VOY+"]*["+VOY+"]+(?:[^"+VOY+"]*$|[^"+VOY+"](?=[^"+VOY+"]))?","gi");
+    var s=w.match(re); return s&&s.length? s : [w];
+  }
+  function decouper(phrase){
+    var out=[]; var mots=phrase.match(/[\p{L}\p{N}'’-]+|[^\s\p{L}\p{N}]/gu)||[];
+    mots.forEach(function(m,i){
+      var esp = i>0 && /[\p{L}\p{N}]/u.test(m) ? "·" : "";
+      if(courants[m.toLowerCase()]||m.length<=4||!/[\p{L}]/u.test(m)){ out.push(esp+m); return; }
+      var s=syllabes(m), morceaux=[], cur="";
+      s.forEach(function(x){ cur+=x; if(cur.length>=4){ morceaux.push(cur); cur=""; } });
+      if(cur){ if(morceaux.length) morceaux[morceaux.length-1]+=cur; else morceaux.push(cur); }
+      morceaux.forEach(function(p,j){ out.push((j===0?esp:"")+p); });
+    });
+    return out;
+  }
+  function rendrePhrase(){
+    var p=$("phrase").value.trim()||"Le mot juste a une couleur";
+    var t=decouper(p);
+    var j=$("jetons"), c=$("couleurs"), ids=$("ids"), vec=$("vecteurs");
+    j.textContent=""; c.textContent=""; vec.textContent="";
+    var numeros=[];
+    t.forEach(function(x){
+      var a=document.createElement("span"); a.className="jeton"; a.textContent=x; j.appendChild(a);
+      var b=document.createElement("span"); var v=voyelle(x); b.className="jeton"+(v?" v v-"+v:""); b.textContent=x; c.appendChild(b);
+      var h=hash(x); numeros.push(h%50257);
+      if(vec.children.length<6){
+        var r=document.createElement("div"); r.className="vecteur";
+        for(var k=0;k<8;k++){ var s=document.createElement("span"); var val=((h>>> (k*4))&15)/15; s.style.height=(2+val*12)+"px"; s.style.opacity=.35+val*.65; r.appendChild(s); }
+        vec.appendChild(r);
+      }
+    });
+    ids.textContent="["+numeros.join(", ")+"]";
+    var ops = t.length*2*27e9;
+    $("compte").textContent = t.length+" fragments × 27 milliards de paramètres ≈ "+fmt(Math.round(ops/1e9))+" milliards d'opérations";
+    var k=$("calcul"); k.classList.remove("actif"); void k.offsetWidth; if(!reduit) k.classList.add("actif");
+  }
+  $("phrase").addEventListener("input",rendrePhrase);
+  rendrePhrase();
+  var notes={a:196,e:330,i:440,o:262,u:294};
+  $("ecouter").addEventListener("click",function(){
+    var ac=audio(); if(!ac) return;
+    var spans=$("couleurs").children, t0=ac.currentTime+.05;
+    Array.prototype.forEach.call(spans,function(s,i){
+      var v=voyelle(s.textContent)||"e", f=notes[v]*(1+(hash(s.textContent)%3)*.5);
+      var o=ac.createOscillator(), g=ac.createGain();
+      o.type= v==="a"?"triangle":"sine"; o.frequency.value=f;
+      g.gain.setValueAtTime(0,t0+i*.22); g.gain.linearRampToValueAtTime(.16,t0+i*.22+.02); g.gain.exponentialRampToValueAtTime(.001,t0+i*.22+.5);
+      o.connect(g).connect(ac.destination); o.start(t0+i*.22); o.stop(t0+i*.22+.55);
+      setTimeout(function(){ s.classList.add("joue"); setTimeout(function(){ s.classList.remove("joue"); },200); }, (i*.22+.05)*1000);
+    });
+  });
+
+  /* ---------- Constellation : les projets, colorés par démarche ---------- */
+  (function(){
+    var cv=$("constellation"), c=cv.getContext("2d"), pts=[], W=0, H=0;
+    var cols=[tok("--ambre"),tok("--verre"),tok("--lin"),tok("--brume")];
+    function taille(){ var r=cv.getBoundingClientRect(); W=cv.width=Math.round(r.width); H=cv.height=Math.round(r.height); }
+    taille(); window.addEventListener("resize",function(){ taille(); f(); });
+    var parDemarche=[10,4,9,7,2,5,10];
+    parDemarche.forEach(function(n,d){ for(var i=0;i<n;i++) pts.push({d:d,x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.00025,vy:(Math.random()-.5)*.00025}); });
+    function f(){
+      c.clearRect(0,0,W,H);
+      for(var i=0;i<pts.length;i++){ var a=pts[i];
+        for(var j=i+1;j<pts.length;j++){ var b=pts[j]; if(a.d!==b.d) continue; var dx=(a.x-b.x)*W, dy=(a.y-b.y)*H, dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<170){ c.strokeStyle=cols[a.d%4]; c.globalAlpha=(1-dist/170)*.35; c.beginPath(); c.moveTo(a.x*W,a.y*H); c.lineTo(b.x*W,b.y*H); c.stroke(); } }
+      }
+      pts.forEach(function(p){ c.globalAlpha=.8; c.fillStyle=cols[p.d%4]; c.beginPath(); c.arc(p.x*W,p.y*H,2.4,0,6.283); c.fill(); });
+      c.globalAlpha=1;
+    }
+    function boucle(){ pts.forEach(function(p){ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>1) p.vx*=-1; if(p.y<0||p.y>1) p.vy*=-1; }); f(); requestAnimationFrame(boucle); }
+    f(); if(!reduit) requestAnimationFrame(boucle);
+  })();
+
+  /* ---------- Démarche 1 : deux courbes ---------- */
+  (function(){
+    var svg=$("courbes"), W=640, H=220, base=190, seuil=.62;
+    function g(x,m,s){ return Math.exp(-((x-m)*(x-m))/(2*s*s)); }
+    function chemin(m,s,de,a){
+      var d=""; for(var i=0;i<=120;i++){ var x=de+(a-de)*i/120; var y=base-g(x,m,s)*150; d+=(i?"L":"M")+(x*W).toFixed(1)+" "+y.toFixed(1); }
+      return d;
+    }
+    function dessiner(annee){
+      var p=(annee-2020)/6, mh=.26+p*.26;
+      var amb=tok("--ambre"), ver=tok("--verre"), rou=tok("--v-i"), tr=tok("--trait"), br=tok("--brume");
+      svg.innerHTML=
+        '<defs><pattern id="hach" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="'+rou+'" stroke-width="2"/></pattern></defs>'+
+        '<line x1="0" y1="'+base+'" x2="'+W+'" y2="'+base+'" stroke="'+tr+'"/>'+
+        '<path d="'+chemin(mh,.1,seuil,1)+' L'+W+' '+base+' L'+(seuil*W)+' '+base+'Z" fill="url(#hach)" opacity=".8"/>'+
+        '<path d="'+chemin(.8,.08,0,1)+'" fill="none" stroke="'+ver+'" stroke-width="2.5"/>'+
+        '<path d="'+chemin(mh,.1,0,1)+'" fill="none" stroke="'+amb+'" stroke-width="2.5"/>'+
+        '<line x1="'+(seuil*W)+'" y1="20" x2="'+(seuil*W)+'" y2="'+base+'" stroke="'+rou+'" stroke-dasharray="4 4"/>'+
+        '<text x="'+(seuil*W+6)+'" y="30" fill="'+rou+'" font-family="IBM Plex Mono, monospace" font-size="11">seuil « IA »</text>'+
+        '<text x="0" y="212" fill="'+br+'" font-family="IBM Plex Mono, monospace" font-size="11">registre humain</text>'+
+        '<text x="'+W+'" y="212" text-anchor="end" fill="'+br+'" font-family="IBM Plex Mono, monospace" font-size="11">registre d\'assistant</text>';
+      $("annee-val").textContent=annee;
+    }
+    $("annee").addEventListener("input",function(e){ dessiner(+e.target.value); });
+    dessiner(+$("annee").value);
+    if(!reduit && "IntersectionObserver" in window){
+      var fait=false;
+      new IntersectionObserver(function(en,obs){ en.forEach(function(x){ if(x.isIntersecting&&!fait){ fait=true; obs.disconnect(); var a=2021; var t=setInterval(function(){ a++; $("annee").value=a; dessiner(a); if(a>=2026) clearInterval(t); },450); } }); },{threshold:.5}).observe(svg);
+    }
+  })();
+
+  /* ---------- Démarche 2 : chaîne ---------- */
+  (function(){
+    var li=$("chaine").querySelectorAll("li"), regle=$("regle"), occupe=false;
+    $("suivre").addEventListener("click",function(){
+      if(occupe) return; occupe=true; var i=0;
+      var pas=function(){ li.forEach(function(x){x.classList.remove("pulse");}); if(i<li.length){ li[i].classList.add("pulse"); i++; setTimeout(pas, reduit?60:420);} else { occupe=false; } };
+      pas();
+    });
+    $("minimale").addEventListener("click",function(){ var on=$("chaine").classList.toggle("minimale"); this.setAttribute("aria-pressed",on); });
+  })();
+
+  /* ---------- Démarche 3 : l'abîme ---------- */
+  (function(){
+    var cv=$("abime"), c=cv.getContext("2d");
+    function dessiner(n){
+      var W=cv.width, H=cv.height; c.fillStyle=tok("--nuit"); c.fillRect(0,0,W,H);
+      var cols=Math.ceil(Math.sqrt(n*W/H)), rows=Math.ceil(n/cols), pas=Math.min(W/cols,H/rows), r=Math.max(1.2,pas*.32);
+      var ox=(W-cols*pas)/2, oy=(H-rows*pas)/2, amb=tok("--ambre"), ver=tok("--verre");
+      for(var i=0;i<n;i++){ var x=ox+(i%cols+.5)*pas, y=oy+(Math.floor(i/cols)+.5)*pas; c.fillStyle= i<27? amb : ver; c.globalAlpha= i<27?1:.45; c.beginPath(); c.arc(x,y,i<27?r*1.25:r,0,6.283); c.fill(); }
+      c.globalAlpha=1;
+      $("taille-val").textContent=fmt(n)+" Md";
+      $("rapport").innerHTML='<span class="preuve mesure">publié</span>&nbsp; petit modèle ouvert : 27 milliards (en ambre). &nbsp;<span class="preuve hypothese">supposé</span>&nbsp; modèle de pointe : '+fmt(n)+' milliards, soit '+Math.round(n/27)+' fois plus. Un même prompt ne peut pas servir les deux.';
+    }
+    $("taille").addEventListener("input",function(e){ dessiner(+e.target.value); });
+    dessiner(+$("taille").value);
+  })();
+
+  /* ---------- Démarche 4 : ESSAIM ---------- */
+  (function(){
+    var cv=$("essaim"), c=cv.getContext("2d"), W=cv.width, H=cv.height;
+    var roles=["explorer","rédiger","vérifier","synthétiser"], sujets=["sémantique","coût","mémoire","preuve","corpus","voix","calcul"];
+    var agents=[], pause=false, t=0;
+    function naitre(){
+      var r=Math.floor(Math.random()*4), s=Math.floor(Math.random()*sujets.length);
+      agents.push({r:r,s:s,x:(r+.2+Math.random()*.6)*W/4,y:H*.5,cy:44+(s+.5)*(H-60)/sujets.length,vie:0,duree:220+Math.random()*260});
+    }
+    function frame(){
+      var amb=tok("--ambre"), ver=tok("--verre"), br=tok("--brume"), tr=tok("--trait");
+      c.fillStyle=tok("--nuit"); c.fillRect(0,0,W,H);
+      c.strokeStyle=tr; c.lineWidth=1;
+      for(var k=1;k<4;k++){ c.beginPath(); c.moveTo(k*W/4,30); c.lineTo(k*W/4,H-6); c.stroke(); }
+      c.fillStyle=br; c.font="22px IBM Plex Mono, monospace"; c.textAlign="center";
+      roles.forEach(function(r,k){ c.fillText(r,(k+.5)*W/4,24); });
+      c.textAlign="left"; c.font="16px IBM Plex Mono, monospace"; c.globalAlpha=.55;
+      sujets.forEach(function(s,k){ c.fillText(s,8,44+(k+.5)*(H-60)/sujets.length+5); });
+      c.globalAlpha=1;
+      agents.forEach(function(a){
+        a.y+=(a.cy-a.y)*.03; a.vie++;
+        var p=a.vie/a.duree, al= p<.15? p/.15 : p>.8? Math.max(0,(1-p)/.2) : 1;
+        c.globalAlpha=al; c.fillStyle= a.r===2? amb : ver;
+        c.beginPath(); c.arc(a.x,a.y,7+3*Math.sin(a.vie/14),0,6.283); c.fill();
+      });
+      c.globalAlpha=1;
+      agents=agents.filter(function(a){ return a.vie<a.duree; });
+    }
+    function boucle(){ if(!pause){ t++; if(t%14===0&&agents.length<70) naitre(); frame(); } requestAnimationFrame(boucle); }
+    for(var i=0;i<34;i++){ naitre(); var a=agents[agents.length-1]; a.vie=Math.random()*a.duree*.7; a.y=a.cy; }
+    frame();
+    if(!reduit) requestAnimationFrame(boucle);
+    $("essaim-pause").addEventListener("click",function(){ pause=!pause; this.setAttribute("aria-pressed",pause); this.textContent= pause?"Reprendre":"Pause"; if(reduit&&!pause){ reduit=false; requestAnimationFrame(boucle);} });
+  })();
+
+  /* ---------- Démarche 5 : corpus ---------- */
+  (function(){
+    var d=$("document"), etat=$("etat-doc");
+    for(var i=0;i<40;i++){ var p=document.createElement("span"); p.className="page"+(i>=12&&i<28?" milieu":"")+(i>=32?" fin":""); d.appendChild(p); }
+    $("lire").addEventListener("click",function(){ d.classList.remove("methode"); d.classList.add("lu"); etat.textContent="Lu d'un coup : le milieu pâlit, les dernières pages disparaissent. Aucune alerte."; });
+    $("methode").addEventListener("click",function(){ d.classList.add("methode"); etat.textContent="Découpé en paquets, chacun résumé trois fois, puis croisé dans une matrice : tout est retrouvé, et les contradictions remontent."; });
+  })();
+
+  /* ---------- Démarche 6 : prix ---------- */
+  (function(){
+    var m=[{n:"Modèle A",c:1.30,p:.35,min:14},{n:"Modèle B",c:2.40,p:.55,min:10},{n:"Modèle C",c:4.80,p:.75,min:7},{n:"Modèle D",c:8.23,p:.9,min:5}];
+    var zone=$("barres");
+    function calc(taux){
+      var lignes=m.map(function(x){ var tent=1/x.p; var mach=x.c*tent; var hum=x.min*tent*taux/60; return {n:x.n,mach:mach,hum:hum,tot:mach+hum,appel:x.c}; });
+      var max=Math.max.apply(null,lignes.map(function(l){return l.tot;}));
+      lignes.sort(function(a,b){return a.tot-b.tot;});
+      zone.textContent="";
+      lignes.forEach(function(l,i){
+        var r=document.createElement("div"); r.className="ligne-prix";
+        r.innerHTML='<span>'+l.n+'<br><span class="etiquette">'+l.appel.toFixed(2).replace(".",",")+' $ l\'appel</span></span><span class="piste"><span class="machine" style="width:'+(l.mach/max*100)+'%"></span><span class="humain" style="width:'+(l.hum/max*100)+'%"></span></span><span class="total">'+l.tot.toFixed(2).replace(".",",")+' $</span>';
+        zone.appendChild(r);
+      });
+      $("taux-val").textContent=taux+" $";
+    }
+    $("taux").addEventListener("input",function(e){ calc(+e.target.value); });
+    calc(+$("taux").value);
+  })();
+
+  /* ---------- Démarche 7 : strates ---------- */
+  (function(){
+    var niveaux=[
+      ["le quotidien","La montagne est-elle encore là quand personne ne la regarde ? Oui, sans doute. Mais comment le savoir, puisque pour vérifier il faut regarder ?"],
+      ["le cours","Deux questions se mêlent : ce qui existe (l'ontologie), et comment on peut le savoir (l'épistémologie). La première porte sur le monde, la seconde sur notre accès au monde."],
+      ["le praticien","Le réalisme pose une montagne indépendante de l'observateur. Le constructivisme rappelle que nous n'y accédons que par nos instruments, nos mots et nos catégories."],
+      ["le spécialiste","Le réalisme critique tient les deux : la montagne existe hors de nous, mais toute connaissance que nous en avons reste médiée, révisable, et dépend de la méthode qui l'a produite."]
+    ];
+    var s=$("strates").children;
+    function montrer(i){ $("texte-strate").textContent=niveaux[i][1]; $("profondeur-val").textContent=niveaux[i][0]; for(var k=0;k<4;k++) s[k].classList.toggle("vue",k<=i); }
+    $("profondeur").addEventListener("input",function(e){ montrer(+e.target.value); });
+    montrer(0);
+  })();
+
+  /* ---------- Vérifier ---------- */
+  (function(){
+    var E=[
+      ["Avant 2022, aucun texte humain n'était signalé comme IA ; aujourd'hui, 14,9 % le sont.","mesuré","Mesure publiée, reprise dans « Quand l'humain se met à écrire comme la machine »."],
+      ["Les humains reprennent peu à peu le registre des assistants, à force de les lire.","déduit","Déduction : elle explique la mesure précédente, elle n'est pas mesurée elle-même."],
+      ["Si le détecteur ne change pas, la part d'innocents accusés continuera d'augmenter.","prédit","Prédiction : elle découle des deux énoncés précédents."],
+      ["Réduire les tokens de 22 % n'a réduit le coût réel que de 4 %.","mesuré","Mesure faite en séance, reprise dans « Le rendement, pas la frugalité »."],
+      ["Le même modèle, servi en local, met près de dix fois plus de temps pour une note identique.","mesuré","Mesure du banc « Dix fois plus vite, pas mieux » : 52 s contre 8 min 28, note 3/9 des deux côtés."],
+      ["La méthode survit au changement de modèle ; la procédure, non.","déduit","Thèse tirée de cas observés, puis testée contre des contre-exemples."]
+    ];
+    var ul=$("enonces"), rep={};
+    E.forEach(function(e,i){
+      var li=document.createElement("li"); li.className="enonce";
+      li.innerHTML='<p>'+e[0]+'</p><div class="choix" role="group" aria-label="Classer l\'énoncé">'+["mesuré","déduit","prédit"].map(function(c){return '<button type="button" data-c="'+c+'" aria-pressed="false">'+c+'</button>';}).join("")+'</div>';
+      li.querySelectorAll("button").forEach(function(b){ b.addEventListener("click",function(){ rep[i]=b.dataset.c; li.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b); }); }); });
+      ul.appendChild(li);
+    });
+    $("reveler").addEventListener("click",function(){
+      var ok=0;
+      Array.prototype.forEach.call(ul.children,function(li,i){
+        li.classList.remove("juste","faux"); var v=li.querySelector(".verdict"); if(v) v.remove();
+        var bon= rep[i]===E[i][1]; if(bon) ok++;
+        li.classList.add(bon?"juste":"faux");
+        var p=document.createElement("p"); p.className="verdict"; p.textContent=E[i][1]+" · "+E[i][2]; li.appendChild(p);
+      });
+      $("score").textContent=ok+" sur "+E.length+" bien classés.";
+    });
+  })();
+
+  /* ---------- Territoires : sphère ---------- */
+  (function(){
+    var cv=$("sphere"), c=cv.getContext("2d"), W=cv.width, H=cv.height, pts=[];
+    for(var i=0;i<420;i++){ var u=Math.random()*2-1, th=Math.random()*6.283, r=Math.sqrt(1-u*u); pts.push([r*Math.cos(th),u,r*Math.sin(th)]); }
+    var a=0, cols=[tok("--ambre"),tok("--verre"),tok("--lin")];
+    function f(){ c.fillStyle="#0c1416"; c.fillRect(0,0,W,H); var R=H*.4;
+      pts.forEach(function(p,i){ var x=p[0]*Math.cos(a)+p[2]*Math.sin(a); c.fillStyle=cols[i%3]; c.fillRect(W/2+x*R-1.5,H/2+p[1]*R-1.5,3,3); });
+      a+=.012; if(!reduit) requestAnimationFrame(f); }
+    f();
+  })();
+
+  /* ---------- Territoires : gong ---------- */
+  $("gong").addEventListener("click",function(){
+    var ac=audio(); if(!ac) return; var t=ac.currentTime, g=ac.createGain(); g.connect(ac.destination);
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.35,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+5.5);
+    [1,1.48,2.03,2.74,3.6,4.1].forEach(function(r,k){ var o=ac.createOscillator(), gg=ac.createGain(); o.frequency.value=98*r; gg.gain.value=.5/(k+1); o.connect(gg).connect(g); o.start(t); o.stop(t+5.6); });
+    var b=this; b.classList.add("frappe"); setTimeout(function(){ b.classList.remove("frappe"); },150);
+  });
+
+  /* ---------- Territoires : inertie ---------- */
+  (function(){
+    var cv=$("inertie"), c=cv.getContext("2d"), W=cv.width, H=cv.height;
+    var mel=[0,4,7,12,7,4,9,5,0];
+    function dessiner(){
+      var tau=+$("inertie-r").value/100*0.9+0.02;
+      c.fillStyle="#0c1416"; c.fillRect(0,0,W,H);
+      var pas=W/mel.length, y=function(n){ return H-30-n/12*(H-70); };
+      c.strokeStyle=tok("--brume"); c.setLineDash([5,5]); c.lineWidth=2; c.beginPath();
+      mel.forEach(function(n,i){ c.lineTo(i*pas,y(n)); c.lineTo((i+1)*pas,y(n)); }); c.stroke(); c.setLineDash([]);
+      c.strokeStyle=tok("--ambre"); c.lineWidth=3; c.beginPath(); var v=mel[0];
+      for(var x=0;x<W;x++){ var cible=mel[Math.min(mel.length-1,Math.floor(x/pas))]; v+= (cible-v)*(1-Math.exp(-(1/pas)/(tau*.35))); c.lineTo(x,y(v)); }
+      c.stroke();
+    }
+    $("inertie-r").addEventListener("input",dessiner); dessiner();
+    $("jouer-inertie").addEventListener("click",function(){
+      var ac=audio(); if(!ac) return; var tau=+$("inertie-r").value/100*0.25+0.005, t=ac.currentTime+.05;
+      var o=ac.createOscillator(), g=ac.createGain(); o.type="sawtooth"; var f=ac.createBiquadFilter(); f.type="lowpass"; f.frequency.value=1400;
+      o.frequency.setValueAtTime(220,t);
+      mel.forEach(function(n,i){ o.frequency.setTargetAtTime(220*Math.pow(2,n/12),t+i*.28,tau); });
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.12,t+.05); g.gain.setValueAtTime(.12,t+mel.length*.28); g.gain.linearRampToValueAtTime(0,t+mel.length*.28+.3);
+      o.connect(f).connect(g).connect(ac.destination); o.start(t); o.stop(t+mel.length*.28+.35);
+    });
+  })();
+})();
+</script>
+</body>
+</html>
