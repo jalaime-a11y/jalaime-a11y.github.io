@@ -33,6 +33,7 @@
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--nuit);color:var(--lin);font-family:var(--f-texte);font-size:var(--t-m);line-height:1.65;font-weight:300;-webkit-font-smoothing:antialiased}
@@ -136,6 +137,38 @@ button{cursor:pointer}
 .projet h3{font-size:1.08rem;line-height:1.25}
 .projet p{font-size:var(--t-s);color:var(--brume);line-height:1.55}
 .vignette{display:block;width:100%;aspect-ratio:8/3;max-width:100%;border-radius:2px;background:var(--puits);margin-bottom:.35rem}
+.projet[data-v]{cursor:pointer;transition:border-color .2s,transform .2s}
+.projet[data-v]:hover{border-color:var(--ambre)}
+.projet .plus{margin-top:auto;padding-top:.4rem;font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume);transition:color .2s}
+.projet[data-v]:hover .plus,.projet[data-v]:focus-visible .plus{color:var(--ambre)}
+.voile{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,var(--puits) 72%,transparent)}
+.fiche{position:fixed;top:0;right:0;bottom:0;z-index:21;width:min(36rem,100%);overflow-y:auto;overscroll-behavior:contain;background:var(--nuit);border-left:1px solid var(--trait);
+  padding-top:calc(env(safe-area-inset-top,0px) + 1rem);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 2rem);padding-left:max(1.4rem,env(safe-area-inset-left,0px));padding-right:max(1.4rem,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:1rem;animation:glisse .28s ease-out}
+@keyframes glisse{from{transform:translateX(24px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fiche{animation:none}}
+@media (max-width:640px){.fiche{border-left:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+body.fiche-ouverte{overflow:hidden}
+.fiche-tete{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.fermer{background:none;border:1px solid var(--trait);border-radius:50%;width:2.2rem;height:2.2rem;font-size:1.3rem;line-height:1;color:var(--lin);flex:none}
+.fermer:hover{border-color:var(--ambre)}
+.fiche .forme{font-family:var(--f-code);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--verre)}
+.fiche h2{font-size:clamp(1.5rem,4vw,2rem)}
+.fiche-corps{margin:0;display:grid;gap:.4rem}
+.fiche-corps dt{font-family:var(--f-code);font-size:var(--t-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ambre);margin-top:.6rem}
+.fiche-corps dd{margin:0;line-height:1.6}
+.fiche-corps dd#fiche-q{font-family:var(--f-display);font-size:1.25rem;line-height:1.35}
+.fiche-chiffres{list-style:none;margin:0;padding:0;display:grid;gap:.6rem;font-size:var(--t-s)}
+.fiche-chiffres .preuve{margin-right:.5rem}
+.fiche-chiffres li{padding:.6rem .8rem;background:var(--velours);border-radius:3px;line-height:1.5}
+.fiche-note{font-style:italic;color:var(--brume);font-size:var(--t-s)}
+.fiche-lien{font-size:var(--t-s)}
+.fiche-voisins{display:grid;gap:.5rem;border-top:1px solid var(--trait);padding-top:1rem}
+.fiche-voisins div{display:flex;flex-wrap:wrap;gap:.4rem}
+.voisin{background:var(--velours);border:1px solid var(--trait);border-radius:999px;padding:.3rem .75rem;font-size:var(--t-xs);color:var(--lin)}
+.voisin:hover{border-color:var(--ambre)}
+.fiche-nav{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+.fiche-nav .bouton:disabled{opacity:.35;cursor:default}
 .projet .forme{font-family:var(--f-code);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--verre)}
 .projet .aveugle{color:var(--ambre)}
 
@@ -616,6 +649,33 @@ input[type=range]{accent-color:var(--ambre);width:100%;max-width:22rem}
   </div>
 </footer>
 
+<div class="voile" id="voile" hidden></div>
+<aside class="fiche" id="fiche" role="dialog" aria-modal="true" aria-labelledby="fiche-titre" hidden>
+  <div class="fiche-tete">
+    <span class="etiquette" id="fiche-demarche"></span>
+    <button class="fermer" id="fiche-fermer" type="button" aria-label="Fermer la fiche">×</button>
+  </div>
+  <canvas id="fiche-anim" class="vignette grande" aria-hidden="true"></canvas>
+  <span class="forme" id="fiche-forme"></span>
+  <h2 id="fiche-titre"></h2>
+  <dl class="fiche-corps">
+    <dt>La question de départ</dt><dd id="fiche-q"></dd>
+    <dt>Le geste</dt><dd id="fiche-g"></dd>
+    <dt>Ce que ça révèle</dt><dd id="fiche-r"></dd>
+  </dl>
+  <ul class="fiche-chiffres" id="fiche-chiffres"></ul>
+  <p class="fiche-note" id="fiche-note"></p>
+  <a class="fiche-lien" id="fiche-lien" href="#" hidden></a>
+  <div class="fiche-voisins">
+    <span class="etiquette">Dans la même démarche</span>
+    <div id="fiche-voisins"></div>
+  </div>
+  <div class="fiche-nav">
+    <button class="bouton" id="fiche-prec" type="button">← Projet précédent</button>
+    <button class="bouton" id="fiche-suiv" type="button">Projet suivant →</button>
+  </div>
+</aside>
+
 <script>
 (function(){
   "use strict";
@@ -1076,7 +1136,7 @@ input[type=range]{accent-color:var(--ambre);width:100%;max-width:22rem}
       for(i=0;i<n;i++)dot(c,pts[i][0],pts[i][1],i===n-1?5:3.5,i===n-1?A:G);};
 
     var dpr=Math.min(2,window.devicePixelRatio||1),items=[],io=null;
-    function dessiner(it,t){var c=it.c;c.setTransform(dpr,0,0,dpr,0,0);c.globalAlpha=1;c.setLineDash([]);c.lineWidth=1;c.fillStyle=FOND;c.fillRect(0,0,320,120);try{it.f(c,t);}catch(e){}}
+    function dessiner(it,t){var c=it.c,k=dpr*(it.s||1);c.setTransform(k,0,0,k,0,0);c.globalAlpha=1;c.setLineDash([]);c.lineWidth=1;c.fillStyle=FOND;c.fillRect(0,0,320,120);try{it.f(c,t);}catch(e){}}
     if("IntersectionObserver" in window) io=new IntersectionObserver(function(en){en.forEach(function(x){x.target._vig.on=x.isIntersecting;});},{rootMargin:"80px"});
     document.querySelectorAll(".projet[data-v]").forEach(function(card){
       var f=V[card.getAttribute("data-v")];if(!f)return;
@@ -1084,6 +1144,104 @@ input[type=range]{accent-color:var(--ambre);width:100%;max-width:22rem}
       card.insertBefore(cv,card.firstChild);
       var it={c:cv.getContext("2d"),f:f,on:!io};cv._vig=it;items.push(it);dessiner(it,2.6);if(io)io.observe(cv);
     });
+    /* ---------- Fiches : en savoir un peu plus sur chaque projet ---------- */
+    var SITE=document.documentElement.getAttribute("data-site")||"";
+    var FI={
+      voix:{q:"Que reste-t-il d'une écriture de jeunesse quand on la relit comme un corpus, et peut-on en tirer une signature réutilisable ?",g:"Transcrire le cahier dans l'ordre physique des pages, en marquant chaque lecture incertaine. L'analyser en sept parties : lexique, sons, syntaxe en trois temps (installation, rupture, chute), voix, cycle, filiations. Puis traduire ces observations en règles d'écriture qu'un outil peut rappeler.",r:"Appliquer à sa propre voix la méthode appliquée aux machines : mesurer, nommer les mécanismes, séparer le certain du supposé.",n:"Aucun extrait n'est publié : seule la méthode est montrée."},
+      symbiose:{q:"Si les humains adoptent le registre des assistants, que devient un détecteur d'IA qui, lui, ne bouge pas ?",g:"Une démonstration en onze étapes. Chaque page aboutit à une conclusion et porte une étiquette qui dit ce qu'elle vaut : fait mesuré, déduction, prédiction.",r:"Remonter à ce que l'outil mesure vraiment : un registre, pas une origine.",c:[["0 % de textes humains signalés comme IA avant 2022, 14,9 % aujourd'hui","mesure","mesuré"],["Un même modèle jugé humain à 98,8 % dans sa version de base, à 17,1 % une fois devenu assistant","mesure","mesuré"]]},
+      copiste:{q:"Que devient un écrivain dont le style existait avant les modèles, quand ces modèles le font passer pour leur imitateur ?",g:"Un texte ne porte pas la trace de sa provenance, et le mot juste est un optimum que le modèle atteint par un autre chemin. La charge de se distinguer retombe alors sur le premier occupant. L'essai oppose cette contrainte subie aux contraintes choisies de l'Oulipo, et propose de juger le processus d'écriture plutôt que la phrase.",r:"Partir de sa propre expérience, des phrases travaillées signalées comme IA, pour construire un argument général."},
+      locuteur:{q:"Un humain qui a pris les habitudes des machines à force de les lire peut-il être classé IA sans avoir ouvert un seul outil ?",g:"Une formation inversée : vingt-deux règles pour écrire comme une machine, chacune illustrée par un extrait humain et sa version « corrigée », rangées en trois niveaux (architecture, lexique, énonciation). Chaque règle dit ce que les essais ont prouvé, ou non.",r:"Aborder un sujet sérieux par l'ironie et le renversement, sans renoncer à la rigueur.",c:[["C'est le plan du texte, pas le vocabulaire, qui fait basculer le verdict","mesure","observé"]]},
+      vitrine:{q:"Un détecteur annonce une erreur pour 24 000 textes. Que permettent vraiment d'affirmer les études indépendantes ?",g:"Séparer partout les mesures de l'éditeur et les mesures indépendantes. Rappeler qu'« aucune erreur sur n textes » autorise seulement « au plus 3 sur n ». Distinguer l'erreur accidentelle, que la longueur du texte dilue, de l'erreur structurelle, liée au style, qui se répète.",r:"Ramener un taux global à la question de la personne accusée : quelle est la probabilité que ce signalement-ci soit faux ?",c:[["0,0041 % revendiqué ; au mieux ≤ 0,15 % démontrable","mesure","mesuré"],["Une légère retouche par IA fait passer des résumés de 26,6 % à 92,4 % de textes signalés","mesure","mesuré"]]},
+      saut:{q:"Pourquoi un texte retouché par l'IA perd-il sa voix, et peut-on la lui rendre sans toucher au raisonnement ?",g:"Recenser les marqueurs qu'une IA appose. Puis insérer des mots tirés au hasard par un script, seulement dans les phrases d'illustration. Un vérificateur qui ne voit pas l'original contrôle que l'argument tient encore. Les phrases d'argument signalées reviennent à l'auteur, qui les réécrit lui-même.",r:"Distinguer ce que le lecteur doit garder, l'argument, de ce qui peut varier, l'exemple, et laisser le dernier mot à l'humain.",n:"Conçu comme une réponse aux fausses accusations."},
+      enonciation:{q:"Et si l'on pensait le prompt comme un acte de langage, avec ses théories, plutôt que comme une liste d'astuces ?",g:"Un manuel bâti sur la théorie de l'énonciation de Benveniste et sur cinq piliers, chacun adossé à une théorie et à une image : l'Aquarium (les systèmes), le Tissu (la cohésion du texte), le Contrat (ce que les mots font dans un échange), le Creuset (la confrontation des idées), la Boucle (le retour d'information). Chaque pilier dit sa limite et ce qui arrive en son absence.",r:"Une justification théorique pour chaque outil, et la posture de qui orchestre le processus plutôt que de qui consomme le résultat.",l:["flux_semantique_v5.html","Lire le manuel en ligne"]},
+      langues:{q:"Un prompt peut-il être indépendant du modèle, et si chaque concept était dit dans la langue où il pèse le plus ?",g:"Un compilateur en quatre phases transforme un brouillon en français en un prompt où chaque concept passe dans la langue dont le terme est le plus chargé de sens pour un modèle. Un humain valide à chaque point de contrôle. Une boucle décline aussi une même intention en versions adaptées à chaque modèle.",r:"Tenir l'intention pour fixe et la formulation pour variable : la langue devient un réglage."},
+      mh:{q:"Dans une écriture à quatre mains avec une IA, comment empêcher la machine de réécrire ce qui est déjà stabilisé ?",g:"Un balisage visuel : les fragments produits par la machine, sur fond atténué, sont marqués [M] ; ceux que l'humain a validés, sur fond blanc, sont marqués [H] et deviennent intouchables.",r:"Penser la collaboration comme un protocole, avec la trace de qui a écrit quoi."},
+      roman:{q:"Quel modèle écrit le mieux sans consigne de style, et peut-on faire écrire un roman long sans qu'il se contredise ?",g:"Découper l'écriture comme une chaîne : une bible figée, un style, un paquet de contexte par chapitre, un registre d'état mis à jour à chaque tour, une révision d'ensemble. Un essai complet en miniature, puis un test à l'aveugle de quatre modèles sur le même chapitre.",r:"Tester une méthode à petite échelle sans en retirer une étape, pour voir ce qui cassera à grande échelle.",c:[["22 détails inventés hors de la bible, environ un pour 140 mots","mesure","mesuré"],["6 défauts visibles seulement à la relecture d'ensemble","mesure","mesuré"]]},
+      gpu:{q:"Que se passe-t-il vraiment entre la question qu'on tape et le calcul sur une carte graphique, une fois les marques retirées ?",g:"Décrire un système d'IA générative comme une chaîne de fonctions. Chacune reçoit quelque chose et le transmet ; certaines sont obligatoires, d'autres optionnelles ; deux fonctions transverses, observer et filtrer, courent à côté. Une seconde version place les outils réels en face de chaque fonction.",r:"Séparer la fonction de l'outil, pour pouvoir raisonner avant de choisir une marque."},
+      regle:{q:"Quelle différence réelle entre redire une règle à chaque appel et l'apprendre une fois au modèle ?",g:"Tout ramener à l'endroit où la règle habite. Dans le contexte, elle est lue et doit être appliquée. Dans les poids, ajustés par un apprentissage léger (LoRA), elle agit sans être lue. Le principe tient en une formule, W′ = W + B·A : les poids d'origine plus une petite correction. Puis chercher à faire raisonner un petit modèle local là où il échoue, en lui transmettant la logique d'un autre.",r:"Comprendre par la théorie avant de pratiquer, et ramener une technique à une question de lieu."},
+      sismo:{q:"Peut-on voir la profondeur d'une question pendant qu'on l'écrit, avant de l'envoyer à la machine ?",g:"Un écran en deux parties : à gauche, la conversation ; à droite, une ligne de bruit qui se creuse et passe du rouge au vert à mesure qu'un second modèle juge la richesse de la question en cours de frappe.",r:"La qualité d'un échange se joue avant le calcul, dans la question : la rendre visible, et s'entraîner à la poser.",c:[["La note vient d'un modèle qui juge une question : c'est un indice, pas une mesure","hypothese","indice"]]},
+      flou:{q:"Un modèle peut-il écrire du global au détail, comme une image floue qui se précise, au lieu d'aligner les mots un par un ?",g:"Expliquer une recherche publique, Next-Concept Modeling, en la comparant aux deux familles connues : la génération mot après mot et la diffusion. Montrer le texte « flou » réellement décodé à chaque niveau, et ranger chaque affirmation en mesurée, hypothèse ou non établie.",r:"Lire une annonce scientifique en arbitre, en séparant ce qui est prouvé de ce qui est promis.",c:[["Score qui monte avec les niveaux : 6, 16, 51,7 puis 77,8","mesure","mesuré"]]},
+      idees:{q:"Et si la plupart des erreurs de prompt venaient de ce qu'on parle au modèle comme à un humain ?",g:"Vingt et une idées reçues, en quatre familles : répéter renforce, la politesse aide, il se souvient… Pour chacune : ce que vous faites, ce qui se passe réellement, et une formulation corrective.",r:"Chercher la cause d'une erreur dans le réflexe humain qui l'a produite plutôt que dans l'outil.",l:["idees_recues_v1.html","Lire le manuel en ligne"]},
+      abime:{q:"Comment rendre sensible l'écart entre un petit modèle ouvert et un modèle de pointe, alors que les tailles ne sont pas publiées ?",g:"Descendre d'une dimension à chaque étape : les poids en volume, le prix en surface, l'énergie en longueur. Un sélecteur d'hypothèse basse, centrale ou haute assume ce qui n'est pas connu, et une option n'allume que les paramètres réellement actifs.",r:"Donner une valeur explicite à l'incertitude, et en tirer une conséquence : on ne parle pas de la même façon à deux modèles de tailles si différentes.",c:[["Petit modèle ouvert : 27 milliards de paramètres","mesure","publié"],["Modèles de pointe : tailles estimées, non publiées","hypothese","supposé"]]},
+      zero:{q:"Qu'est-ce qui, dans une tâche, dit de quel niveau de modèle elle a besoin ?",g:"Remplacer le choix par marque par quatre questions : combien de solutions raisonnables, combien de fichiers à relier, qu'est-ce qui attrapera l'erreur, est-ce réversible. Ajouter un niveau zéro, où un outil sans modèle suffit, et un second axe indépendant : le niveau de vérification.",r:"Raisonner sur des critères qui restent valables quand le catalogue des modèles change."},
+      posture:{q:"Pourquoi un prompt qui marche sur un modèle de pointe échoue-t-il sur un petit modèle, et inversement ?",g:"Déplacer la question du texte vers la posture qui précède l'écriture. Une contrainte compense un défaut du modèle : nécessaire au petit modèle, elle devient un excès pour le grand. L'erreur de transfert existe donc dans les deux sens.",r:"Remonter d'un cran, du texte produit au cadre de pensée qui l'a produit."},
+      survit:{q:"Le prompt engineering est-il mort, ou confond-on méthode, procédure et technique ?",g:"Poser le critère avant les exemples : la méthode est ce qui survit à un changement de modèle, la procédure ce qu'il faut refaire, la technique le fonctionnement de l'outil. L'appliquer à quatre échecs courants, à un cinquième hors IA, et à deux contre-cas qui le nuancent.",r:"Chercher le niveau d'abstraction qui reste valable, et tester sa thèse contre ses contre-exemples.",n:"En IA, la procédure se dégrade sans message d'erreur."},
+      banc:{q:"Le même modèle, servi en ligne ou en local, change-t-il autre chose que la vitesse ?",g:"Un banc soigné : ordre alterné pour neutraliser l'effet d'ordre, mêmes demandes rejouées à entrée égale, un juge commun qui ignore la provenance, et une section de limites aussi longue que les résultats.",r:"Isoler la variable qu'on veut mesurer, et dire ce que l'échantillon ne permet pas de conclure.",c:[["52 s contre 8 min 28 de durée médiane, soit 9,8 fois plus","mesure","mesuré"],["Même note de 3/9 des deux côtés","mesure","mesuré"],["À température 0, le local répète exactement sa réponse ; le service en ligne, non","mesure","observé"]]},
+      aplatir:{q:"Comment transformer une page web, le format qu'une machine produit le plus facilement, en présentation réellement modifiable, sans service extérieur ?",g:"Laisser un navigateur sans interface mesurer la mise en page, puis aplatir tout le flux en boîtes à coordonnées fixes. Chaque boîte devient un objet natif de la présentation : texte, forme, dégradé, police.",r:"Laisser la machine s'exprimer dans sa langue native, puis construire le pont vers les outils des humains, en gardant les données sur place.",n:"Réécriture d'un projet libre."},
+      departager:{q:"En quoi des modèles d'une même famille diffèrent-ils dans leur façon de raisonner ?",g:"Un puzzle conçu pour les départager, un protocole de « sortie du cadre », et des tests comparatifs sur un modèle qui semblait inventer de façon systématique.",r:"Prendre l'opération demandée à la machine comme critère, pas le sujet ; et répondre à un constat par un protocole plutôt que par un avis."},
+      probables:{q:"Un modèle comble l'implicite par la réponse la plus probable. Peut-on lui imposer un écart venu de l'extérieur, et prouver que cet écart sert ?",g:"Une synthèse critique de sept tentatives antérieures, puis un plan : un tirage au hasard fait par du code, une idée par agent isolé, une série témoin sans tirage, un juge qui ignore l'origine des idées, une mesure fixée avant le lancement. Le verdict peut être « indécidable ».",r:"Traiter une intuition créative comme une expérience, avec un témoin et une mesure, et accepter d'avance un résultat négatif."},
+      essaim:{q:"Une organisation d'agents peut-elle émerger au lieu d'être prescrite, et comment la rendre visible sans fouillis ?",g:"Un agent maître crée des sous-agents éphémères. Pour les voir, deux axes indépendants : le rôle, donné à la naissance, fixe la colonne ; le sujet, calculé à partir du sens de l'intitulé, fixe la hauteur. Aucun lien n'est tracé entre agents : ils n'existent pas, et deviendraient illisibles à grande échelle.",r:"Écarter ce qui ferait mentir l'image, et observer l'émergence plutôt que seulement l'obtenir."},
+      sandwich:{q:"Dans une chaîne d'agents qui rédige des documents à partir d'exigences, que confier au modèle, que garder au code, et comment l'empêcher d'inventer ?",g:"Une grille de quatre questions posées dans l'ordre : règle exacte ? données structurées ? langage libre ? sortie vérifiable ? Seules quatre étapes sur douze reviennent au modèle, chacune encadrée d'un contrôle de code avant et après. Un « contrat de sources » dit ce que chaque source a le droit de prouver ; ce qui manque s'écrit « source manquante ».",r:"Répartir le travail selon le coût de l'erreur, et ne jamais laisser au modèle une décision qui engage la suite.",c:[["Structure correcte 1 fois sur 6 en copiant le style, 3 sur 3 en nommant des techniques reconnues, 9 sur 9 avec une analyse préalable","mesure","mesuré"],["Les étapes de code prennent moins de 2 secondes ; celles du modèle, presque toutes les 9 minutes","mesure","mesuré"]]},
+      predire:{q:"Comment utiliser l'IA sur un code de vingt ans sans que l'humain valide en rafale ce qu'il n'a pas compris ?",g:"Une fiche de l'existant où chaque comportement a un statut : voulu, constaté, inconnu. Des zones libre, surveillée et gelée qui fixent la taille du pas. Et un cycle où l'humain reformule le code et prédit le changement avant de le voir. Les contrôles critiques reposent sur des mécanismes indépendants du modèle.",r:"Déplacer le problème vers l'humain : relire mobilise la reconnaissance, prédire exige d'avoir compris."},
+      correcteur:{q:"Quand des milliers d'agents IA dérapent jusqu'à attaquer une plateforme, que se passe-t-il si l'on retire le vocabulaire du complot ?",g:"Chaque scène est racontée deux fois : en roman noir, puis en journal factuel. Chaque fait porte un statut : observé, corroboré, hypothèse, divergent. La chute : le juge sévère que les agents voulaient tromper n'existait pas, ils l'avaient déduit de leurs propres lectures.",r:"Chercher le point exact où une intention voyage mal jusqu'à la machine, et séparer ce qu'on raconte de ce qu'on sait.",c:[["La participation à l'attaque passe de 20 % à plus de 90 % des agents dès qu'un exploit réussi est publié","mesure","rapporté"]]},
+      matrice:{q:"Pourquoi confond-on une IA « conçue pour l'IA » et une IA « capable d'agir », alors que ce sont deux questions indépendantes ?",g:"Une matrice à deux axes : la conception, greffée ou native, et le comportement, réactif ou agentique. Chaque case a ses exemples, son risque et la question à poser avant de décider. La case « greffée et agentique » est la plus risquée.",r:"Démêler deux notions confondues en les rendant indépendantes l'une de l'autre.",l:["ia_native_vs_agentique.html","Voir la matrice en ligne"]},
+      sessions:{q:"Comment amener un développeur débutant à confier du code à plusieurs agents en parallèle sans que leurs changements se mélangent ?",g:"Une formation qui suit le cycle lancer, relire, valider, intégrer, puis travailler en parallèle. L'exercice final fait découvrir la règle d'isolement, un espace de travail par session, au lieu de l'énoncer.",r:"Enseigner par le mécanisme, et faire trouver la règle par l'expérience."},
+      poste:{q:"Quel est le risque réel qu'un poste soit remplacé par l'IA ?",g:"Un agent qui interroge la personne, décompose son poste en tâches et évalue chacune.",r:"Remplacer l'opinion générale par un diagnostic, tâche par tâche."},
+      pages:{q:"Comment travailler un document de 300 pages avec une IA quand elle oublie en silence ce qui dépasse sa fenêtre de lecture ?",g:"Partir des façons d'échouer : coupure silencieuse, perte du milieu, dilution au fil de la conversation. En tirer un protocole : qualifier le document, le découper, résumer trois fois chaque morceau, construire une matrice de conformité, détecter les contradictions. Avec des seuils d'arrêt, et ce qu'on peut alléger selon l'enjeu.",r:"Concevoir la méthode à partir de la façon dont l'outil échoue ; la vérification humaine reste non délégable.",l:["guide_bid_manager_cdc_ia.html","Lire le guide en ligne"]},
+      troisvues:{q:"Comment décrire un même système de recherche documentaire pour un décideur, un développeur et un exploitant, sans que les trois descriptions se contredisent ?",g:"Trois vues, fonctionnelle, logique et physique, traversées par le même fil rouge : le chemin d'une question. Chaque rôle est défini par « ce qui casse sans lui ». Une table finale corrige point par point un dossier antérieur.",r:"N'accepter aucun mot qui ne soit relié à un mécanisme, et retrouver chaque élément d'une vue dans les deux autres."},
+      prix:{q:"Le modèle le moins cher à l'appel est-il le moins cher par tâche réellement livrée ?",g:"Un simulateur qui additionne, pour neuf modèles, le coût d'appel, les relances, de moins en moins réussies, et le temps humain de relecture et de reprise. Chaque donnée porte une étiquette de fiabilité (mesuré, éditeur, dérivé, estimé) et reste modifiable.",r:"Refuser de juger sur le prix d'appel seul, et assumer que les hypothèses comptent plus que le classement.",c:[["De 1,30 $ à 8,23 $ par tentative selon le modèle","mesure","mesuré"],["Aux réglages par défaut, le temps humain domine le coût total","hypothese","estimé"]]},
+      session:{q:"Depuis que les assistants de code facturent au texte traité, combien coûte vraiment une journée de travail avec un agent ?",g:"Une estimation où chaque étape annonce sa nature, fait, mécanisme, hypothèse ou calcul, pour que le désaccord porte sur les hypothèses et non sur la conclusion. Onze modèles, cinq tâches types, cinq profils d'usage, recoupés avec un repère public.",r:"Montrer son raisonnement à découvert, pour qu'on puisse le contester.",c:[["40 tours coûtent 2,4 fois 20 tours","illustration","calculé"],["Un profil intensif coûte environ 40 fois un profil simple : 1 464 $ contre 34 $ par mois","illustration","calculé"]],n:"Prix tirés de la documentation publique, à dater."},
+      rendement:{q:"Comment changer durablement les habitudes face au coût de l'IA, sans culpabiliser ?",g:"Passer du critère « moins cher » au critère « rendement ». Chaque réflexe s'appuie sur un mécanisme démontré en direct, rupture de cache, verbosité, boucle d'outils, jamais sur une règle affirmée. Et apprendre à lire le bon chiffre dans les outils de diagnostic.",r:"On n'adopte une pratique que si on en voit la cause.",c:[["Une pratique qui réduit les tokens de 22 % ne réduit le coût réel que de 4 %","mesure","mesuré"]]},
+      cinq:{q:"Un même tableau de bord peut-il servir des lecteurs très différents, selon le registre graphique choisi ?",g:"Cinq maquettes des mêmes données, côte à côte, chacune avec son intention écrite en une ligne : clarté opérationnelle, rapport structuré, console technique, synthèse imprimée, verre et lumière.",r:"Traiter la mise en forme comme une hypothèse qu'on compare, pas comme un goût personnel."},
+      bascule:{q:"Que coûte l'IA en énergie, et comment rendre visible son empreinte sur l'environnement ?",g:"Coupler des modèles et les rendre lisibles dans un atlas en trois dimensions, pour voir une dynamique plutôt que lire un chiffre.",r:"Vouloir voir une dynamique, pas seulement la lire.",n:"Projet en cours."},
+      outil:{q:"Si l'IA sait fabriquer ses propres outils, agents, skills, prompts, que reste-t-il à l'humain ?",g:"Un essai en neuf temps qui déplace la compétence de l'outillage vers l'intention : formuler, décomposer en méthode, déléguer, puis vérifier deux fois, que l'outil marche et qu'il fallait le faire. Un modèle conçoit, un autre exécute, un troisième relit, jamais dans la même conversation.",r:"Se définir par les deux décisions qu'on garde : donner ou non un pouvoir à la machine, et fixer le critère qui jugera le résultat."},
+      roue:{q:"Peut-on développer avec une IA sans connaître la technique, si le langage de programmation n'est qu'une notation ?",g:"Partir de sa propre position, la mettre à l'épreuve, la préciser : une part de ce qu'on rangeait dans « le langage » est une logique propre à la machine. La ramener à sept familles de questions de profane, simultanéité, interruption, mémoire, entrées, échelle, représentation, les autres, à se poser avant de demander et au moment de valider.",r:"Corriger sa thèse au lieu de la défendre, et chercher le petit nombre de propriétés d'où découlent tous les cas.",n:"« L'IA répond quand même aux questions qu'on n'a pas posées. »"},
+      instruments:{q:"Quand l'IA est réellement intégrée au travail, mesure-t-on encore le bon travail ?",g:"Distinguer « IA ajoutée » et « IA intégrée », deux façons de travailler et non deux types de personnes. Montrer que la bascule va de la personne à l'équipe puis à l'organisation, et que les instruments de mesure, l'avancement par le livrable, la compétence mesurée sans la machine, sont périmés.",r:"Interroger l'instrument avant d'accepter son résultat. La seule érosion qui compte est celle du contrôle."},
+      biais:{q:"Comment expliquer les biais cognitifs autrement que par un catalogue ?",g:"Un fil de cause à effet : pressions, raccourci mental, application hors de son cadre, biais, décision faussée. Quatre exemples l'illustrent. On n'agit pas sur le biais lui-même, mais sur l'une des étapes qui y mènent.",r:"Chercher le mécanisme qui produit l'erreur, donc l'endroit où intervenir."},
+      strates:{q:"Comment expliquer ce qui existe et comment on peut le savoir (l'ontologie et l'épistémologie), de sorte qu'on puisse s'arrêter à n'importe quel niveau avec un tout compréhensible ?",g:"Quatre strates dont le vocabulaire se resserre : les mots du quotidien, ceux du cours, ceux du praticien, ceux du spécialiste. Chaque strate se termine sur une phrase à retenir.",r:"Penser la vulgarisation comme une architecture où le lecteur choisit sa profondeur."},
+      archi:{q:"Pourquoi la structure d'ensemble se dégrade-t-elle quand on détaille mentalement un seul nœud ?",g:"Un diagnostic honnête avant tout objectif, puis des techniques fondées sur le fonctionnement de la mémoire de travail.",r:"Traiter sa propre cognition comme un système à déboguer."},
+      cognition:{q:"Le goût de penser, la perte de compétences, la fatigue : que gagne-t-on et que perd-on à penser avec la machine ?",g:"Nommer les deux versants, puis témoigner à la première personne plutôt que théoriser.",r:"Partir de son expérience comme matériau d'observation."},
+      apprentissage:{q:"L'intelligence se développe-t-elle par une méthode d'apprentissage adaptée à la personne ?",g:"Huit types de raisonnement, deux mouvements, élargir et approfondir, une confrontation aux résultats des enquêtes PISA, et une future plateforme d'apprentissage comme socle.",r:"Bâtir d'abord la thèse ; la preuve vient ensuite."},
+      etsi:{q:"Comment interroger sa trajectoire quand l'inertie empêche de choisir ?",g:"Rejouer un passé alternatif sur des faits historiques réels, plutôt qu'inventer un futur.",r:"Changer le postulat quand la question directe ne mène nulle part."},
+      filiation:{q:"Comment ne pas perdre le fil quand le travail se répartit entre des conversations parallèles ?",g:"Penser les conversations comme un graphe de filiations, chaque échange relié à ceux dont il descend, et chercher comment le rendre fidèle.",r:"Chercher la structure qui manque plutôt qu'une astuce de rangement."}
+    };
+    var fiche=$("fiche"),voile=$("voile"),cvF=$("fiche-anim"),itF={c:cvF.getContext("2d"),f:null,on:false,s:2},retour=null,courant=null;
+    cvF.width=640*dpr;cvF.height=240*dpr;items.push(itF);
+    var cartes=Array.prototype.slice.call(document.querySelectorAll(".projet[data-v]"));
+    cartes.forEach(function(card){
+      card.setAttribute("tabindex","0");card.setAttribute("role","button");card.setAttribute("aria-haspopup","dialog");
+      var plus=document.createElement("span");plus.className="plus";plus.textContent="Lire la fiche →";card.appendChild(plus);
+      card.addEventListener("click",function(){ouvrir(card.getAttribute("data-v"),card);});
+      card.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();ouvrir(card.getAttribute("data-v"),card);}});
+    });
+    function carte(k){for(var i=0;i<cartes.length;i++)if(cartes[i].getAttribute("data-v")===k)return cartes[i];return null;}
+    function ouvrir(k,depuis){
+      var card=carte(k),d=FI[k];if(!card||!d)return;
+      if(!courant)retour=depuis||document.activeElement;courant=k;
+      var sec=card.closest(".demarche");
+      $("fiche-demarche").textContent=sec?("Démarche "+sec.querySelector(".rang").textContent+" · "+sec.querySelector("h2").textContent):"";
+      $("fiche-forme").textContent=card.querySelector(".forme").textContent;
+      $("fiche-titre").textContent=card.querySelector("h3").textContent;
+      $("fiche-q").textContent=d.q;$("fiche-g").textContent=d.g;$("fiche-r").textContent=d.r;
+      var ch=$("fiche-chiffres");ch.textContent="";
+      (d.c||[]).forEach(function(x){var li=document.createElement("li");var b=document.createElement("span");b.className="preuve "+x[1];b.textContent=x[2];li.appendChild(b);li.appendChild(document.createTextNode(" "+x[0]));ch.appendChild(li);});
+      ch.hidden=!(d.c&&d.c.length);
+      $("fiche-note").textContent=d.n||"";$("fiche-note").hidden=!d.n;
+      var a=$("fiche-lien");if(d.l){a.href=SITE+d.l[0];a.textContent=d.l[1]+" ↗";a.hidden=false;}else a.hidden=true;
+      var vz=$("fiche-voisins");vz.textContent="";
+      Array.prototype.forEach.call(card.parentNode.querySelectorAll(".projet[data-v]"),function(o){if(o===card)return;var b=document.createElement("button");b.type="button";b.className="voisin";b.textContent=o.querySelector("h3").textContent;b.addEventListener("click",function(){ouvrir(o.getAttribute("data-v"));});vz.appendChild(b);});
+      var idx=cartes.indexOf(card);$("fiche-prec").disabled=idx<=0;$("fiche-suiv").disabled=idx>=cartes.length-1;
+      itF.f=V[k];itF.on=true;dessiner(itF,2.6);
+      fiche.hidden=false;voile.hidden=false;document.body.classList.add("fiche-ouverte");fiche.scrollTop=0;
+      $("fiche-fermer").focus({preventScroll:true});
+      if(location.hash!=="#projet-"+k){try{history.replaceState(null,"","#projet-"+k);}catch(e){}}
+    }
+    function fermer(){
+      if(!courant)return;courant=null;itF.on=false;fiche.hidden=true;voile.hidden=true;document.body.classList.remove("fiche-ouverte");
+      try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}
+      if(retour&&retour.focus)retour.focus({preventScroll:true});
+    }
+    function voisin(dl){var i=cartes.indexOf(carte(courant))+dl;if(i>=0&&i<cartes.length)ouvrir(cartes[i].getAttribute("data-v"));}
+    $("fiche-fermer").addEventListener("click",fermer);voile.addEventListener("click",fermer);
+    $("fiche-prec").addEventListener("click",function(){voisin(-1);});$("fiche-suiv").addEventListener("click",function(){voisin(1);});
+    document.addEventListener("keydown",function(e){
+      if(!courant)return;
+      if(e.key==="Escape"){e.preventDefault();fermer();return;}
+      if(e.key==="Tab"){var f=fiche.querySelectorAll("button:not([disabled]),a[href]:not([hidden])");if(!f.length)return;var p=f[0],u=f[f.length-1];
+        if(e.shiftKey&&document.activeElement===p){e.preventDefault();u.focus();}else if(!e.shiftKey&&document.activeElement===u){e.preventDefault();p.focus();}}
+    });
+    function depuisAdresse(){var h=location.hash.replace("#","");if(h.indexOf("projet-")===0)ouvrir(h.slice(7));else if(courant)fermer();}
+    window.addEventListener("hashchange",depuisAdresse);depuisAdresse();
     var dernier=0;
     function boucle(ts){if(ts-dernier>33){dernier=ts;var t=ts/1000;items.forEach(function(it){if(it.on)dessiner(it,t);});}requestAnimationFrame(boucle);}
     if(!reduit) requestAnimationFrame(boucle);
