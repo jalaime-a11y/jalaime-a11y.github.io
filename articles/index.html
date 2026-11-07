@@ -1,46 +1,52 @@
 ---
-title: Articles LinkedIn
+title: Articles
 ---
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ page.title }}</title>
-<meta name="description" content="Archive des articles publiés sur LinkedIn.">
-<link rel="stylesheet" href="{{ '/assets/articles.css' | relative_url }}">
+{% include tete-html.html %}
+<title>Articles — {{ site.author.name }}</title>
+<meta name="description" content="Archive des articles de {{ site.author.name }} publiés sur LinkedIn.">
 </head>
 <body>
-<main class="page">
-  <nav class="retour"><a href="{{ '/' | relative_url }}">← Accueil</a></nav>
-
-  <header class="entete">
-    <h1>Articles LinkedIn</h1>
-    <p class="meta">{{ site.author.name }} · {{ site.author.headline }}</p>
-    <p class="chapeau">Archive des articles publiés sur LinkedIn, du plus récent au plus ancien.</p>
-  </header>
-
+{% include entete.html courant=true %}
+<main>
   {%- assign articles = site.categories.articles %}
+  <section class="enveloppe ouverture">
+    <p class="etiquette">Écrits · {{ articles.size }} articles publiés sur LinkedIn</p>
+    <h1>Articles</h1>
+    <p class="chapeau">Du plus récent au plus ancien. Chaque vignette dessine la forme du texte qu'elle annonce.</p>
+    <p class="legende" aria-hidden="true">
+      <span><i class="l-section"></i>une section (ou un paragraphe, pour un texte sans intertitre), d'autant plus grande qu'elle est longue</span>
+      <span><i class="l-citation"></i>une section avec citation ou schéma</span>
+      <span><i class="l-fil"></i>l'ordre de lecture</span>
+    </p>
+  </section>
+
   {%- if articles and articles.size > 0 %}
-    {%- assign par_annee = articles | group_by_exp: "a", "a.date | date: '%Y'" %}
-    {%- for annee in par_annee %}
-    <section class="annee">
-      <h2>{{ annee.name }}</h2>
-      <ul class="liste">
-        {%- for a in annee.items %}
-        <li>
-          <a class="titre" href="{{ a.url | relative_url }}">{{ a.title }}</a>
-          <span class="meta"><time datetime="{{ a.date | date_to_xmlschema }}">{% include date-fr.html date=a.date %}</time>
-          {%- if a.tags.size > 0 %} · {% for tag in a.tags %}<span class="tag">{{ tag }}</span>{% endfor %}{% endif %}</span>
-          {%- if a.resume %}<p>{{ a.resume }}</p>{% elsif a.excerpt %}<p>{{ a.excerpt | strip_html | truncatewords: 45, "…" }}</p>{% endif %}
-        </li>
-        {%- endfor %}
-      </ul>
-    </section>
-    {%- endfor %}
+  {%- assign par_annee = articles | group_by_exp: "a", "a.date | date: '%Y'" %}
+  {%- for annee in par_annee %}
+  <section class="enveloppe annee" aria-labelledby="annee-{{ annee.name }}">
+    <h2 id="annee-{{ annee.name }}">{{ annee.name }}</h2>
+    <ul class="cartes">
+      {%- for a in annee.items %}
+      {%- capture struct %}{% include structure.html html=a.content %}{% endcapture %}
+      {%- assign minutes = a.content | strip_html | number_of_words | divided_by: 230 | at_least: 1 %}
+      <li class="carte">
+        <canvas class="vignette" aria-hidden="true" data-structure="{{ struct }}" data-graine="{{ a.url }}"></canvas>
+        <p class="meta"><time datetime="{{ a.date | date_to_xmlschema }}">{% include date-fr.html date=a.date %}</time> · {{ minutes }} min</p>
+        <h3><a href="{{ a.url | relative_url }}">{{ a.title }}</a></h3>
+        {%- if a.resume %}<p>{{ a.resume }}</p>{% elsif a.excerpt %}<p>{{ a.excerpt | strip_html | truncatewords: 32, "…" }}</p>{% endif %}
+        <span class="lire" aria-hidden="true">Lire →</span>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endfor %}
   {%- else %}
-    <p class="vide">Aucun article pour l'instant.</p>
+  <section class="enveloppe annee"><p class="chapeau">Aucun article pour l'instant.</p></section>
   {%- endif %}
 </main>
+{% include pied.html %}
 </body>
 </html>
