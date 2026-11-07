@@ -1,0 +1,27 @@
+# Configuration Jekyll (GitHub Pages)
+title: Supports de formation publics
+lang: fr
+timezone: Europe/Paris
+author:
+  name: Jean-Christophe Alaime
+  headline: Semantic Flow & Generative Ideation Designer
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# Les articles LinkedIn sont des billets Jekyll rangés dans articles/_posts/.
+# Le dossier "articles" devient leur catégorie, d'où l'URL /articles/AAAA/titre/.
+permalink: /:categories/:year/:title/
+
+defaults:
+  - scope:
+      path: "articles"
+      type: posts
+    values:
+      layout: linkedin-article
+
+exclude:
+  - MODELE_ARTICLE.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

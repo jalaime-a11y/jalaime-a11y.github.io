@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ page.title }} — Articles</title>
+{%- if page.resume %}
+<meta name="description" content="{{ page.resume | strip_html | escape }}">
+{%- endif %}
+<link rel="stylesheet" href="{{ '/assets/articles.css' | relative_url }}">
+</head>
+<body>
+<main class="page">
+  <nav class="retour"><a href="{{ '/articles/' | relative_url }}">← Tous les articles</a></nav>
+
+  <header class="entete">
+    <h1>{{ page.title }}</h1>
+    <p class="meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{% include date-fr.html date=page.date %}</time>
+      {%- if page.tags.size > 0 %}
+      · {% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+      {%- endif %}
+    </p>
+    {%- if page.resume %}
+    <p class="chapeau">{{ page.resume }}</p>
+    {%- endif %}
+  </header>
+
+  <article class="corps">
+    {{ content }}
+  </article>
+
+  {%- if page.linkedin %}
+  <footer class="source">
+    Publié initialement sur <a href="{{ page.linkedin }}" rel="noopener">LinkedIn</a>.
+  </footer>
+  {%- endif %}
+</main>
+</body>
+</html>
