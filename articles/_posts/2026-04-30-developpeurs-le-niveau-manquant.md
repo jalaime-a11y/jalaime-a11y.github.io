@@ -3,6 +3,8 @@ title: "Développeurs : Le niveau manquant"
 date: 2026-04-30 07:38:00
 linkedin: https://www.linkedin.com/pulse/d%C3%A9veloppeurs-le-niveau-manquant-jean-christophe-alaime-xjn1e
 excerpt: "Le réflexe de conception que vous n'avez pas encore transféré au dialogue avec l'IA."
+theme: "Pratiquer et apprendre"
+theme_secondaire: "Penser avec la machine"
 ---
 
 *Le réflexe de conception que vous n'avez pas encore transféré au dialogue avec l'IA.*

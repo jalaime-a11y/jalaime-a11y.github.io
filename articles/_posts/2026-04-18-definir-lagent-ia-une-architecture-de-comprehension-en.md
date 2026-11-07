@@ -3,6 +3,8 @@ title: "Définir l'agent IA — Une architecture de compréhension en quatre cou
 date: 2026-04-18 12:21:00
 linkedin: https://www.linkedin.com/pulse/d%C3%A9finir-lagent-ia-une-architecture-de-compr%C3%A9hension-en-alaime-omsae
 excerpt: "Depuis 2024, le mot \"agent\" s'est imposé partout. Et avec lui, une avalanche de définitions. Chacune liste des composants techniques. Chacune suppose que l'assemblage de briques suffit à expliquer ce qu'est un agent."
+theme: "Agents"
+theme_secondaire: "Pratiquer et apprendre"
 ---
 
 ## Pourquoi redéfinir ce qui est déjà défini ?

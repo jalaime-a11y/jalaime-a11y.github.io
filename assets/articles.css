@@ -100,3 +100,39 @@ p{margin:0}
 
 /* Pied */
 .pied{border-top:1px solid var(--trait);padding-block:2rem 2.6rem;color:var(--brume);font-size:var(--t-s)}
+
+/* ---------- Carte des thèmes ---------- */
+[hidden]{display:none!important}
+.carte-themes{padding-bottom:2rem;display:grid;gap:.9rem}
+.carte-themes > h2{font-weight:400}
+.carte-cadre{position:relative;background:var(--puits);border:1px solid var(--trait);border-radius:3px;overflow:hidden}
+#carte{display:block;width:100%}
+#carte .lien{stroke-width:1;opacity:.35;transition:opacity .25s;pointer-events:none}
+#carte .cible{fill:transparent}
+#carte .lien.sec{stroke-dasharray:3 4;opacity:.45}
+#carte .lien.eteint{opacity:.05}
+#carte a{cursor:pointer;outline:none}
+#carte a .halo{fill:transparent;stroke:var(--lin);stroke-width:1;opacity:0;transition:opacity .2s}
+#carte a:hover .halo,#carte a:focus-visible .halo{opacity:.8}
+#carte a .point{transition:opacity .25s}
+#carte a.eteint .point{opacity:.12}
+#carte .pole{cursor:pointer;outline:none;transition:opacity .25s}
+#carte .pole .anneau{fill:none;stroke-width:1;opacity:0;transition:opacity .2s}
+#carte .pole:hover .anneau,#carte .pole:focus-visible .anneau,#carte .pole[aria-pressed="true"] .anneau{opacity:.9}
+#carte .pole.eteint{opacity:.3}
+#carte .etiquette-pole{fill:var(--lin);font-family:var(--f-texte);font-size:13px;font-weight:400;letter-spacing:.01em}
+.infobulle{position:absolute;max-width:min(22rem,90%);background:var(--nuit);border:1px solid var(--trait);border-radius:3px;padding:.35rem .6rem;font-size:var(--t-s);line-height:1.35;color:var(--lin);pointer-events:none;z-index:2}
+.filtres{display:flex;flex-wrap:wrap;gap:.4rem}
+.filtre{display:inline-flex;align-items:center;gap:.45em;background:transparent;border:1px solid var(--trait);color:var(--lin);font:inherit;font-size:var(--t-s);padding:.35rem .8rem;border-radius:999px;cursor:pointer;transition:border-color .2s,background .2s}
+.filtre i{width:.6em;height:.6em;border-radius:50%;background:var(--c,var(--brume))}
+.filtre .nb{font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume)}
+.filtre:hover{border-color:var(--c,var(--ambre))}
+.filtre[aria-pressed="true"]{border-color:var(--c,var(--ambre));background:color-mix(in srgb,var(--c,var(--ambre)) 16%,transparent)}
+.filtre-etat{font-size:var(--t-s);color:var(--brume);min-height:1.4em}
+
+/* Thème sur les cartes et en tête d'article */
+.carte .theme,.tete .themes{font-family:var(--f-code);font-size:var(--t-xs);letter-spacing:.02em;color:var(--brume);display:flex;flex-wrap:wrap;align-items:center;gap:.45em}
+.carte .theme i,.tete .themes i{width:.6em;height:.6em;border-radius:50%;background:var(--c)}
+.carte .theme .sec{opacity:.75}
+.tete .themes a{display:inline-flex;align-items:center;gap:.45em;color:var(--brume);text-decoration:none;border:1px solid var(--trait);border-radius:999px;padding:.15rem .6rem;position:relative}
+.tete .themes a:hover{color:var(--lin);border-color:var(--c)}

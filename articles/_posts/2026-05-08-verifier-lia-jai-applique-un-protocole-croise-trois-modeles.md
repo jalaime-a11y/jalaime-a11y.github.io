@@ -3,6 +3,8 @@ title: "Vérifier l'IA. J'ai appliqué un protocole, croisé trois modèles, pas
 date: 2026-05-08 08:51:00
 linkedin: https://www.linkedin.com/pulse/v%C3%A9rifier-lia-jai-appliqu%C3%A9-un-protocole-crois%C3%A9-trois-mod%C3%A8les-alaime-xmivf
 excerpt: "Un chiffre circule sur la vérification des productions IA. 92 % des utilisateurs ne vérifieraient pas systématiquement ce que leurs outils génèrent. La source est réelle. Exploding Topics, 2025, enquête sur plus de 1 000 répondants. Le chiffre est exact dans…"
+theme: "Les modèles et le monde"
+theme_secondaire: "Pratiquer et apprendre"
 ---
 
 Un chiffre circule sur la vérification des productions IA. 92 % des utilisateurs ne vérifieraient pas systématiquement ce que leurs outils génèrent. La source est réelle. Exploding Topics, 2025, enquête sur plus de 1 000 répondants. Le chiffre est exact dans la source.

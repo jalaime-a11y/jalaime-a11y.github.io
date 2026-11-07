@@ -11,7 +11,9 @@ Supports de formation publics, et archive des articles publiés sur LinkedIn.
    `AAAA-MM-JJ-titre-court.md` (date de publication sur LinkedIn,
    titre en minuscules sans accents, mots séparés par des tirets).
    Exemple : `articles/_posts/2026-11-04-ia-agentique.md`.
-2. Remplir l'en-tête (`title`, `date`, `linkedin`, et au choix `resume`, `tags`)
+2. Remplir l'en-tête (`title`, `date`, `linkedin`, `theme`, et au choix
+   `theme_secondaire`, `resume`). Les noms de thèmes possibles sont dans
+   `_data/themes.yml` ; un article sans thème n'apparaît pas sur la carte
    puis coller le texte de l'article en Markdown sous l'en-tête.
 3. Les images éventuelles vont dans `articles/images/`.
 4. Committer : GitHub Pages reconstruit le site, l'article apparaît
@@ -37,5 +39,7 @@ sur le site.
 | `articles/images/` | Images des articles |
 | `_layouts/linkedin-article.html` | Mise en page d'un article |
 | `assets/articles.css` | Styles des articles (thème sombre de la page d'accueil) |
+| `_data/themes.yml` | Les 5 thèmes : nom, description, couleur |
+| `assets/carte.js` | Carte des thèmes et filtres de la page Articles |
 | `assets/vignettes.js` | Vignette animée de chaque article, dessinée d'après sa structure |
 | `MODELE_ARTICLE.md` | Modèle à copier (non publié) |

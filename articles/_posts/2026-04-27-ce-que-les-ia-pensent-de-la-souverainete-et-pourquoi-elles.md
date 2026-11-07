@@ -3,6 +3,7 @@ title: "Ce que les IA pensent de la souveraineté (et pourquoi elles ne s'accord
 date: 2026-04-27 19:09:00
 linkedin: https://www.linkedin.com/pulse/ce-que-les-ia-pensent-de-la-souverainet%C3%A9-et-pourquoi-elles-alaime-bmo9e
 excerpt: "La réponse courte est non. Un modèle génère des probabilités, pas des convictions. Mais voici ce que j'ai appris en travaillant sur ce projet : un modèle a quelque chose de plus intéressant qu'une opinion. Il a une architecture. Et cette architecture inscrit…"
+theme: "Les modèles et le monde"
 ---
 
 **Est-ce qu'un modèle de langage a une opinion ?**

@@ -3,6 +3,8 @@ title: "L'IA récompense ceux qui résistent"
 date: 2026-05-25 08:19:00
 linkedin: https://www.linkedin.com/pulse/lia-r%C3%A9compense-ceux-qui-r%C3%A9sistent-jean-christophe-alaime-kwcxe
 excerpt: "En entreprise, on vous a appris à vous aligner. Avec votre manager, avec la stratégie, avec le client, avec le groupe. Les organisations valorisent ce réflexe, le récompensent, le reproduisent."
+theme: "Pratiquer et apprendre"
+theme_secondaire: "Travail et organisations"
 ---
 
 En entreprise, on vous a appris à vous aligner. Avec votre manager, avec la stratégie, avec le client, avec le groupe. Les organisations valorisent ce réflexe, le récompensent, le reproduisent.

@@ -3,6 +3,7 @@ title: "L'IA à la marge : anatomie d'une timidité collective"
 date: 2026-03-16 06:20:00
 linkedin: https://www.linkedin.com/pulse/lia-%C3%A0-la-marge-anatomie-dune-timidit%C3%A9-collective-alaime-ndlwe
 excerpt: "Pourquoi, face à une technologie capable de refondre l'ensemble d'un système, la réponse dominante consiste-t-elle à en saupoudrer les bords ?"
+theme: "Travail et organisations"
 ---
 
 **Pourquoi, face à une technologie capable de refondre l'ensemble d'un système, la réponse dominante consiste-t-elle à en saupoudrer les bords ?**

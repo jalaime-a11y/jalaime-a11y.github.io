@@ -3,6 +3,7 @@ title: "IA : De Homo Faber à Homo Statisticus"
 date: 2026-02-08 13:46:00
 linkedin: https://www.linkedin.com/pulse/ia-de-homo-faber-%C3%A0-statisticus-jean-christophe-alaime-hkzre
 excerpt: "L’intelligence artificielle générative n’augmente pas l’humain par sa seule présence. Elle accélère, certes, mais elle le fait en lissant. Elle n’invente rien : elle compile. Elle restitue à haute vitesse la moyenne de ce qui a déjà été dit."
+theme: "Penser avec la machine"
 ---
 
 ### L’illusion de l’augmentation

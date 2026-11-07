@@ -3,6 +3,8 @@ title: "L'IA Générative : Risque d'Atrophie Cognitive ou Amplificateur de Pens
 date: 2025-11-28 13:50:00
 linkedin: https://www.linkedin.com/pulse/lia-g%C3%A9n%C3%A9rative-risque-datrophie-cognitive-ou-de-pens%C3%A9e-alaime-bihee
 excerpt: "L'intégration rapide des outils d'IA générative dans notre quotidien soulève une question fondamentale : existe-t-il un risque d'atrophie cognitive à utiliser l'IA, et si oui, comment le prévenir ?"
+theme: "Penser avec la machine"
+theme_secondaire: "Pratiquer et apprendre"
 ---
 
 L'intégration rapide des outils d'IA générative dans notre quotidien soulève une question fondamentale : **existe-t-il un risque d'atrophie cognitive à utiliser l'IA, et si oui, comment le prévenir ?**

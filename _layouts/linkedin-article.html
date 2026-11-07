@@ -23,6 +23,11 @@
       {%- if page.resume %}
       <p class="chapeau-article">{{ page.resume }}</p>
       {%- endif %}
+      {%- assign th1 = site.data.themes | where: "nom", page.theme | first %}
+      {%- assign th2 = nil %}{%- if page.theme_secondaire %}{%- assign th2 = site.data.themes | where: "nom", page.theme_secondaire | first %}{%- endif -%}
+      {%- if th1 %}
+      <p class="themes">{% for th in (1..2) %}{% if forloop.first %}{% assign x = th1 %}{% else %}{% assign x = th2 %}{% endif %}{% if x %}<a href="{{ '/articles/' | relative_url }}#theme={{ x.slug }}" style="--c:{{ x.couleur }}"><i aria-hidden="true"></i>{{ x.nom }}</a>{% endif %}{% endfor %}</p>
+      {%- endif %}
       {%- if page.tags.size > 0 %}
       <p>{% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}</p>
       {%- endif %}

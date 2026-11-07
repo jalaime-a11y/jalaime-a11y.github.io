@@ -23,6 +23,23 @@ title: Articles
     </p>
   </section>
 
+  <section class="enveloppe carte-themes" aria-labelledby="titre-carte">
+    <h2 id="titre-carte" class="etiquette">Carte des thèmes</h2>
+    <div class="carte-cadre" id="carte-cadre">
+      <svg id="carte" role="group" aria-label="Carte des thèmes : chaque point est un article, placé près de son thème principal et attiré vers son thème secondaire. Les thèmes filtrent la liste."></svg>
+      <p class="infobulle" id="infobulle" hidden></p>
+    </div>
+    <div class="filtres" role="group" aria-label="Filtrer les articles par thème">
+      <button type="button" class="filtre" data-theme="" aria-pressed="true">Tous <span class="nb">{{ articles.size }}</span></button>
+      {%- for th in site.data.themes %}
+      {%- assign n1 = articles | where: "theme", th.nom | size %}
+      {%- assign n2 = articles | where: "theme_secondaire", th.nom | size %}
+      <button type="button" class="filtre" data-theme="{{ th.slug }}" aria-pressed="false" style="--c:{{ th.couleur }}"><i aria-hidden="true"></i>{{ th.nom }} <span class="nb">{{ n1 | plus: n2 }}</span></button>
+      {%- endfor %}
+    </div>
+    <p class="filtre-etat" id="filtre-etat" aria-live="polite"></p>
+  </section>
+
   {%- if articles and articles.size > 0 %}
   {%- assign par_annee = articles | group_by_exp: "a", "a.date | date: '%Y'" %}
   {%- for annee in par_annee %}
@@ -32,9 +49,12 @@ title: Articles
       {%- for a in annee.items %}
       {%- capture struct %}{% include structure.html html=a.content %}{% endcapture %}
       {%- assign minutes = a.content | strip_html | number_of_words | divided_by: 230 | at_least: 1 %}
-      <li class="carte">
+      {%- assign th1 = site.data.themes | where: "nom", a.theme | first %}
+      {%- assign th2 = nil %}{%- if a.theme_secondaire %}{%- assign th2 = site.data.themes | where: "nom", a.theme_secondaire | first %}{%- endif -%}
+      <li class="carte" data-themes="{{ th1.slug }}{% if th2 %} {{ th2.slug }}{% endif %}">
         <canvas class="vignette" aria-hidden="true" data-structure="{{ struct }}" data-graine="{{ a.url }}"></canvas>
         <p class="meta"><time datetime="{{ a.date | date_to_xmlschema }}">{% include date-fr.html date=a.date %}</time> · {{ minutes }} min</p>
+        {%- if th1 %}<p class="theme" style="--c:{{ th1.couleur }}"><i aria-hidden="true"></i>{{ th1.nom }}{% if th2 %}<span class="sec"> · {{ th2.nom }}</span>{% endif %}</p>{% endif %}
         <h3><a href="{{ a.url | relative_url }}">{{ a.title }}</a></h3>
         {%- if a.resume %}<p>{{ a.resume }}</p>{% elsif a.excerpt %}<p>{{ a.excerpt | strip_html | truncatewords: 32, "…" }}</p>{% endif %}
         <span class="lire" aria-hidden="true">Lire →</span>
@@ -46,6 +66,12 @@ title: Articles
   {%- else %}
   <section class="enveloppe annee"><p class="chapeau">Aucun article pour l'instant.</p></section>
   {%- endif %}
+{%- capture donnees -%}
+{"themes":[{%- for th in site.data.themes -%}{"slug":{{ th.slug | jsonify }},"nom":{{ th.nom | jsonify }},"description":{{ th.description | jsonify }},"couleur":{{ th.couleur | jsonify }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}],
+"articles":[{%- for a in articles -%}{%- assign th1 = site.data.themes | where: "nom", a.theme | first -%}{%- assign th2 = nil %}{%- if a.theme_secondaire %}{%- assign th2 = site.data.themes | where: "nom", a.theme_secondaire | first %}{%- endif -%}{"titre":{{ a.title | jsonify }},"url":{{ a.url | relative_url | jsonify }},"theme":{{ th1.slug | jsonify }},"secondaire":{% if th2 %}{{ th2.slug | jsonify }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}{%- endfor -%}]}
+{%- endcapture %}
+  <script type="application/json" id="donnees-carte">{{ donnees }}</script>
+  <script src="{{ '/assets/carte.js' | relative_url }}" defer></script>
 </main>
 {% include pied.html %}
 </body>

@@ -1,0 +1,24 @@
+# Thèmes des articles. Chaque article déclare dans son en-tête :
+#   theme: "<nom>"              (thème principal, une seule valeur)
+#   theme_secondaire: "<nom>"   (facultatif)
+# Le nom doit correspondre exactement à un « nom » ci-dessous.
+- slug: penser
+  nom: Penser avec la machine
+  description: Ce que l'IA fait à la pensée de celui qui l'utilise
+  couleur: "#5f93d8"
+- slug: pratiquer
+  nom: Pratiquer et apprendre
+  description: Comment conduire l'échange, et ce qu'il faut pour l'apprendre
+  couleur: "#e3a948"
+- slug: agents
+  nom: Agents
+  description: Ce qu'est un agent et ce qu'il décide à votre place
+  couleur: "#a9d18e"
+- slug: travail
+  nom: Travail et organisations
+  description: Comment l'IA transforme le travail, sa mesure et l'adoption en entreprise
+  couleur: "#d8563f"
+- slug: modeles
+  nom: Les modèles et le monde
+  description: Ce que les modèles portent avec eux
+  couleur: "#f3efe4"
