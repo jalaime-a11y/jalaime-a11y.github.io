@@ -3,6 +3,7 @@ title: "La pensée latérale ne se délègue pas"
 date: 2026-06-04 06:02:00
 linkedin: https://www.linkedin.com/pulse/la-pens%C3%A9e-lat%C3%A9rale-ne-se-d%C3%A9l%C3%A8gue-pas-jean-christophe-alaime-ufmie
 excerpt: "Papier, crayon, stylo à bille. Quand j'écris ainsi, je suis complètement libre. Je vagabonde, je pose mes idées sans les avoir orchestrées, je laisse sortir la substance, je fais émerger d'un point une autre idée. Je ne suis contraint par rien, au départ en…"
+theme: "Penser avec la machine"
 ---
 
 Papier, crayon, stylo à bille. Quand j'écris ainsi, je suis complètement libre. Je vagabonde, je pose mes idées sans les avoir orchestrées, je laisse sortir la substance, je fais émerger d'un point une autre idée. Je ne suis contraint par rien, au départ en tout cas. Pendant cette phase initiale, j'explore toutes les pistes, librement. Je jette l'idée, littéralement. Avant d'organiser, de structurer, d'approfondir.

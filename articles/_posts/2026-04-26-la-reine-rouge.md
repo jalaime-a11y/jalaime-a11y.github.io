@@ -3,6 +3,7 @@ title: "La Reine Rouge"
 date: 2026-04-26 13:22:00
 linkedin: https://www.linkedin.com/pulse/la-reine-rouge-jean-christophe-alaime-cg4ye
 excerpt: "Il existe une scène dans l'œuvre de Lewis Carroll que la plupart des lecteurs oublient trop vite. Alice court. Elle court de toutes ses forces, les bras tendus, le souffle coupé. Et pourtant, quand elle s'arrête enfin, épuisée, elle est exactement au même…"
+theme: "Les modèles et le monde"
 ---
 
 ### Comment l'intelligence artificielle court vers sa propre cage

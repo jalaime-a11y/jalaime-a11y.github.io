@@ -3,6 +3,8 @@ title: "La pression agentique : ce que vos outils IA décident sans vous le dire
 date: 2026-04-07 12:44:00
 linkedin: https://www.linkedin.com/pulse/la-pression-agentique-ce-que-vos-outils-ia-d%C3%A9cident-sans-alaime-nadre
 excerpt: "Vous utilisez Claude Code ou GitHub Copilot depuis quelques temps déjà. Vous livrez plus vite. Le code fonctionne."
+theme: "Agents"
+theme_secondaire: "Pratiquer et apprendre"
 ---
 
 Vous utilisez Claude Code ou GitHub Copilot depuis quelques temps déjà. Vous livrez plus vite. Le code fonctionne.

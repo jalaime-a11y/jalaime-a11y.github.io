@@ -3,6 +3,7 @@ title: "Ce n'est pas l'IA qui vous influence. C'est votre cerveau qui la traite 
 date: 2026-05-05 09:41:00
 linkedin: https://www.linkedin.com/pulse/ce-nest-pas-la-machine-qui-vous-influence-cest-votre-cerveau-alaime-yi2ae
 excerpt: "Vous avez déjà abrégé une réflexion parce que l'IA semblait vouloir conclure. Accepté une reformulation qui n'était pas tout à fait la vôtre. Ressenti quelque chose qui ressemblait à de la chaleur, ou à de la froideur. Et ajusté votre posture en conséquence…"
+theme: "Penser avec la machine"
 ---
 
 Vous avez déjà abrégé une réflexion parce que l'IA semblait vouloir conclure. Accepté une reformulation qui n'était pas tout à fait la vôtre. Ressenti quelque chose qui ressemblait à de la chaleur, ou à de la froideur. Et ajusté votre posture en conséquence, sans savoir exactement pourquoi.

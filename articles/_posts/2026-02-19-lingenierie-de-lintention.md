@@ -3,6 +3,7 @@ title: "IA : L'Ingénierie de l'Intention"
 date: 2026-02-19 11:42:00
 linkedin: https://www.linkedin.com/pulse/ling%C3%A9nierie-de-lintention-jean-christophe-alaime-u1h5e
 excerpt: "L'interaction avec l'IA générative n'est pas une simple succession de questions-réponses, mais une posture intellectuelle visant des résultats rigoureux. Elle repose sur un triptyque — Contexte, Processus, Prompt — dont la puissance réside dans sa capacité de…"
+theme: "Pratiquer et apprendre"
 ---
 
 > *L'interaction avec l'IA générative n'est pas une simple succession de questions-réponses, mais une posture intellectuelle visant des résultats rigoureux. Elle repose sur un triptyque — Contexte, Processus, Prompt — dont la puissance réside dans sa capacité de décomposition récursive : une architecture où les cycles s'emboîtent et s'alimentent mutuellement.*

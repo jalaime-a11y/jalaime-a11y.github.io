@@ -3,6 +3,7 @@ title: "L'IA générative est-elle l'outil des neurodivergents ?"
 date: 2026-04-27 12:16:00
 linkedin: https://www.linkedin.com/pulse/lia-g%C3%A9n%C3%A9rative-est-elle-loutil-des-neurodivergents-alaime-emw8e
 excerpt: "Parmi les praticiens que j'observe (principalement dans des usages exploratoires et réflexifs, à forte intensité cognitive) ceux qui décrivent une libération sont quasi systématiquement ceux qui rapportent un historique de décalage cognitif chronique. Ce…"
+theme: "Penser avec la machine"
 ---
 
 Parmi les praticiens que j'observe (principalement dans des usages exploratoires et réflexifs, à forte intensité cognitive) ceux qui décrivent une libération sont quasi systématiquement ceux qui rapportent un historique de décalage cognitif chronique. Ce n'est pas un échantillon contrôlé, c'est une observation convergente. Elle peut refléter un biais d'auto-sélection : les profils qui verbalisent une libération sont aussi ceux qui surinvestissent l'IA et s'auto-identifient comme neurodivergents. Ceux qui sont en méfiance technologique, en épuisement numérique, ou sans habitude de travailler par instructions guidées restent invisibles dans cette observation.

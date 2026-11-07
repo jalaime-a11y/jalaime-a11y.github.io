@@ -3,6 +3,8 @@ title: "Ce que l'IA générative révèle sur ceux qui l'apprennent vraiment"
 date: 2026-04-24 07:15:00
 linkedin: https://www.linkedin.com/pulse/ce-que-lia-g%C3%A9n%C3%A9rative-r%C3%A9v%C3%A8le-sur-ceux-qui-lapprennent-alaime-njvwe
 excerpt: "Former des personnes à l'IA générative, c'est observer quelque chose que les statistiques d'adoption ne montrent pas. La même formation, le même outil, le même niveau de motivation, et des écarts de résultats qui n'ont rien à voir avec l'âge, le titre, ni la…"
+theme: "Pratiquer et apprendre"
+theme_secondaire: "Penser avec la machine"
 ---
 
 Former des personnes à l'IA générative, c'est observer quelque chose que les statistiques d'adoption ne montrent pas. La même formation, le même outil, le même niveau de motivation, et des écarts de résultats qui n'ont rien à voir avec l'âge, le titre, ni la maîtrise technique préalable.

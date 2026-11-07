@@ -3,6 +3,8 @@ title: "Ancien monde, nouveau monde : la façon de construire le travail avec l'
 date: 2026-11-02 09:16:00
 linkedin: https://www.linkedin.com/pulse/ancien-monde-nouveau-la-fa%C3%A7on-de-construire-le-travail-alaime-8erxe
 excerpt: "Ce qui m'intéresse aujourd'hui, c'est la confrontation entre l'ancien monde et le nouveau dans la façon de construire le travail avec l'IA générative : pas seulement de le répartir, mais de le faire. L'adoption de l'IA se mesure le plus souvent à la quantité…"
+theme: "Travail et organisations"
+theme_secondaire: "Agents"
 ---
 
 Ce qui m'intéresse aujourd'hui, c'est la confrontation entre l'ancien monde et le nouveau dans la façon de construire le travail avec l'IA générative : pas seulement de le répartir, mais de le faire. L'adoption de l'IA se mesure le plus souvent à la quantité d'usage, alors que la vraie ligne de partage me semble ailleurs, dans ce que l'IA fait du processus de travail lui-même.

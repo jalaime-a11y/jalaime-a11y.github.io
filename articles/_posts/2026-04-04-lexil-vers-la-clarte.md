@@ -3,6 +3,8 @@ title: "L'Exil vers la clarté"
 date: 2026-04-04 09:58:00
 linkedin: https://www.linkedin.com/pulse/lexil-vers-la-clart%C3%A9-jean-christophe-alaime-rfrwe
 excerpt: "Ce que l’IA change à la façon dont certains pensent, échangent, et finissent par se séparer"
+theme: "Penser avec la machine"
+theme_secondaire: "Pratiquer et apprendre"
 ---
 
 *Ce que l’IA change à la façon dont certains pensent, échangent, et finissent par se séparer*
