@@ -1,40 +1,43 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ page.title }} — Articles</title>
+{% include tete-html.html %}
+<title>{{ page.title }} — {{ site.author.name }}</title>
 {%- if page.resume %}
 <meta name="description" content="{{ page.resume | strip_html | escape }}">
+{%- elsif page.excerpt %}
+<meta name="description" content="{{ page.excerpt | strip_html | strip_newlines | truncatewords: 40 | escape }}">
 {%- endif %}
-<link rel="stylesheet" href="{{ '/assets/articles.css' | relative_url }}">
 </head>
 <body>
-<main class="page">
-  <nav class="retour"><a href="{{ '/articles/' | relative_url }}">← Tous les articles</a></nav>
+{% include entete.html courant=true %}
+{%- capture struct %}{% include structure.html html=content %}{% endcapture %}
+{%- assign minutes = content | strip_html | number_of_words | divided_by: 230 | at_least: 1 %}
+<main class="enveloppe">
+  <div class="lecture">
+    <nav class="retour"><a href="{{ '/articles/' | relative_url }}">← Tous les articles</a></nav>
 
-  <header class="entete">
-    <h1>{{ page.title }}</h1>
-    <p class="meta">
-      <time datetime="{{ page.date | date_to_xmlschema }}">{% include date-fr.html date=page.date %}</time>
-      {%- if page.tags.size > 0 %}
-      · {% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+    <header class="tete">
+      <p class="meta"><time datetime="{{ page.date | date_to_xmlschema }}">{% include date-fr.html date=page.date %}</time> · {{ minutes }} min de lecture</p>
+      <h1>{{ page.title }}</h1>
+      {%- if page.resume %}
+      <p class="chapeau-article">{{ page.resume }}</p>
       {%- endif %}
-    </p>
-    {%- if page.resume %}
-    <p class="chapeau">{{ page.resume }}</p>
+      {%- if page.tags.size > 0 %}
+      <p>{% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}</p>
+      {%- endif %}
+      <canvas class="vignette" aria-hidden="true" data-structure="{{ struct }}" data-graine="{{ page.url }}"></canvas>
+    </header>
+
+    <article class="corps">
+      {{ content }}
+    </article>
+
+    {%- if page.linkedin %}
+    <p class="source">Publié initialement sur <a href="{{ page.linkedin }}" rel="noopener">LinkedIn</a>.</p>
     {%- endif %}
-  </header>
-
-  <article class="corps">
-    {{ content }}
-  </article>
-
-  {%- if page.linkedin %}
-  <footer class="source">
-    Publié initialement sur <a href="{{ page.linkedin }}" rel="noopener">LinkedIn</a>.
-  </footer>
-  {%- endif %}
+  </div>
 </main>
+{% include pied.html %}
 </body>
 </html>

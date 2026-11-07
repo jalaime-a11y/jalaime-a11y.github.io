@@ -36,5 +36,6 @@ sur le site.
 | `articles/index.html` | Liste des articles, groupés par année |
 | `articles/images/` | Images des articles |
 | `_layouts/linkedin-article.html` | Mise en page d'un article |
-| `assets/articles.css` | Styles partagés (clair / sombre) |
+| `assets/articles.css` | Styles des articles (thème sombre de la page d'accueil) |
+| `assets/vignettes.js` | Vignette animée de chaque article, dessinée d'après sa structure |
 | `MODELE_ARTICLE.md` | Modèle à copier (non publié) |

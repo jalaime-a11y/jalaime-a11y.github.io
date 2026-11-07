@@ -1,0 +1,20 @@
+{%- comment -%}
+  Suite des blocs d'un article, pour sa vignette (le regroupement en sections
+  est fait par assets/vignettes.js). Un jeton par bloc : type + nombre de mots.
+    H intertitre   R filet   T paragraphe entièrement en gras (intertitre de fait)
+    Q citation     C schéma ou bloc de code   P paragraphe ou liste
+{%- endcomment -%}
+{%- assign h = include.html | replace: "<h2", "§H" | replace: "<h3", "§H" | replace: "<h4", "§H" | replace: "<hr", "§R" | replace: "<blockquote", "§Q" | replace: "<pre", "§C" | replace: "<p><strong>", "§B" | replace: "<p>", "§P" | replace: "<ul", "§P" | replace: "<ol", "§P" -%}
+{%- assign pieces = h | split: "§" -%}
+{%- capture s -%}
+{%- for piece in pieces -%}
+{%- assign t = piece | slice: 0 -%}
+{%- assign n = piece | slice: 1, piece.size | strip_html | number_of_words -%}
+{%- if t == "B" -%}
+{%- assign fb = piece | split: "</p>" | first | split: "</strong>" | size -%}
+{%- if fb == 1 %}{% assign t = "T" %}{% else %}{% assign t = "P" %}{% endif -%}
+{%- endif -%}
+{%- if t == "H" or t == "R" or t == "T" or t == "Q" or t == "C" -%}{{ t }}{{ n }},{%- elsif t == "P" and n > 0 -%}{{ t }}{{ n }},{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{{- s | strip -}}

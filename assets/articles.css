@@ -1,71 +1,102 @@
-:root {
-  --bg: #f9f8f5;
-  --text-primary: #1a1a18;
-  --text-secondary: #5f5e5a;
-  --text-tertiary: #888780;
-  --border: rgba(0,0,0,0.12);
-  --accent: #0F6E56;
-  --code-bg: rgba(0,0,0,0.04);
+/* Articles : même nuit bleu pétrole, mêmes polices et mêmes accents que la page d'accueil.
+   Thème sombre assumé, colonne de lecture étroite pour les textes longs. */
+:root{
+  --nuit:#1b2a2d;      /* fond */
+  --velours:#273538;   /* surfaces */
+  --trait:#3a4d50;     /* filets */
+  --lin:#e8ebe3;       /* texte */
+  --brume:#93a5a2;     /* texte secondaire */
+  --ambre:#e3a948;     /* accent : citations, intention */
+  --verre:#a9d18e;     /* second accent : le texte qui avance */
+  --puits:#0c1416;     /* fond des vignettes et des blocs de code */
+  --f-display:"Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-texte:"Commissioner", "Segoe UI", system-ui, sans-serif;
+  --f-code:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --t-xs:.78rem; --t-s:.9rem; --t-m:1.05rem; --t-l:1.35rem;
+  --t-xl:clamp(1.7rem,3.6vw,2.4rem); --t-xxl:clamp(2.4rem,7vw,4.6rem);
+  --lecture:40rem; --large:72rem;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1c1a;
-    --text-primary: #e8e6de;
-    --text-secondary: #a8a69e;
-    --text-tertiary: #6e6d68;
-    --border: rgba(255,255,255,0.12);
-    --accent: #5DCAA5;
-    --code-bg: rgba(255,255,255,0.06);
-  }
-}
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text-primary);
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 18px;
-  line-height: 1.65;
-}
-.page { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
-a { color: var(--accent); }
-.retour { font-size: 14px; margin-bottom: 32px; }
-.retour a { text-decoration: none; }
-.entete { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 32px; }
-.entete h1 { font-size: 32px; line-height: 1.2; font-weight: 400; margin: 0 0 12px; text-wrap: balance; }
-.meta { font-size: 14px; color: var(--text-tertiary); margin: 0; }
-.tag {
-  display: inline-block; font-size: 12px; color: var(--text-secondary);
-  border: 1px solid var(--border); border-radius: 999px;
-  padding: 0 8px; margin: 0 4px 4px 0;
-}
-.chapeau { font-style: italic; color: var(--text-secondary); margin: 16px 0 0; }
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--nuit);color:var(--lin);font-family:var(--f-texte);font-size:var(--t-m);line-height:1.65;font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:var(--ambre);text-underline-offset:.2em}
+:focus-visible{outline:2px solid var(--ambre);outline-offset:3px;border-radius:2px}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;text-wrap:balance;line-height:1.1;margin:0}
+p{margin:0}
+.enveloppe{max-width:var(--large);margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.lecture{max-width:var(--lecture)}
+.etiquette{font-family:var(--f-code);font-size:var(--t-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--brume)}
 
-/* Corps d'article */
-.corps h2 { font-size: 24px; font-weight: 400; margin: 40px 0 12px; }
-.corps h3 { font-size: 20px; font-weight: 400; margin: 32px 0 8px; }
-.corps { overflow-wrap: break-word; }
-.corps a { overflow-wrap: anywhere; }
-.corps p, .corps ul, .corps ol { margin: 0 0 18px; }
-.corps blockquote {
-  margin: 24px 0; padding: 0 0 0 20px;
-  border-left: 3px solid var(--accent); color: var(--text-secondary); font-style: italic;
-}
-.corps img { max-width: 100%; height: auto; display: block; margin: 24px auto; }
-.corps code { font-size: 0.85em; background: var(--code-bg); padding: 1px 4px; border-radius: 3px; }
-.corps pre { background: var(--code-bg); padding: 16px; overflow-x: auto; border-radius: 4px; }
-.corps pre code { background: none; padding: 0; font-size: 13px; line-height: 1.25; }
-.corps hr { border: 0; border-top: 1px solid var(--border); margin: 40px 0; }
-.corps table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
-.corps th, .corps td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
-.source { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 14px; color: var(--text-tertiary); }
+/* En-tête (identique à la page d'accueil) */
+.entete{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--nuit) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--trait)}
+.entete .enveloppe{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.7rem}
+.entete .nom{font-family:var(--f-display);font-size:1.05rem;text-decoration:none;color:var(--lin)}
+.entete nav{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:var(--t-s)}
+.entete nav a{color:var(--brume);text-decoration:none}
+.entete nav a:hover,.entete nav a[aria-current]{color:var(--lin)}
+.entete nav a[aria-current]{text-decoration:underline;text-decoration-color:var(--ambre);text-underline-offset:.35em}
+@media (max-width:640px){.entete nav a.secondaire{display:none}}
 
-/* Index */
-.annee h2 { font-size: 14px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin: 40px 0 8px; }
-.liste { list-style: none; margin: 0; padding: 0; }
-.liste li { padding: 16px 0; border-bottom: 1px solid var(--border); }
-.liste .titre { font-size: 20px; text-decoration: none; display: block; margin-bottom: 4px; }
-.liste .titre:hover { text-decoration: underline; }
-.liste p { margin: 8px 0 0; font-size: 16px; color: var(--text-secondary); }
-.vide { color: var(--text-tertiary); font-style: italic; }
+/* Vignettes : la silhouette de chaque article */
+.vignette{display:block;width:100%;aspect-ratio:8/3;border-radius:2px;background:var(--puits)}
+
+/* ---------- Liste des articles ---------- */
+.ouverture{padding-block:clamp(2.5rem,7vw,5rem) clamp(1.5rem,4vw,2.5rem);display:grid;gap:1rem}
+.ouverture h1{font-size:var(--t-xxl);line-height:1}
+.ouverture .chapeau{color:var(--brume);max-width:var(--lecture)}
+.legende{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume);margin-top:.4rem}
+.legende span{display:inline-flex;align-items:center;gap:.45em}
+.legende i{display:inline-block;width:.65em;height:.65em;border-radius:50%}
+.legende .l-section{background:var(--verre)}
+.legende .l-citation{background:var(--ambre)}
+.legende .l-fil{width:1.4em;height:1px;border-radius:0;background:var(--brume)}
+.annee{border-top:1px solid var(--trait);padding-block:1.6rem 2.4rem}
+.annee > h2{font-family:var(--f-code);font-weight:400;font-size:var(--t-xs);letter-spacing:.08em;color:var(--brume);margin-bottom:1rem}
+.cartes{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:8px}
+.carte{position:relative;background:var(--nuit);border:1px solid var(--trait);border-radius:3px;padding:1rem 1.1rem 1.1rem;display:flex;flex-direction:column;gap:.55rem;min-width:0;transition:border-color .2s}
+.carte:hover,.carte:focus-within{border-color:var(--ambre)}
+.carte h3{font-size:1.15rem;line-height:1.25}
+.carte h3 a{color:var(--lin);text-decoration:none}
+.carte h3 a::after{content:"";position:absolute;inset:0}  /* toute la carte est cliquable */
+.carte .meta{font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume);letter-spacing:.02em}
+.carte p{font-size:var(--t-s);color:var(--brume);line-height:1.55}
+.carte .lire{margin-top:auto;padding-top:.3rem;font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume);transition:color .2s}
+.carte:hover .lire,.carte:focus-within .lire{color:var(--ambre)}
+
+/* ---------- Article ---------- */
+.retour{font-family:var(--f-code);font-size:var(--t-xs);letter-spacing:.04em;padding-top:1.6rem}
+.retour a{color:var(--brume);text-decoration:none}
+.retour a:hover{color:var(--ambre)}
+.tete{padding-block:1.6rem 2rem;display:grid;gap:1rem;border-bottom:1px solid var(--trait)}
+.tete h1{font-size:var(--t-xl);line-height:1.12}
+.tete .meta{font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume);letter-spacing:.02em}
+.tete .vignette{aspect-ratio:5/1;margin-top:.4rem}
+.tag{display:inline-block;font-family:var(--f-code);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--verre);border:1px solid var(--trait);border-radius:2px;padding:0 .45rem;margin:0 .3rem .3rem 0}
+.chapeau-article{font-family:var(--f-display);font-style:italic;font-size:var(--t-l);line-height:1.4;color:var(--brume)}
+
+.corps{padding-block:2rem 1rem;font-weight:400;font-size:1.06rem;line-height:1.75;overflow-wrap:break-word}
+.corps a{overflow-wrap:anywhere}
+.corps > :first-child{margin-top:0}
+.corps h2{font-size:1.65rem;margin:2.6rem 0 .9rem}
+.corps h3{font-size:1.3rem;margin:2.2rem 0 .7rem}
+.corps p,.corps ul,.corps ol{margin:0 0 1.15rem}
+.corps li{margin-bottom:.35rem}
+.corps li > p{margin:0}
+.corps strong{font-weight:600}
+.corps em{font-style:italic}
+.corps blockquote{margin:1.8rem 0;padding:.2rem 0 .2rem 1.3rem;border-left:2px solid var(--ambre);font-family:var(--f-display);font-style:italic;font-size:1.2rem;line-height:1.55;color:var(--lin)}
+.corps blockquote p{margin:0 0 .8rem}
+.corps blockquote p:last-child{margin-bottom:0}
+.corps code{font-family:var(--f-code);font-size:.85em;background:var(--puits);padding:1px 5px;border-radius:2px}
+.corps pre{background:var(--puits);border:1px solid var(--trait);padding:1rem 1.1rem;overflow-x:auto;border-radius:3px;margin:1.8rem 0}
+.corps pre code{background:none;padding:0;font-size:13px;line-height:1.25;color:var(--lin)}
+.corps hr{border:0;border-top:1px solid var(--trait);margin:2.6rem 0}
+.corps img{max-width:100%;height:auto;display:block;margin:1.8rem auto;border-radius:2px}
+.corps table{border-collapse:collapse;width:100%;display:block;overflow-x:auto}
+.corps th,.corps td{border:1px solid var(--trait);padding:6px 10px;text-align:left}
+.source{border-top:1px solid var(--trait);padding-block:1.2rem 3rem;font-family:var(--f-code);font-size:var(--t-xs);color:var(--brume)}
+
+/* Pied */
+.pied{border-top:1px solid var(--trait);padding-block:2rem 2.6rem;color:var(--brume);font-size:var(--t-s)}

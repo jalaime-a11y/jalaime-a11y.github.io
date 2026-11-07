@@ -1,0 +1,13 @@
+<header class="entete">
+  <div class="enveloppe">
+    <a class="nom" href="{{ '/' | relative_url }}">Jean-Christophe Alaime</a>
+    <nav aria-label="Sections">
+      <a href="{{ '/#manifeste' | relative_url }}">Manifeste</a>
+      <a href="{{ '/#demarches' | relative_url }}">Démarches</a>
+      <a href="{{ '/#verifier' | relative_url }}" class="secondaire">Vérifier</a>
+      <a href="{{ '/#territoires' | relative_url }}" class="secondaire">Territoires</a>
+      <a href="{{ '/articles/' | relative_url }}"{% if include.courant %} aria-current="page"{% endif %}>Articles</a>
+      <a href="https://www.linkedin.com/in/jean-christophe-alaime-86939455/">LinkedIn</a>
+    </nav>
+  </div>
+</header>
