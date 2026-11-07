@@ -45,6 +45,8 @@ a { color: var(--accent); }
 /* Corps d'article */
 .corps h2 { font-size: 24px; font-weight: 400; margin: 40px 0 12px; }
 .corps h3 { font-size: 20px; font-weight: 400; margin: 32px 0 8px; }
+.corps { overflow-wrap: break-word; }
+.corps a { overflow-wrap: anywhere; }
 .corps p, .corps ul, .corps ol { margin: 0 0 18px; }
 .corps blockquote {
   margin: 24px 0; padding: 0 0 0 20px;

@@ -2,6 +2,9 @@
 title: Supports de formation publics
 lang: fr
 timezone: Europe/Paris
+author:
+  name: Jean-Christophe Alaime
+  headline: Semantic Flow & Generative Ideation Designer
 markdown: kramdown
 kramdown:
   input: GFM

@@ -16,6 +16,7 @@ title: Articles LinkedIn
 
   <header class="entete">
     <h1>Articles LinkedIn</h1>
+    <p class="meta">{{ site.author.name }} · {{ site.author.headline }}</p>
     <p class="chapeau">Archive des articles publiés sur LinkedIn, du plus récent au plus ancien.</p>
   </header>
 
@@ -31,7 +32,7 @@ title: Articles LinkedIn
           <a class="titre" href="{{ a.url | relative_url }}">{{ a.title }}</a>
           <span class="meta"><time datetime="{{ a.date | date_to_xmlschema }}">{% include date-fr.html date=a.date %}</time>
           {%- if a.tags.size > 0 %} · {% for tag in a.tags %}<span class="tag">{{ tag }}</span>{% endfor %}{% endif %}</span>
-          {%- if a.resume %}<p>{{ a.resume }}</p>{% endif %}
+          {%- if a.resume %}<p>{{ a.resume }}</p>{% elsif a.excerpt %}<p>{{ a.excerpt | strip_html | truncatewords: 45, "…" }}</p>{% endif %}
         </li>
         {%- endfor %}
       </ul>

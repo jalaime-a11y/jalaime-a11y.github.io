@@ -11,11 +11,21 @@ Supports de formation publics, et archive des articles publiés sur LinkedIn.
    `AAAA-MM-JJ-titre-court.md` (date de publication sur LinkedIn,
    titre en minuscules sans accents, mots séparés par des tirets).
    Exemple : `articles/_posts/2026-11-04-ia-agentique.md`.
-2. Remplir l'en-tête (`title`, `date`, `linkedin`, `resume`, `tags`)
+2. Remplir l'en-tête (`title`, `date`, `linkedin`, et au choix `resume`, `tags`)
    puis coller le texte de l'article en Markdown sous l'en-tête.
 3. Les images éventuelles vont dans `articles/images/`.
 4. Committer : GitHub Pages reconstruit le site, l'article apparaît
    dans la liste `/articles/` et à l'adresse `/articles/AAAA/titre-court/`.
+
+## Brouillons
+
+Un article dont l'en-tête contient `published: false` reste dans le dépôt
+mais n'est pas mis en ligne. Remplacer par `published: true` (ou supprimer
+la ligne) pour le publier.
+
+Les repères `<!-- À COMPLÉTER ... -->` signalent des passages que l'export
+LinkedIn n'a pas restitués (blocs de code, schémas). Ils sont invisibles
+sur le site.
 
 ## Organisation
 
