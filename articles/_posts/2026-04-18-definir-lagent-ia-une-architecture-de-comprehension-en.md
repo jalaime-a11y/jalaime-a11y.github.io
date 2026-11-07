@@ -17,7 +17,11 @@ Ce document propose une démarche différente : construire la compréhension ava
 
 ## Couche 1 — La définition vivante
 
-<!-- À COMPLÉTER : définition absente de l'export LinkedIn (bloc de code non exporté) -->
+> Un agent est quelque chose à qui on confie un objectif, et qui décide seul des actions nécessaires pour l'atteindre.
+>
+> On ne pilote plus chaque action. On délègue le résultat.
+>
+> Le degré d'autonomie laissé à l'agent dépend de ce qu'on lui a configuré.
 
 ## Couche 2 — La définition enrichie — Niveau fondamental
 
@@ -101,7 +105,9 @@ Le fait de surveiller et de contrôler ce que fait une entité ou une personne.
 
 ### Définition
 
-<!-- À COMPLÉTER : définition absente de l'export LinkedIn (bloc de code non exporté) -->
+> Un agent est une entité autonome qui perçoit son environnement, décide des actions à entreprendre et les exécute pour atteindre un objectif.
+>
+> En pratique, il fonctionne en boucle : il perçoit, décide, agit en mobilisant les outils dont il dispose, puis perçoit à nouveau jusqu'à ce que l'objectif soit atteint ou qu'un obstacle l'arrête. Il peut coordonner d'autres agents ou être coordonné par eux, selon la complexité de la mission. Le niveau de supervision humaine dépend de la façon dont il a été configuré.
 
 ## Couche 3 — La définition enrichie — Niveau praticien
 
@@ -179,7 +185,9 @@ Un mode de fonctionnement dans lequel un humain intervient à certaines étapes 
 
 ### Définition
 
-<!-- À COMPLÉTER : définition absente de l'export LinkedIn (bloc de code non exporté) -->
+> Un agent est une entité autonome dont le comportement est structuré par ses instructions système. Il reçoit son objectif via un prompt, puis perçoit les informations de son environnement et mobilise un LLM pour les traiter, enrichies par le contexte disponible et, si nécessaire, par le RAG. Sur cette base, l'agent produit des décisions et exécute les actions correspondantes en appelant les outils dont il a besoin, accessibles via des API ou via le protocole MCP.
+>
+> En pratique, il fonctionne en boucle : il perçoit, traite le contexte, produit une décision, exécute une action, puis actualise son contexte grâce à sa mémoire, jusqu'à ce que l'objectif soit atteint ou qu'un obstacle l'arrête. Il opère dans un workflow qui peut être rigide ou flexible selon la mission. Il peut coordonner d'autres agents ou être coordonné par eux via l'orchestration. Le niveau de supervision humaine, y compris les points de human-in-the-loop, dépend de la façon dont il a été configuré.
 
 ## Couche 4 — La définition enrichie — Niveau concepteur
 
@@ -275,4 +283,6 @@ Un environnement contrôlé dans lequel un agent peut être testé sans risque d
 
 ### Définition
 
-<!-- À COMPLÉTER : définition absente de l'export LinkedIn (bloc de code non exporté) -->
+> Un agent est une entité autonome dont le comportement est structuré par ses instructions système et ses guardrails. Il reçoit son objectif via un prompt, puis perçoit les informations de son environnement et mobilise un LLM pour assurer le raisonnement et la planification nécessaires à leur traitement, enrichies par le contexte disponible, sa mémoire à court terme et, si nécessaire, par le RAG ou la mémoire à long terme. Sur cette base, l'agent produit des décisions et exécute les actions correspondantes en appelant les outils dont il a besoin, accessibles via des API ou via le protocole MCP.
+>
+> En pratique, il fonctionne en boucle intégrant une boucle de rétroaction : il perçoit, traite le state courant, produit une décision, exécute une action, met à jour son state et réinjecte le résultat dans son contexte, jusqu'à ce que l'objectif soit atteint ou qu'un obstacle l'arrête. Il opère dans un workflow défini par le framework retenu. Dans une architecture multi-agents, il peut jouer le rôle d'orchestrateur ou de sous-agent, assurant ainsi la coordination de l'ensemble, les transitions entre agents étant gérées par des handoffs. L'ensemble du système est soumis à l'observabilité pour garantir la traçabilité des décisions. Le niveau de supervision humaine, y compris les points de human-in-the-loop, est défini à la configuration et validé en sandbox avant tout déploiement.

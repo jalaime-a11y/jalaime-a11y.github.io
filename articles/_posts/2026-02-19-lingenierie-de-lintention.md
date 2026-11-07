@@ -73,7 +73,31 @@ Tous les cycles ne sont pas de nature productive. Certains sont **correctifs** :
 
 Prenons le cas concret qui a guidé cette réflexion : produire un article sur la formation en IA générative.
 
-<!-- À COMPLÉTER : schéma des cycles absent de l'export LinkedIn (bloc de code non exporté) -->
+```text
+INTENTION MACRO — Produire l'article (réflexif)
+│   Contexte : intention éditoriale, angle, lectorat cible
+│   Processus : trois phases — Recherche, Rédaction, Vérification
+│   Prompt : absent. Ce niveau est purement réflexif.
+│
+├── MICRO 1 — Recherche (productif)
+│       Contexte : périmètre thématique, angles, sources visées
+│       Processus : stratégie de collecte et de synthèse
+│                   ↳ chaque article = sous-triptyque autonome
+│       Prompts : analyse et synthèse article par article
+│       → Résultat : synthèses qui deviennent le Contexte Macro
+│
+├── MICRO 2 — Rédaction (productif)
+│       Contexte : synthèses issues de Micro 1
+│       Processus : plan, séquencement des sections, registre
+│       Prompts : rédiger, affiner, reformuler
+│       → Résultat : article rédigé → Contexte de Micro 3
+│
+└── MICRO 3 — Vérification (correctif)
+        Contexte : l'article produit
+        Processus : grille d'audit — cohérence, biais, glissements sémantiques
+        Prompts : instructions d'analyse critique, dimension par dimension
+        → Résultat : liste de corrections → peut relancer Micro 2
+```
 
 Deux mécanismes sont à l'œuvre simultanément.
 
